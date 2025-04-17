@@ -1,0 +1,202 @@
+<!-- Template Tabs Component -->
+<div style="max-width: 1000px; margin: auto; font-family: sans-serif;">
+  <!-- Buttons -->
+  <div id="template-tab-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+    <button class="template-tab-button active" data-tab="playable">Playable</button>
+    <button class="template-tab-button" data-tab="gallery">Gallery</button>
+    <button class="template-tab-button" data-tab="survey">Survey</button>
+    <button class="template-tab-button" data-tab="quiz">Quiz</button>
+    <button class="template-tab-button" data-tab="coupon">Coupon</button>
+    <button class="template-tab-button" data-tab="stories">Stories</button>
+    <button class="template-tab-button" data-tab="email">Email Capture</button>
+    <button class="template-tab-button" data-tab="scratcher">Scratcher</button>
+  </div>
+
+  <!-- Content Blocks -->
+  <div id="template-tab-content">
+
+    <!-- Playable -->
+    <div class="template-tab-content active" id="playable" style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 250px;">
+        <h3>Playable</h3>
+        <p>Let users try your product or app with an interactive playable ad. Drive higher engagement and intent through hands-on experience.</p>
+      </div>
+      <div style="flex: 1; min-width: 250px;">
+        <div style="position:relative; width:100%; padding-bottom:120%; min-height:200px;">
+          <iframe src="https://player.vimeo.com/video/1037962975?h=daef48b1c7&autoplay=1&loop=1&muted=1&background=1&badge=0&autopause=0&player_id=0&app_id=58479"
+                  frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                  playsinline loading="eager"
+                  style="position:absolute; top:0; left:0; width:100%; height:100%;"
+                  title="Vimeo Player">
+          </iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gallery (custom padding + video) -->
+    <div class="template-tab-content" id="gallery" style="display: none; gap: 20px; align-items: center; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 250px;">
+        <h3>Gallery</h3>
+        <p>Showcase multiple products or visuals in a scrollable carousel or image grid, letting users explore your brand’s world.</p>
+      </div>
+      <div style="flex: 1; min-width: 250px;">
+        <div style="padding:177.78% 0 0 0;position:relative; min-height:200px;">
+          <iframe src="https://player.vimeo.com/video/1033469332?h=8ae3c28985&autoplay=1&loop=1&muted=1&background=1&badge=0&autopause=0&player_id=0&app_id=58479"
+                  frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                  playsinline loading="eager"
+                  style="position:absolute;top:0;left:0;width:100%;height:100%;"
+                  title="Vimeo Player">
+          </iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- Survey -->
+    <div class="template-tab-content" id="survey" style="display: none; gap: 20px; align-items: center; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 250px;">
+        <h3>Survey</h3>
+        <p>Collect zero-party data through interactive surveys embedded directly into the ad unit. Learn what your audience really thinks.</p>
+      </div>
+      <div style="flex: 1; min-width: 250px;">
+        <div style="position:relative; width:100%; padding-bottom:120%; min-height:200px;">
+          <iframe src="https://player.vimeo.com/video/1037962975?h=daef48b1c7&autoplay=1&loop=1&muted=1&background=1&badge=0&autopause=0&player_id=0&app_id=58479"
+                  frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                  playsinline loading="eager"
+                  style="position:absolute; top:0; left:0; width:100%; height:100%;"
+                  title="Vimeo Player">
+          </iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- Repeat for Quiz, Coupon, Stories, Email, Scratcher -->
+    <div class="template-tab-content" id="quiz" style="display: none; gap: 20px; align-items: center; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 250px;">
+        <h3>Quiz</h3>
+        <p>Gamify the ad experience with quizzes that teach, entertain, and segment your audience based on responses.</p>
+      </div>
+      <div style="flex: 1; min-width: 250px;">
+        <div style="position:relative; width:100%; padding-bottom:120%; min-height:200px;">
+          <iframe src="https://player.vimeo.com/video/1037962975?h=daef48b1c7&autoplay=1&loop=1&muted=1&background=1&badge=0&autopause=0&player_id=0&app_id=58479"
+                  frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                  playsinline loading="eager"
+                  style="position:absolute; top:0; left:0; width:100%; height:100%;"
+                  title="Vimeo Player">
+          </iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="template-tab-content" id="coupon" style="display: none; gap: 20px; align-items: center; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 250px;">
+        <h3>Coupon</h3>
+        <p>Drive action with redeemable digital coupons. Perfect for retail and CPG brands offering instant incentives.</p>
+      </div>
+      <div style="flex: 1; min-width: 250px;">
+        <div style="position:relative; width:100%; padding-bottom:120%; min-height:200px;">
+          <iframe src="https://player.vimeo.com/video/1037962975?h=daef48b1c7&autoplay=1&loop=1&muted=1&background=1&badge=0&autopause=0&player_id=0&app_id=58479"
+                  frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                  playsinline loading="eager"
+                  style="position:absolute; top:0; left:0; width:100%; height:100%;"
+                  title="Vimeo Player">
+          </iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="template-tab-content" id="stories" style="display: none; gap: 20px; align-items: center; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 250px;">
+        <h3>Stories</h3>
+        <p>Capture attention with full-screen, swipeable story ads—optimized for mobile-native storytelling.</p>
+      </div>
+      <div style="flex: 1; min-width: 250px;">
+        <div style="position:relative; width:100%; padding-bottom:120%; min-height:200px;">
+          <iframe src="https://player.vimeo.com/video/1037962975?h=daef48b1c7&autoplay=1&loop=1&muted=1&background=1&badge=0&autopause=0&player_id=0&app_id=58479"
+                  frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                  playsinline loading="eager"
+                  style="position:absolute; top:0; left:0; width:100%; height:100%;"
+                  title="Vimeo Player">
+          </iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="template-tab-content" id="email" style="display: none; gap: 20px; align-items: center; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 250px;">
+        <h3>Email Capture</h3>
+        <p>Turn your ad into a lead generation tool. Invite users to subscribe, enter giveaways, or request more info right from the unit.</p>
+      </div>
+      <div style="flex: 1; min-width: 250px;">
+        <div style="position:relative; width:100%; padding-bottom:120%; min-height:200px;">
+          <iframe src="https://player.vimeo.com/video/1037962975?h=daef48b1c7&autoplay=1&loop=1&muted=1&background=1&badge=0&autopause=0&player_id=0&app_id=58479"
+                  frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                  playsinline loading="eager"
+                  style="position:absolute; top:0; left:0; width:100%; height:100%;"
+                  title="Vimeo Player">
+          </iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="template-tab-content" id="scratcher" style="display: none; gap: 20px; align-items: center; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 250px;">
+        <h3>Scratcher</h3>
+        <p>Deliver delightful surprises with scratch-to-reveal offers or instant wins, perfect for promotions and seasonal campaigns.</p>
+      </div>
+      <div style="flex: 1; min-width: 250px;">
+        <div style="position:relative; width:100%; padding-bottom:120%; min-height:200px;">
+          <iframe src="https://player.vimeo.com/video/1037962975?h=daef48b1c7&autoplay=1&loop=1&muted=1&background=1&badge=0&autopause=0&player_id=0&app_id=58479"
+                  frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                  playsinline loading="eager"
+                  style="position:absolute; top:0; left:0; width:100%; height:100%;"
+                  title="Vimeo Player">
+          </iframe>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Styles -->
+<style>
+  .template-tab-button {
+    padding: 10px 16px;
+    background: #eee;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+
+  .template-tab-button.active {
+    background: #007BFF;
+    color: #fff;
+  }
+
+  .template-tab-button:hover {
+    background: #ccc;
+  }
+</style>
+
+<!-- Script -->
+<script>
+  const buttons = document.querySelectorAll('.template-tab-button');
+  const contents = document.querySelectorAll('.template-tab-content');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      contents.forEach(c => c.style.display = 'none');
+
+      btn.classList.add('active');
+      const tabId = btn.getAttribute('data-tab');
+      const activeContent = document.getElementById(tabId);
+      if (activeContent) activeContent.style.display = 'flex';
+    });
+  });
+</script>
+
+<!-- Vimeo Script (Required for player interaction, if needed) -->
+<script src="https://player.vimeo.com/api/player.js"></script>
