@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>boohooMAN App - Google Play Store</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: black;
+        }
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('Men_BG.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        .logo {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+        }
+        .text {
+            position: absolute;
+            bottom: 200px;
+            left: 5vw;
+            width: 90vw;
+            max-width: 100%;
+        }
+        .app-btn {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            animation: pulse 2s infinite;
+        }
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: none;
+            width: 40px;
+        }
+        .thought-bubble {
+            position: absolute;
+            top: 150px; /* Adjust as necessary to fit above the middle man */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 120px;
+            background-color: white;
+            border-radius: 50%;
+            padding: 15px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+        }
+        .thought-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-top-color: white;
+        }
+        @keyframes pulse {
+            0% {
+                transform: translateX(-50%) scale(1);
+            }
+            50% {
+                transform: translateX(-50%) scale(1.1);
+            }
+            100% {
+                transform: translateX(-50%) scale(1);
+            }
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            setTimeout(function() {
+                document.querySelector('.close-btn').style.display = 'block';
+            }, 5000);
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <img src="Logo.png" alt="boohooMAN Logo" class="logo">
+        <img src="TXT.png" alt="Discount Text" class="text">
+        <div class="thought-bubble">Download now!</div> <!-- Thought Bubble -->
+        <img src="PlayStore.png" alt="Get it on Google Play" class="app-btn" onclick="window.location.href='https://play.google.com/store/apps/details?id=com.gpshopper.boohooman&hl=en_GB'">
+        <img src="close.png" alt="Close" class="close-btn">
+    </div>
+</body>
+</html>
