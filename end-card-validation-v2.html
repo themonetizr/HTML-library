@@ -71,14 +71,7 @@
 </head>
 <body>
 
-<h1>Mobile HTML Viewer</h1>
 
-<div class="controls">
-  <input type="file" id="fileInput" accept=".html">
-  <input type="text" id="urlInput" placeholder="Enter URL to HTML file">
-  <button onclick="loadURL()">Load URL</button>
-  <div id="errorMessage" class="error-message"></div>
-</div>
 
 <div class="phone-frame">
   <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin"></iframe>
@@ -116,6 +109,12 @@ function loadURL() {
   }
 }
 </script>
+<div class="controls">
+    <input type="file" id="fileInput" accept=".html">
+    <input type="text" id="urlInput" placeholder="Enter URL to HTML file">
+    <button onclick="loadURL()">Load URL</button>
+    <div id="errorMessage" class="error-message"></div>
+  </div>
 
 </body>
 </html>
