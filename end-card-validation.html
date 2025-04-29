@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML Mobile Preview</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    .phone-frame {
+      width: 375px;
+      height: 667px;
+      border: 16px solid black;
+      border-radius: 36px;
+      margin: 20px auto;
+      overflow: hidden;
+      position: relative;
+      background: white;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    input, button {
+      margin: 5px;
+      padding: 8px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Upload or Load HTML</h1>
+
+<input type="file" id="fileInput" accept=".html"><br>
+<input type="text" id="urlInput" placeholder="Enter URL to HTML file">
+<button onclick="loadURL()">Load URL</button>
+
+<div class="phone-frame">
+  <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin"></iframe>
+</div>
+
+<script>
+const frame = document.getElementById('previewFrame');
+const fileInput = document.getElementById('fileInput');
+
+fileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      frame.srcdoc = event.target.result;
+    };
+    reader.readAsText(file);
+  }
+});
+
+function loadURL() {
+  const url = document.getElementById('urlInput').value;
+  if (url) {
+    frame.src = url;
+  }
+}
+</script>
+
+</body>
+</html>
