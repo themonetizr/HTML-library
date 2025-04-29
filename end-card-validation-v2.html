@@ -46,6 +46,12 @@
     button:hover {
       background-color: #45a049;
     }
+    .clear-button {
+      background-color: #f44336; /* Red */
+    }
+    .clear-button:hover {
+      background-color: #d32f2f;
+    }
     .phone-frame {
       width: 100%;
       max-width: 375px;
@@ -88,6 +94,7 @@
   <div id="fileName" class="file-name"></div>
   <input type="text" id="urlInput" placeholder="Enter URL to HTML file">
   <button onclick="loadURL()">Load URL</button>
+  <button class="clear-button" onclick="clearAll()">Clear</button>
   <div id="errorMessage" class="error-message"></div>
 </div>
 
@@ -96,6 +103,7 @@ const frame = document.getElementById('previewFrame');
 const fileInput = document.getElementById('fileInput');
 const errorMessage = document.getElementById('errorMessage');
 const fileNameDisplay = document.getElementById('fileName');
+const urlInput = document.getElementById('urlInput');
 
 fileInput.addEventListener('change', (e) => {
   const file = e.target.files[0];
@@ -110,6 +118,7 @@ fileInput.addEventListener('change', (e) => {
     errorMessage.textContent = ''; // Clear any previous errors
     fileNameDisplay.textContent = 'Uploaded: ' + file.name; // Show file name
     frame.srcdoc = ''; // Clear iframe first
+    frame.src = '';
     const reader = new FileReader();
     reader.onload = function(event) {
       frame.srcdoc = event.target.result;
@@ -119,7 +128,7 @@ fileInput.addEventListener('change', (e) => {
 });
 
 function loadURL() {
-  const url = document.getElementById('urlInput').value.trim();
+  const url = urlInput.value.trim();
   if (url) {
     errorMessage.textContent = '';
     fileNameDisplay.textContent = ''; // Clear uploaded file name if URL is used
@@ -128,6 +137,15 @@ function loadURL() {
   } else {
     errorMessage.textContent = 'Please enter a valid URL.';
   }
+}
+
+function clearAll() {
+  frame.srcdoc = '';
+  frame.src = '';
+  fileInput.value = '';
+  urlInput.value = '';
+  errorMessage.textContent = '';
+  fileNameDisplay.textContent = '';
 }
 </script>
 
