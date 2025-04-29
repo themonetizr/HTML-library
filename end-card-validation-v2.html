@@ -129,22 +129,24 @@ function loadURL() {
   const url = urlInput.value.trim();
   if (url) {
     errorMessage.textContent = '';
-    fileNameDisplay.textContent = ''; // Clear uploaded file name if URL is used
-    frame.srcdoc = ''; // Clear iframe first
-    frame.src = url;
+    fileNameDisplay.textContent = '';
+    frame.removeAttribute('srcdoc'); // Remove srcdoc properly
+    frame.src = url; // Then set src
   } else {
     errorMessage.textContent = 'Please enter a valid URL.';
   }
 }
 
+
 function clearAll() {
-  frame.srcdoc = '';
-  frame.src = '';
+  frame.removeAttribute('srcdoc');
+  frame.removeAttribute('src');
   fileInput.value = '';
   urlInput.value = '';
   errorMessage.textContent = '';
   fileNameDisplay.textContent = '';
 }
+
 </script>
 
 </body>
