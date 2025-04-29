@@ -24,7 +24,7 @@
       flex-direction: column;
       align-items: center;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-top: 20px;
     }
     input[type="file"],
     input[type="text"],
@@ -41,6 +41,7 @@
       color: white;
       border: none;
       cursor: pointer;
+      transition: background-color 0.2s;
     }
     button:hover {
       background-color: #45a049;
@@ -67,56 +68,68 @@
       margin-top: 10px;
       font-size: 14px;
     }
+    .file-name {
+      font-size: 14px;
+      margin-top: 5px;
+      color: #555;
+    }
   </style>
 </head>
 <body>
 
-    <div class="phone-frame">
-      <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin"></iframe>
-    </div>
-    
-    <br>
-    
-    <div class="controls">
-      <input type="file" id="fileInput" accept=".html">
-      <input type="text" id="urlInput" placeholder="Enter URL to HTML file">
-      <button onclick="loadURL()">Load URL</button>
-      <div id="errorMessage" class="error-message"></div>
-    </div>
-    
-    <!-- SCRIPT SHOULD BE HERE -->
-    <script>
-    const frame = document.getElementById('previewFrame');
-    const fileInput = document.getElementById('fileInput');
-    const errorMessage = document.getElementById('errorMessage');
-    
-    fileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        if (file.size > 5 * 1024 * 1024) { // 5MB limit
-          errorMessage.textContent = 'Error: File must be 5MB or smaller.';
-          fileInput.value = ''; // Clear input
-          return;
-        }
-        errorMessage.textContent = ''; // Clear any previous error
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          frame.srcdoc = event.target.result;
-        };
-        reader.readAsText(file);
-      }
-    });
-    
-    function loadURL() {
-      const url = document.getElementById('urlInput').value;
-      if (url) {
-        errorMessage.textContent = '';
-        frame.src = url;
-      } else {
-        errorMessage.textContent = 'Please enter a valid URL.';
-      }
+<h1>Mobile HTML Viewer</h1>
+
+<div class="phone-frame">
+  <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin"></iframe>
+</div>
+
+<div class="controls">
+  <input type="file" id="fileInput" accept=".html">
+  <div id="fileName" class="file-name"></div>
+  <input type="text" id="urlInput" placeholder="Enter URL to HTML file">
+  <button onclick="loadURL()">Load URL</button>
+  <div id="errorMessage" class="error-message"></div>
+</div>
+
+<script>
+const frame = document.getElementById('previewFrame');
+const fileInput = document.getElementById('fileInput');
+const errorMessage = document.getElementById('errorMessage');
+const fileNameDisplay = document.getElementById('fileName');
+
+fileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    if (file.size > 5 * 1024 * 1024) { // 5MB = 5*1024*1024 bytes
+      errorMessage.textContent = 'Error: File must be 5MB or smaller.';
+      fileInput.value = ''; // Clear the input
+      fileNameDisplay.textContent = '';
+      frame.srcdoc = ''; // Clear iframe
+      return;
     }
-    </script>
-    
-    </body>
-    
+    errorMessage.textContent = ''; // Clear any previous errors
+    fileNameDisplay.textContent = 'Uploaded: ' + file.name; // Show file name
+    frame.srcdoc = ''; // Clear iframe first
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      frame.srcdoc = event.target.result;
+    };
+    reader.readAsText(file);
+  }
+});
+
+function loadURL() {
+  const url = document.getElementById('urlInput').value.trim();
+  if (url) {
+    errorMessage.textContent = '';
+    fileNameDisplay.textContent = ''; // Clear uploaded file name if URL is used
+    frame.srcdoc = ''; // Clear iframe first
+    frame.src = url;
+  } else {
+    errorMessage.textContent = 'Please enter a valid URL.';
+  }
+}
+</script>
+
+</body>
+</html>
