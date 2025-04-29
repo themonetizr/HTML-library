@@ -1,121 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HTML Mobile Preview</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-      background: #f9f9f9;
-    }
-    h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    .controls {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    input[type="file"],
-    input[type="text"],
-    button {
-      width: 100%;
-      max-width: 300px;
-      padding: 12px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .phone-frame {
-      width: 100%;
-      max-width: 375px;
-      height: 667px;
-      border: 16px solid #333;
-      border-radius: 36px;
-      overflow: hidden;
-      margin: 0 auto;
-      background: white;
-      position: relative;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    .error-message {
-      color: red;
-      margin-top: 10px;
-      font-size: 14px;
-    }
-  </style>
-</head>
 <body>
 
-
-
-<div class="phone-frame">
-  <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin"></iframe>
-</div>
-
-<script>
-const frame = document.getElementById('previewFrame');
-const fileInput = document.getElementById('fileInput');
-const errorMessage = document.getElementById('errorMessage');
-
-fileInput.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    if (file.size > 5 * 1024 * 1024) { // 5MB limit
-      errorMessage.textContent = 'Error: File must be 5MB or smaller.';
-      fileInput.value = ''; // Clear input
-      return;
+    <div class="phone-frame">
+      <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin"></iframe>
+    </div>
+    
+    <br>
+    
+    <div class="controls">
+      <input type="file" id="fileInput" accept=".html">
+      <input type="text" id="urlInput" placeholder="Enter URL to HTML file">
+      <button onclick="loadURL()">Load URL</button>
+      <div id="errorMessage" class="error-message"></div>
+    </div>
+    
+    <!-- SCRIPT SHOULD BE HERE -->
+    <script>
+    const frame = document.getElementById('previewFrame');
+    const fileInput = document.getElementById('fileInput');
+    const errorMessage = document.getElementById('errorMessage');
+    
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+          errorMessage.textContent = 'Error: File must be 5MB or smaller.';
+          fileInput.value = ''; // Clear input
+          return;
+        }
+        errorMessage.textContent = ''; // Clear any previous error
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          frame.srcdoc = event.target.result;
+        };
+        reader.readAsText(file);
+      }
+    });
+    
+    function loadURL() {
+      const url = document.getElementById('urlInput').value;
+      if (url) {
+        errorMessage.textContent = '';
+        frame.src = url;
+      } else {
+        errorMessage.textContent = 'Please enter a valid URL.';
+      }
     }
-    errorMessage.textContent = ''; // Clear any previous error
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      frame.srcdoc = event.target.result;
-    };
-    reader.readAsText(file);
-  }
-});
-
-function loadURL() {
-  const url = document.getElementById('urlInput').value;
-  if (url) {
-    errorMessage.textContent = '';
-    frame.src = url;
-  } else {
-    errorMessage.textContent = 'Please enter a valid URL.';
-  }
-}
-</script>
-<br>
-<div class="controls">
-    <input type="file" id="fileInput" accept=".html">
-    <input type="text" id="urlInput" placeholder="Enter URL to HTML file">
-    <button onclick="loadURL()">Load URL</button>
-    <div id="errorMessage" class="error-message"></div>
-  </div>
-
-</body>
-</html>
+    </script>
+    
+    </body>
+    
