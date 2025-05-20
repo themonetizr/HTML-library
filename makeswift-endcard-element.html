@@ -1,7 +1,26 @@
-<!-- Monetizr Endcard Showcase v7 -->
-<div style="max-width: 1120px; margin: 0 auto; padding: 48px 20px; font-family: 'Lato', sans-serif; color: #0D1A2B;">
+<!-- Monetizr Endcard Showcase – v8 (GitHub-ready) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Monetizr Showcase</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;900&display=swap" rel="stylesheet" />
   <style>
-    .m-tabs {
+    body {
+      margin: 0;
+      font-family: 'Lato', sans-serif;
+      background-color: #ffffff;
+      color: #0D1A2B;
+    }
+
+    .monetizr-showcase {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 48px 20px;
+    }
+
+    .monetizr-tabs {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -9,7 +28,7 @@
       margin-bottom: 32px;
     }
 
-    .m-tab-btn {
+    .monetizr-tab {
       padding: 10px 20px;
       border: 1px solid #D8DDE4;
       border-radius: 32px;
@@ -21,24 +40,23 @@
       transition: all 0.2s ease;
     }
 
-    .m-tab-btn.active {
+    .monetizr-tab.active {
       background-color: #0D1A2B;
       color: #ffffff;
     }
 
-    .m-tab-content {
+    .monetizr-tab-content {
       display: none;
       align-items: center;
       justify-content: space-between;
       gap: 64px;
-      flex-wrap: nowrap;
     }
 
-    .m-tab-content.active {
+    .monetizr-tab-content.active {
       display: flex;
     }
 
-    .m-text {
+    .monetizr-text {
       flex: 1 1 50%;
       padding-right: 20px;
       min-height: 220px;
@@ -47,27 +65,30 @@
       justify-content: flex-start;
     }
 
-    .m-text h3 {
+    .monetizr-text h3 {
       font-size: 28px;
       font-weight: 900;
-      margin: 4px 0 12px;
+      margin-top: 4px;
+      margin-bottom: 8px;
     }
 
-    .m-text p {
+    .monetizr-text p {
       font-size: 17px;
       line-height: 1.7;
       font-weight: 400;
       color: #2F2F2F;
-      margin: 0;
+      margin-top: 4px;
+      margin-bottom: 0;
+      text-align: left;
     }
 
-    .m-video {
+    .monetizr-video {
       flex: 1 1 50%;
       max-width: 420px;
       margin: 0 auto;
     }
 
-    .m-video iframe {
+    .monetizr-video iframe {
       display: block;
       width: 100%;
       aspect-ratio: 9 / 19.5;
@@ -76,48 +97,50 @@
     }
 
     @media (max-width: 900px) {
-      .m-tab-content {
-        flex-direction: column-reverse;
+      .monetizr-tab-content {
+        flex-direction: column;
         align-items: center;
         gap: 24px;
       }
 
-      .m-tabs {
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-bottom: 24px;
+      .monetizr-tabs {
+        order: 1;
       }
 
-      .m-text {
-        text-align: center;
-        align-items: center;
+      .monetizr-text {
+        order: 2;
         padding: 0 12px;
         min-height: auto;
-      }
-
-      .m-text h3 {
-        font-size: 24px;
-        margin: 4px 0 12px;
-      }
-
-      .m-text p {
-        font-size: 16px;
+        width: 100%;
         text-align: left;
+        align-items: flex-start;
       }
 
-      .m-video {
+      .monetizr-text h3,
+      .monetizr-text span:first-child {
+        align-self: center;
+        text-align: center;
+      }
+
+      .monetizr-video {
+        order: 3;
         width: 100%;
         max-width: 480px;
+        margin-bottom: 12px;
       }
 
-      .m-video iframe {
+      .monetizr-video iframe {
         aspect-ratio: 9 / 18;
+        height: auto;
       }
     }
   </style>
-
-  <div class="m-tabs" id="tabs"></div>
-  <div id="tab-content"></div>
+</head>
+<body>
+  <section class="monetizr-showcase">
+    <div class="monetizr-tabs" id="monetizr-tabs" role="tablist" aria-label="Content format navigation"></div>
+    <div id="monetizr-content"></div>
+  </section>
 
   <script>
     const formats = [
@@ -159,39 +182,41 @@
       }
     ];
 
-    const tabs = document.getElementById("tabs");
-    const content = document.getElementById("tab-content");
+    const tabs = document.getElementById("monetizr-tabs");
+    const content = document.getElementById("monetizr-content");
 
     formats.forEach((format, index) => {
       const isActive = index === 0;
 
-      const btn = document.createElement("button");
-      btn.className = "m-tab-btn" + (isActive ? " active" : "");
-      btn.textContent = format.name;
-      btn.dataset.tab = format.id;
-      tabs.appendChild(btn);
+      const tabBtn = document.createElement("button");
+      tabBtn.className = "monetizr-tab" + (isActive ? " active" : "");
+      tabBtn.textContent = format.name;
+      tabBtn.setAttribute("role", "tab");
+      tabBtn.setAttribute("aria-controls", format.id);
+      tabBtn.setAttribute("aria-selected", isActive);
+      tabBtn.dataset.tab = format.id;
+      tabs.appendChild(tabBtn);
 
       const section = document.createElement("div");
-      section.className = "m-tab-content" + (isActive ? " active" : "");
+      section.className = "monetizr-tab-content" + (isActive ? " active" : "");
       section.id = format.id;
+      section.setAttribute("role", "tabpanel");
 
       const label = '<span style="display:block; font-size:18px; font-weight:900; color:#2196F3; margin-bottom:4px;">Option 1:</span>';
-
       const eagerAttr = isActive
         ? `src="https://player.vimeo.com/video/${format.vimeo}&autoplay=1&loop=1&muted=1&background=1&badge=0&autopause=0&player_id=0&app_id=58479" loading="eager"`
         : `data-src="https://player.vimeo.com/video/${format.vimeo}&autoplay=1&loop=1&muted=1&background=1&badge=0&autopause=0&player_id=0&app_id=58479"`;
 
       section.innerHTML = `
-        <div class="m-text">
+        <div class="monetizr-text">
           ${label}
           <h3>${format.name}</h3>
           <p>${format.text}</p>
         </div>
-        <div class="m-video">
+        <div class="monetizr-video">
           <iframe ${eagerAttr}
             allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
-            playsinline
-            title="Vimeo Player">
+            playsinline title="Vimeo Player">
           </iframe>
         </div>
       `;
@@ -199,18 +224,21 @@
     });
 
     tabs.addEventListener("click", (e) => {
-      if (!e.target.classList.contains("m-tab-btn")) return;
-      const target = e.target.dataset.tab;
+      if (!e.target.classList.contains("monetizr-tab")) return;
 
-      document.querySelectorAll(".m-tab-btn").forEach(btn => {
+      const selectedId = e.target.dataset.tab;
+
+      document.querySelectorAll(".monetizr-tab").forEach(btn => {
         btn.classList.remove("active");
+        btn.setAttribute("aria-selected", false);
       });
       e.target.classList.add("active");
+      e.target.setAttribute("aria-selected", true);
 
-      document.querySelectorAll(".m-tab-content").forEach(sec => {
+      document.querySelectorAll(".monetizr-tab-content").forEach(sec => {
         sec.classList.remove("active");
       });
-      const activeSection = document.getElementById(target);
+      const activeSection = document.getElementById(selectedId);
       activeSection.classList.add("active");
 
       const iframe = activeSection.querySelector("iframe");
@@ -219,4 +247,5 @@
       }
     });
   </script>
-</div>
+</body>
+</html>
