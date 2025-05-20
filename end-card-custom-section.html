@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Custom Endcard Section</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;900&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Lato', sans-serif;
+      background-color: #ffffff;
+      color: #0D1A2B;
+    }
+
+    .partner-section {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 48px 20px;
+    }
+
+    .partner-layout {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 64px;
+    }
+
+    .partner-text {
+      flex: 1 1 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .partner-text span {
+      display: block;
+      font-size: 18px;
+      font-weight: 900;
+      color: #2196F3;
+      margin-bottom: 4px;
+      line-height: 1;
+    }
+
+    .partner-text h3 {
+      font-size: 28px;
+      font-weight: 900;
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+
+    .partner-text p {
+      font-size: 17px;
+      line-height: 1.7;
+      font-weight: 400;
+      color: #2F2F2F;
+      margin-bottom: 0;
+    }
+
+    .partner-text a {
+      color: #1665C0;
+      text-decoration: none;
+    }
+
+    .partner-video {
+      flex: 1 1 50%;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    .partner-video iframe {
+      display: block;
+      width: 100%;
+      aspect-ratio: 9 / 19.5;
+      border: none;
+      background: #fff;
+    }
+
+    .partner-mobile-reorder { flex-direction: row; }
+
+    @media (max-width: 900px) {
+      .partner-mobile-reorder {
+        flex-direction: column;
+      }
+
+      .partner-layout {
+        text-align: center;
+        gap: 32px;
+      }
+
+      .partner-text {
+        padding: 0 12px;
+        align-items: center;
+      }
+
+      .partner-text p {
+        text-align: left;
+      }
+
+      .partner-video {
+        max-width: 100%;
+      }
+
+      .partner-video iframe {
+        aspect-ratio: 9 / 18;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="partner-section">
+    <div class="partner-layout partner-mobile-reorder">
+      <div class="partner-text">
+        <span>OPTION 3:</span>
+        <h3>Build your custom endcard experience</h3>
+        <p>
+          Fully custom HTML5 or web-based experiences, developed by your in-house or external creative teams — now supported natively within the Monetizr flow.
+        </p>
+        <p style="font-weight:900; color:#1665C0; font-family: Lato, sans-serif; margin-top: 16px;">
+          <a href="https://monetizr.com/end-card-guidlines" target="_blank" style="color:#1665C0; text-decoration: none;">
+            Read the guidelines →
+          </a>
+        </p>
+      </div>
+      <div class="partner-video">
+        <iframe
+          src="https://player.vimeo.com/video/1084123346?h=0fe86e2d26&autoplay=1&loop=1&muted=1&background=1&badge=0&autopause=0&player_id=0&app_id=58479"
+          allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+          loading="lazy"
+          playsinline
+          title="Custom Endcard Video"
+        ></iframe>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
