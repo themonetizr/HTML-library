@@ -75,12 +75,18 @@
 
     .monetizr-text p {
       font-size: 17px;
-      line-height: 1.7;
+      line-height: 1.5;
       font-weight: 400;
       color: #2F2F2F;
       margin-top: 4px;
       margin-bottom: 0;
       text-align: left;
+    }
+
+    p.the-content-text{
+      font-size: 17px;
+      line-height: 1.5;
+      min-height: 76.5px;
     }
 
     .monetizr-video {
@@ -96,6 +102,7 @@
       border: none;
       background: #fff;
     }
+
 
     @media (max-width: 900px) {
       .monetizr-tab-content {
@@ -228,7 +235,7 @@
       textContent.innerHTML = `
         ${label}
         <h3>${format.name}</h3>
-        <p>${format.text}</p>
+        <p class="the-content-text">${format.text}</p>
       `;
 
       monetizrText.appendChild(textContent);
@@ -247,7 +254,6 @@
 
         // Remove active class from all tabs and set aria-selected to false
         document.querySelectorAll(".monetizr-tab").forEach(btn => {
-            console.log('called how many times?');
             btn.classList.remove("active");
             btn.setAttribute("aria-selected", false);
           });
