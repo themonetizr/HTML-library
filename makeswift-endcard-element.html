@@ -141,8 +141,8 @@
 </head>
 <body>
   <section class="monetizr-showcase">
-    <div class="monetizr-tabs" id="monetizr-tabs" role="tablist" aria-label="Content format navigation"></div>
-    <div id="monetizr-content"></div>
+    <div id="monetizr-content">
+    </div>
   </section>
 
   <script src="https://player.vimeo.com/api/player.js"></script>
@@ -186,13 +186,18 @@
       }
     ];
 
-    const tabs = document.getElementById("monetizr-tabs");
     const content = document.getElementById("monetizr-content");
 
-    formats.forEach((format, index) => {
-      const isActive = index === 0;
+    let tabs = document.createElement("div");
+    tabs.setAttribute("role", "tablist");
+    tabs.setAttribute("aria-label", "Content format navigation");
+    tabs.className = "monetizr-tabs";
 
-      const tabBtn = document.createElement("button");
+    // Must create the tabs switcher first, then the content
+    formats.forEach((format, index) => {
+      let isActive = index === 0;
+
+      let tabBtn = document.createElement("button");
       tabBtn.className = "monetizr-tab" + (isActive ? " active" : "");
       tabBtn.textContent = format.name;
       tabBtn.setAttribute("role", "tab");
@@ -200,61 +205,94 @@
       tabBtn.setAttribute("aria-selected", isActive);
       tabBtn.dataset.tab = format.id;
       tabs.appendChild(tabBtn);
+    });
+    
+    formats.forEach((format, index) => {
+      const isActive = index === 0;
 
-      const section = document.createElement("div");
+      let section = document.createElement("div");
       section.className = "monetizr-tab-content" + (isActive ? " active" : "");
       section.id = format.id;
       section.setAttribute("role", "tabpanel");
 
-      const label = '<span style="display:block; font-size:18px; font-weight:900; color:#2196F3; margin-bottom:4px;">OPTION 1:</span>';
-      const eagerAttr = isActive
+      let label = '<span style="display:block; font-size:18px; font-weight:900; color:#2196F3; margin-bottom:4px;">OPTION 1:</span>';
+      let eagerAttr = isActive
         ? `src="https://player.vimeo.com/video/${format.vimeo}&autoplay=1&loop=1&muted=1&background=1&badge=0&autopause=0&player_id=0&app_id=58479" loading="eager"`
         : `data-src="https://player.vimeo.com/video/${format.vimeo}&autoplay=1&loop=1&muted=1&background=1&badge=0&autopause=0&player_id=0&app_id=58479"`;
 
-      section.innerHTML = `
-        <div class="monetizr-text">
-          ${label}
-          <h3>${format.name}</h3>
-          <p>${format.text}</p>
-        </div>
-        <div class="monetizr-video">
-          <iframe ${eagerAttr}
-            allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
-            playsinline title="Vimeo Player">
-          </iframe>
-        </div>
+
+      let monetizrText = document.createElement("div");
+      monetizrText.className = "monetizr-text";
+
+      let textContent = document.createElement("div");
+      textContent.innerHTML = `
+        ${label}
+        <h3>${format.name}</h3>
+        <p>${format.text}</p>
       `;
+
+      monetizrText.appendChild(textContent);
+
+      // Appewnd tabs with a functionality. Requried to clone, because they are virtual elemtns and can appear on dom only Once
+
+      const clonedTabs = tabs.cloneNode(true); // clone the whole tabs node and its children
+      monetizrText.appendChild(clonedTabs);
+  
+      // Add onclick event to the cloned tabs
+      clonedTabs.addEventListener("click", (e) => {
+      
+        if (!e.target.classList.contains("monetizr-tab")) return;
+
+        const selectedId = e.target.dataset.tab;
+
+        // Remove active class from all tabs and set aria-selected to false
+        document.querySelectorAll(".monetizr-tab").forEach(btn => {
+            console.log('called how many times?');
+            btn.classList.remove("active");
+            btn.setAttribute("aria-selected", false);
+          });
+
+        // Add active class to the tab by utilizing the aria-controls attribute
+        document.querySelectorAll(".monetizr-tab").forEach(btn => {
+          if (btn.getAttribute("aria-controls") === selectedId) {
+            btn.classList.add("active");
+            btn.setAttribute("aria-selected", true);
+          }
+        });
+
+        document.querySelectorAll(".monetizr-tab-content").forEach(sec => {
+          sec.classList.remove("active");
+        });
+
+        const activeSection = document.getElementById(selectedId);
+        activeSection.classList.add("active");
+
+        const iframe = activeSection.querySelector("iframe");
+        if (!iframe.src) {
+          iframe.src = iframe.dataset.src;
+        } else {
+          const player = new Vimeo.Player(iframe);
+          player.setCurrentTime(0).then(() => {
+            player.play();
+          }).catch(() => {});
+        }
+      });
+
+      section.appendChild(monetizrText);
+
+      let monetizrVideo = document.createElement("div");
+      monetizrVideo.className = "monetizr-video";
+      monetizrVideo.innerHTML = `
+        <iframe ${eagerAttr}
+          allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+          playsinline title="Vimeo Player">
+        </iframe>
+      `;
+      section.appendChild(monetizrVideo);
+      
       content.appendChild(section);
     });
 
-    tabs.addEventListener("click", (e) => {
-      if (!e.target.classList.contains("monetizr-tab")) return;
-
-      const selectedId = e.target.dataset.tab;
-
-      document.querySelectorAll(".monetizr-tab").forEach(btn => {
-        btn.classList.remove("active");
-        btn.setAttribute("aria-selected", false);
-      });
-      e.target.classList.add("active");
-      e.target.setAttribute("aria-selected", true);
-
-      document.querySelectorAll(".monetizr-tab-content").forEach(sec => {
-        sec.classList.remove("active");
-      });
-      const activeSection = document.getElementById(selectedId);
-      activeSection.classList.add("active");
-
-      const iframe = activeSection.querySelector("iframe");
-      if (!iframe.src) {
-        iframe.src = iframe.dataset.src;
-      } else {
-        const player = new Vimeo.Player(iframe);
-        player.setCurrentTime(0).then(() => {
-          player.play();
-        }).catch(() => {});
-      }
-    });
   </script>
 </body>
 </html>
