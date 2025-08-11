@@ -7,18 +7,55 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
     <style>
+        body {
+            background: #f8f9fa;
+        }
         /* Mobile preview style for Screen 2 */
         #screen2 {
+            display:none;
+        }
+        #reviewPreview{
             max-width: 393px; /* iPhone 15 width */
+            height: 852px;    /* iPhone 15 height */
             margin: auto;
             border: 1px solid #ccc;
             border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-image: url('https://cdn.monetizr.com/default_assets/mockup_builder_background.png');
+        }
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.5);
             padding: 1rem;
-            background: #fff;
-            display: none;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: auto;
         }
         #screen1 {
             display: block;
+        }
+        .preview-img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-video {
+            max-width: 100%;
+            border-radius: 8px;
         }
     </style>
 </head>
@@ -29,7 +66,7 @@
                 <div id="screen1" class="card shadow-sm">
                     <div class="card-body">
                         <h3 class="card-title mb-4">Step 1: Fill in Your Details</h3>
-                        <form id="uploadForm" method="POST" enctype="multipart/form-data">
+                        <form id="uploadForm" enctype="multipart/form-data">
                             <!-- Logo file-->
                             <div class="mb-3">
                                 <label for="imageFile" class="form-label">Logo (JPG/PNG):</label>
@@ -67,12 +104,22 @@
                         </form>
                     </div>
                 </div>
-                <div id="screen2" class="shadow-sm mt-4">
-                    <h3 class="mb-4">Step 2: Review & Confirm</h3>
-                    <div id="reviewData"></div>
-                    <button type="submit" id="submitButton" class="btn btn-primary w-100">Upload</button>
-                    <button id="backBtn" class="btn btn-secondary w-100 mt-2">Back</button>
-                    <div id="response" class="mt-4"></div>
+                <div id="screen2" class="card shadow-sm mt-4">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">Step 2: Review & Confirm</h3>
+                        <div id="reviewPreview">
+                            <div class="overlay">
+                                <div class="text-center mb-3">
+                                    <img id="previewLogo" class="logo" src="" alt="Logo">
+                                </div>
+                                <div id="previewVideo" class="video" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div id="reviewData"></div>
+                        <button type="submit" id="submitButton" class="btn btn-primary w-100">Upload</button>
+                        <button id="backBtn" class="btn btn-secondary w-100 mt-2">Back</button>
+                        <div id="response" class="mt-4"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -85,6 +132,8 @@
         const reviewData = document.getElementById('reviewData');   
         const messageDiv = document.getElementById('message');
         const responseDiv = document.getElementById('response');
+        const previewLogo = document.getElementById('previewLogo');
+        const previewVideo = document.getElementById('previewVideo');
         
         const imageInput = document.getElementById('imageFile');
         const videoInput = document.getElementById('videoFile');
@@ -95,6 +144,7 @@
         const nextBtn = document.getElementById('nextBtn');
         const backBtn = document.getElementById('backBtn');
         const cloudFunctionUrl = 'https://mockup-generator-upload-1074977689117.us-central1.run.app';
+
 
         nextBtn.addEventListener('click', () => {
             // Validate form inputs
@@ -111,6 +161,25 @@
             if (!brandColorInput.value || !textColorInput.value || !brandNameInput.value) {
                 messageDiv.innerHTML = '<div class="alert alert-danger">Please fill in all fields.</div>';
                 return;
+            }
+
+            // Logo preview
+            let logoFile = imageInput.files[0];
+            if (logoFile) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    previewLogo.src = e.target.result;
+                };
+                reader.readAsDataURL(logoFile);
+            }
+
+            // Video preview
+            let videoPreviewHTML = '';
+            let videoFile = videoInput.files[0];
+            if (videoFile) {
+                const videoURL = URL.createObjectURL(videoFile);
+                videoPreviewHTML = `<video class="preview-video" src="${videoURL}" controls muted loop></video>`;
+                previewVideo.innerHTML = videoPreviewHTML;
             }
 
             // Populate review data
