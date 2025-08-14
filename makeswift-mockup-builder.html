@@ -300,7 +300,7 @@
                             </div>
                         </div>
                         <div id="reviewData"></div>
-                            <button type="submit" id="submitButton" class="btn btn-primary w-100">Upload</button>
+                            <button type="submit" id="submitButton" class="btn btn-primary w-100">Submit campaign</button>
                             <button id="backBtn" class="btn btn-secondary w-100 mt-2">Back</button>
                         <div id="response" class="mt-4"></div>
                     </div>
@@ -451,7 +451,7 @@
 
                 if (response.ok) {
                     // Create a list of clickable links from the returned URLs
-                    let urlListHtml = '<h4>✅ Success! Files sent:</h4>';
+                    let urlListHtml = '<h4>✅ Success! Files sent!</h4>';
                     responseDiv.innerHTML = urlListHtml;
                 } else {
                     responseDiv.innerHTML = `<p class="error">Error: ${result.error}</p>`;
