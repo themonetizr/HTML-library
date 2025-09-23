@@ -225,7 +225,7 @@
             <div class="col-lg-8">
                 <div id="screen1" class="card shadow-sm">
                     <div class="card-body">
-                        <h3 class="card-title mb-4">Step 1: Fill in Your Details</h3>
+                        <h3 class="card-title mb-4">Step 1: Upload (campaign assets)</h3>
                         <form id="uploadForm" enctype="multipart/form-data">
                             <!-- Logo file-->
                             <div class="mb-3">
@@ -241,12 +241,12 @@
 
                             <!-- Color Pickers -->
                             <div class="mb-3">
-                                <label for="brandColor" class="form-label">Brand Color:</label>
+                                <label for="brandColor" class="form-label">Brand color:</label>
                                 <input class="form-control" type="color" id="brandColor" name="brandColor" value="#ff0000" required>
                             </div>
 
                             <div class="mb-3">
-                                <label for="textColor" class="form-label">Text Color:</label>
+                                <label for="textColor" class="form-label">Text color:</label>
                                 <input class="form-control" type="color" id="textColor" name="textColor" value="#00ff00" required>
                             </div>
 
@@ -388,8 +388,8 @@
             reviewData.innerHTML = `
             <p><strong>Logo:</strong> ${imageInput.files[0] ? imageInput.files[0].name : 'No file'}</p>
             <p><strong>Video:</strong> ${videoInput.files[0] ? videoInput.files[0].name : 'No file'}</p>
-            <p><strong>Brand Color:</strong> <span style="color: ${brandColor};">${brandColor}</span></p>
-            <p><strong>Text Color:</strong> <span style="color: ${textColor};">${textColor}</span></p>
+            <p><strong>Brand color:</strong> <span style="color: ${brandColor};">${brandColor}</span></p>
+            <p><strong>Text color:</strong> <span style="color: ${textColor};">${textColor}</span></p>
             <p><strong>Brand Name:</strong> ${brandNameInput.value}</p>
             `;
 
