@@ -134,6 +134,7 @@
             height: 100%;
             text-align: center;
             overflow-y: auto;
+            overflow-x:hidden;
         }
         .modal-header .modal-logo {
             position: absolute;
@@ -207,6 +208,9 @@
         .reward-image-container .background-image {
             z-index: 1;
             max-height: 100%;
+            top:0;
+            left:0;
+            transform-origin: center center;
         }
         .reward-image-container .foreground-image {
             max-width: 120px;
@@ -237,6 +241,7 @@
         }
 
         .spin {
+            transform-origin: center center;
             animation: spin 7s linear infinite;
         }
         .reward-button{
@@ -331,7 +336,7 @@
                                             <h1 class="bold-header mb-2 mt-4">Congrats!</h1>
                                             <p class="reward-body">You get a reward from <br/> <b style="font-weight: 800;" id="brandNameOutput"></b></p>
                                             <div class="reward-image-container">
-                                                <img src="https://cdn.monetizr.com/not/Rotating-star_2.png" class="background-image" alt="star">
+                                                <img src="https://cdn.monetizr.com/not/Rotating-star_2.png" class="background-image spin" alt="star">
                                                 <img src="https://cdn.monetizr.com/not/mockup_pulsing_reward.png" class="foreground-image" alt="Logo">
                                             </div>
                                             <div class="reward-button mb-2">
