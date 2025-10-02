@@ -515,7 +515,7 @@
                     // Create a list of clickable links from the returned URLs
                     let urlListHtml = '<h5>✅ Success! Your campaign has been submitted. We’ll review it and get back to you shortly.</h5>';
                     responseDiv.innerHTML = urlListHtml;
-                    submitButton.hide();
+                    submitButton.style.display='none';
                 } else {
                     responseDiv.innerHTML = `<p class="error">Error: ${result.error}</p>`;
                 }
