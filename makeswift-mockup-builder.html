@@ -268,7 +268,13 @@
                         <form id="uploadForm" enctype="multipart/form-data">
                             <!-- Logo file-->
                             <div class="mb-3">
-                                <label for="imageFile" class="form-label">Logo (JPG/PNG):</label>
+                                <label for="imageFile" class="form-label">
+                                    Logo (JPG/PNG):<br>
+                                    <span style="color: #757575;">
+                                        🚫 Use only a square logo on a plain background.<br>
+                                        Avoid transparent PNGs or irregular shapes.
+                                    </span>
+                                </label>
                                 <input class="form-control" type="file" id="imageFile" name="imageFile" accept=".jpg,.jpeg,.png" required>
                             </div>
 
