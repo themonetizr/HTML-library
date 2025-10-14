@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Audience Packages — Final Version</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:#f7fbfd;color:#0f1720}
+    .container{max-width:1100px;margin:32px auto;padding:20px}
+
+    header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}
+    h1{margin:0;font-size:1.4rem}p.lead{margin:4px 0 0;color:#475569;font-size:0.95rem}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px}
+    .card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 6px 18px rgba(15,23,32,0.04);display:flex;flex-direction:column;gap:10px}
+    .card h2{margin:0;font-size:1.05rem}.card p.desc{margin:0;color:#475569}
+    .btn{padding:8px 12px;border-radius:10px;border:1px solid rgba(15,23,32,0.06);background:transparent;cursor:pointer}
+    .btn.primary{background:#0b5fff;color:white;border:0;font-weight:600}
+
+    #customizeSection,#contactSection{display:none;background:#fff;border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.08)}
+    #customizeHeader,#contactHeader{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+    #customizeHeader h2,#contactHeader h2{margin:0;font-size:1.15rem}
+    .form-row{margin-bottom:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    label.small{font-size:0.85rem;color:#475569;min-width:140px}
+    select,input[type="number"],input[type="email"],input[type="text"]{padding:8px;border-radius:8px;border:1px solid #e6eefc;min-width:220px;background:#fff}
+
+    /* slider */
+    input[type="range"]{width:220px}
+
+    /* SVG Chart container */
+    .chart-wrapper{margin:20px 0;border:1px solid #eee;padding:10px;border-radius:10px;background:#fafcff;text-align:center}
+    .chart-wrapper svg{width:100%;max-width:400px;height:150px}
+
+    .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+
+    @media (max-width:560px){
+      header{flex-direction:column;align-items:flex-start}
+      label.small{min-width:120px}
+      select,input[type="number"],input[type="email"],input[type="text"],input[type="range"]{min-width:160px}
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div>
+      <h1>Select an Audience Package</h1>
+      <p class="lead">First-party data packages — choose and customize</p>
+    </div>
+    <button id="createCustomBtn" class="btn primary">+ Create Custom Audience</button>
+  </header>
+
+  <!-- Package Cards -->
+  <section id="packagesView">
+    <div class="grid" id="packagesGrid"></div>
+  </section>
+
+  <!-- Customize Form -->
+  <section id="customizeSection" aria-hidden="true">
+    <div id="customizeHeader">
+      <h2 id="customizeTitle">Customize Audience</h2>
+      <button id="returnBtn" class="btn">← Return to Packages</button>
+    </div>
+
+    <form id="customizeForm" autocomplete="off">
+      <input type="hidden" id="inputPackage" name="package">
+
+      <div class="form-row">
+        <label class="small">Audience Package</label>
+        <select id="selectPackage" name="package_select">
+          <option value="sports_fans">Sports Fans</option>
+          <option value="luxury_shoppers">Luxury Shoppers</option>
+          <option value="travel_seekers">Travel Seekers</option>
+          <option value="parents_with_toddlers">Parents with Toddlers</option>
+          <option value="gamers">Gamers</option>
+          <option value="custom">Custom Audience</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label class="small">Geo (Countries)</label>
+        <select id="selectGeo" name="countries" multiple size="4">
+          <option value="tier1">Tier 1</option>
+          <option value="tier2">Tier 2</option>
+          <option value="tier3">Tier 3</option>
+          <option value="row">ROW</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label class="small">Age Range</label>
+        <input type="range" id="ageRange" min="18" max="65" value="65" />
+        <span id="ageValue">65</span> years
+      </div>
+
+      <div class="form-row">
+        <label class="small">Preferred DSP</label>
+        <select id="preferredDSP" name="preferred_dsp">
+          <option>Google DV360</option>
+          <option>Amazon</option>
+          <option>Taboola</option>
+          <option>PubMatic</option>
+          <option>Roku</option>
+        </select>
+      </div>
+
+      <!-- Chart visualization -->
+      <div class="chart-wrapper">
+        <svg id="audienceChart" viewBox="0 0 400 150">
+          <polyline
+            fill="none" stroke="#0b5fff" stroke-width="3"
+            points="0,100 100,80 200,70 300,90 400,60" />
+        </svg>
+        <div>Estimated Reach: <strong id="audienceValue">2.4M</strong></div>
+      </div>
+
+      <div class="form-row">
+        <label class="small">Budget (€)</label>
+        <input type="number" placeholder="e.g. 100" min="0" />
+      </div>
+
+      <div class="actions">
+        <button type="button" id="cancelCustomize" class="btn">Cancel</button>
+        <button type="submit" class="btn primary">Next</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Contact Form -->
+  <section id="contactSection" aria-hidden="true">
+    <div id="contactHeader">
+      <h2>Contact Information</h2>
+      <button id="returnToCustomize" class="btn">← Back</button>
+    </div>
+
+    <form id="contactForm">
+      <div class="form-row">
+        <label class="small">First Name</label>
+        <input type="text" name="first_name" required>
+      </div>
+      <div class="form-row">
+        <label class="small">Last Name</label>
+        <input type="text" name="last_name" required>
+      </div>
+      <div class="form-row">
+        <label class="small">Company</label>
+        <input type="text" name="company" required>
+      </div>
+      <div class="form-row">
+        <label class="small">Contact Email</label>
+        <input type="email" name="email" required>
+      </div>
+
+      <div class="actions">
+        <button type="button" id="cancelContact" class="btn">Cancel</button>
+        <button type="submit" class="btn primary">Submit</button>
+      </div>
+    </form>
+  </section>
+</div>
+
+<script>
+const packages = [
+  { id: 'sports_fans', title: 'Sports Fans', desc: 'Live viewers, fantasy league players' },
+  { id: 'luxury_shoppers', title: 'Luxury Shoppers', desc: 'High-income users browsing premium brands' },
+  { id: 'travel_seekers', title: 'Travel Seekers', desc: 'Users planning holidays or browsing airlines' },
+  { id: 'parents_with_toddlers', title: 'Parents with Toddlers', desc: 'Browsing parenting content' },
+  { id: 'gamers', title: 'Gamers', desc: 'Console and mobile gamers' }
+];
+
+const grid = document.getElementById('packagesGrid');
+function renderCards(){
+  grid.innerHTML = '';
+  packages.forEach(pkg=>{
+    const card=document.createElement('article');
+    card.className='card';
+    card.innerHTML = `
+      <h2>${pkg.title}</h2>
+      <p class="desc">${pkg.desc}</p>
+      <div><button class="btn customizeBtn">Customize this Package</button></div>`;
+    card.querySelector('.customizeBtn').addEventListener('click',()=>openCustomize(pkg));
+    grid.appendChild(card);
+  });
+}
+renderCards();
+
+// Sections
+const packagesView=document.getElementById('packagesView');
+const customizeSection=document.getElementById('customizeSection');
+const contactSection=document.getElementById('contactSection');
+
+function openCustomize(pkg){
+  document.getElementById('customizeTitle').textContent = 'Customize: ' + pkg.title;
+  document.getElementById('inputPackage').value = pkg.id;
+  packagesView.style.display='none';
+  customizeSection.style.display='block';
+}
+function backToPackages(){
+  customizeSection.style.display='none';
+  contactSection.style.display='none';
+  packagesView.style.display='block';
+}
+document.getElementById('returnBtn').onclick = backToPackages;
+document.getElementById('cancelCustomize').onclick = backToPackages;
+
+// Step 2: show contact form
+document.getElementById('customizeForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  customizeSection.style.display='none';
+  contactSection.style.display='block';
+});
+document.getElementById('returnToCustomize').onclick = ()=>{
+  contactSection.style.display='none';
+  customizeSection.style.display='block';
+};
+document.getElementById('cancelContact').onclick = backToPackages;
+
+document.getElementById('contactForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  console.log('Contact form submitted', Object.fromEntries(formData.entries()));
+  alert('Contact info submitted successfully (simulated).');
+  backToPackages();
+});
+
+// ===== Chart simulation =====
+const chart=document.getElementById('audienceChart').querySelector('polyline');
+const audienceValue=document.getElementById('audienceValue');
+const ageSlider=document.getElementById('ageRange');
+const ageValue=document.getElementById('ageValue');
+const maxAudience = 24.5;
+
+function randomPoints(factor){
+  const base = 100 - factor*2;
+  return `0,${base+20} 100,${base+10} 200,${base} 300,${base+15} 400,${base-10}`;
+}
+function updateChart(){
+  const countries = Array.from(document.getElementById('selectGeo').selectedOptions).length || 1;
+  const age = parseInt(ageSlider.value);
+  const ageFactor = (age - 18) / (65 - 18); // 0..1
+  // simulate size
+  let reach = countries * (ageFactor * maxAudience / 4);
+  if (reach > maxAudience) reach = maxAudience;
+
+  chart.setAttribute('points', randomPoints(reach));
+  audienceValue.textContent = reach.toFixed(1) + 'M';
+}
+document.getElementById('selectGeo').addEventListener('change', updateChart);
+ageSlider.addEventListener('input', ()=>{
+  ageValue.textContent = ageSlider.value;
+  updateChart();
+});
+document.getElementById('createCustomBtn').addEventListener('click',()=>{
+  openCustomize({id:'custom',title:'Custom Audience'});
+});
+</script>
+</body>
+</html>
