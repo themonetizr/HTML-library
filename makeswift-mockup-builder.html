@@ -268,7 +268,13 @@
                         <form id="uploadForm" enctype="multipart/form-data">
                             <!-- Logo file-->
                             <div class="mb-3">
-                                <label for="imageFile" class="form-label">Logo (JPG/PNG):</label>
+                                <label for="imageFile" class="form-label">
+                                    Logo (JPG/PNG):<br>
+                                    <span style="color: #757575;">
+                                        🚫 Use only a square logo on a plain background.<br>
+                                        Avoid transparent PNGs or irregular shapes.
+                                    </span>
+                                </label>
                                 <input class="form-control" type="file" id="imageFile" name="imageFile" accept=".jpg,.jpeg,.png" required>
                             </div>
 
@@ -328,7 +334,7 @@
                                     <div class="modal-content" id="brandColorOutput">
                                         <div class="modal-header">
                                             <img id="modalHeaderLogo" src="" alt="Logo" class="modal-logo">
-                                            <button type="button" id="closeModal" class="close" data-dismiss="modal" aria-label="Close">
+                                            <button type="button" id="closeModal" class="close" data-dismiss="modal" aria-label="Close" style="position:absolute; top:-18px; right: -10px;">
                                                 <img src="https://cdn.monetizr.com/not/close.png" alt="Close" style="width:40px; height:40px;">
                                             </button>
                                         </div>
@@ -348,9 +354,9 @@
                             </div>
                         </div>
                         <div id="reviewData"></div>
+                        <div id="response" class="mt-4" style="width: 480px;"></div>
                             <button type="submit" id="submitButton" class="btn btn-primary w-100 mt-2">Submit campaign</button>
                             <button id="backBtn" class="btn btn-secondary w-100 mt-2">Back</button>
-                        <div id="response" class="mt-4"></div>
                     </div>
                 </div>
             </div>
@@ -513,8 +519,9 @@
 
                 if (response.ok) {
                     // Create a list of clickable links from the returned URLs
-                    let urlListHtml = '<h4>✅ Success! Files sent!</h4>';
+                    let urlListHtml = '<h5>✅ Success! Your campaign has been submitted. We’ll review it and get back to you shortly.</h5>';
                     responseDiv.innerHTML = urlListHtml;
+                    submitButton.style.display='none';
                 } else {
                     responseDiv.innerHTML = `<p class="error">Error: ${result.error}</p>`;
                 }
