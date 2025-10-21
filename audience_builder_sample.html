@@ -38,6 +38,15 @@
       label.small{min-width:120px}
       select,input[type="number"],input[type="email"],input[type="text"],input[type="range"]{min-width:160px}
     }
+    .error{
+        color: #f00;
+        font-size: 1.4rem;
+        font-weight: 600;
+    }
+    .successMsg{
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -89,7 +98,7 @@
 
       <div class="form-row">
         <label class="small">Age Range</label>
-        <input type="range" id="ageRange" min="18" max="65" value="65" />
+        <input type="range" id="ageRange" min="0" max="65" value="65" />
         <span id="ageValue">65</span> years
       </div>
 
@@ -115,8 +124,8 @@
       </div>
 
       <div class="form-row">
-        <label class="small">Budget (€)</label>
-        <input type="number" placeholder="e.g. 100" min="0" />
+        <label class="small">Budget ($)</label>
+        <input type="number" id="budget" placeholder="e.g. 1000" min="0" />
       </div>
 
       <div class="actions">
@@ -128,6 +137,7 @@
 
   <!-- Contact Form -->
   <section id="contactSection" aria-hidden="true">
+    <div id="response" class="mt-4" style="width: 480px;"></div>
     <div id="contactHeader">
       <h2>Contact Information</h2>
       <button id="returnToCustomize" class="btn">← Back</button>
@@ -153,7 +163,7 @@
 
       <div class="actions">
         <button type="button" id="cancelContact" class="btn">Cancel</button>
-        <button type="submit" class="btn primary">Submit</button>
+        <button type="button" id="submitButton" class="btn primary">Submit</button>
       </div>
     </form>
   </section>
@@ -188,6 +198,7 @@ renderCards();
 const packagesView=document.getElementById('packagesView');
 const customizeSection=document.getElementById('customizeSection');
 const contactSection=document.getElementById('contactSection');
+const responseDiv = document.getElementById('response');
 
 function openCustomize(pkg){
   document.getElementById('customizeTitle').textContent = 'Customize: ' + pkg.title;
@@ -215,12 +226,45 @@ document.getElementById('returnToCustomize').onclick = ()=>{
 };
 document.getElementById('cancelContact').onclick = backToPackages;
 
-document.getElementById('contactForm').addEventListener('submit',e=>{
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  console.log('Contact form submitted', Object.fromEntries(formData.entries()));
-  alert('Contact info submitted successfully (simulated).');
-  backToPackages();
+document.getElementById('submitButton').addEventListener('click', async (event) =>{
+    event.preventDefault();
+    let form = document.getElementById("contactForm");
+    const formData = new FormData(form);
+    formData.append('audience_package', document.getElementById('inputPackage').value);
+    formData.append('preferred_dsp', document.getElementById('preferredDSP').value);
+    formData.append('age_range', document.getElementById('ageRange').value);
+    const selectedCountries = Array.from(document.getElementById('selectGeo').selectedOptions).map(option => option.value);
+    formData.append('geo_countries', selectedCountries.join(','));
+    formData.append('budget', document.getElementById('budget').value);
+
+    responseDiv.innerHTML = '<div class="text-secondary">Submitting...</div>';
+    try {
+        const response = await fetch("https://audience-builder-connect-1074977689117.us-central1.run.app", {
+            method: 'POST',
+            body: formData,
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            document.getElementById('submitButton').disabled = true;
+            // Send out email to monetizr
+            let responseMsg = '<p class="successMsg">✅ Success! Your audience has been submitted. We’ll review it and get back to you shortly.</p>';
+            responseDiv.innerHTML = responseMsg;
+        } else {
+            responseDiv.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+        }
+
+    } catch (error) {
+        responseDiv.innerHTML = `<p class="error">A network error occurred: ${error.message}</p>`;
+    } finally {
+        setTimeout(() => {
+            form.reset();
+            backToPackages();
+            responseDiv.innerHTML = '';
+            document.getElementById('submitButton').disabled = false;
+        }, 5000); // Clear message after 5 seconds
+    }
 });
 
 // ===== Chart simulation =====
