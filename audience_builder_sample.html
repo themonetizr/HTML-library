@@ -297,6 +297,17 @@ ageSlider.addEventListener('input', ()=>{
 document.getElementById('createCustomBtn').addEventListener('click',()=>{
   openCustomize({id:'custom',title:'Custom Audience'});
 });
+
+// ===== Handle ?contact= query parameter =====
+const params = new URLSearchParams(window.location.search);
+const contactEmail = params.get('contact');
+
+if (contactEmail) {
+  const emailRow = document.querySelector('#contactForm input[name="email"]').closest('.form-row');
+  const emailInput = document.querySelector('#contactForm input[name="email"]');
+  emailInput.value = contactEmail;
+  emailRow.style.display = 'none';
+}
 </script>
 </body>
 </html>
