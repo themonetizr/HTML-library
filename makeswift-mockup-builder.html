@@ -392,6 +392,15 @@
         let brandColor = '';
         let textColor = '';
 
+        // Handle contact query parameter
+        const params = new URLSearchParams(window.location.search);
+        const contactParam = params.get('contact');
+        if (contactParam) {
+            contactEmailInput.value = contactParam;
+            contactEmailInput.closest('.mb-3').style.display = 'none'; // hide the entire field block
+            contactEmailInput.required = false;
+        }
+
         nextBtn.addEventListener('click', () => {
             // Validate form inputs
             if (imageInput.files.length === 0) {
