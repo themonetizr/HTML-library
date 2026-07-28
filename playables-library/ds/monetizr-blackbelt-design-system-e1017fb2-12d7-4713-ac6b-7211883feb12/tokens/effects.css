@@ -1,0 +1,32 @@
+/* Monetizr Blackbelt — radii, borders, shadows, motion */
+
+:root {
+  /* corner radii — lifted from source */
+  --radius-sm: 6px;      /* tag */
+  --radius-md: 8px;      /* buttons */
+  --radius-lg: 10px;     /* brand-logo badge, mock-tool, table */
+  --radius-xl: 12px;     /* card, dropdown-menu */
+  --radius-2xl: 14px;    /* panel, brand-logo (large) */
+  --radius-phone: 34px;  /* phone frame (iPhone 16 outer bezel) */
+  --radius-pill: 100px;  /* dropdown trigger */
+  --radius-full: 50%;    /* logo mark */
+
+  /* borders */
+  --border-hairline: 1px solid var(--border);
+  --border-btn: 1.5px solid var(--border);
+  --border-dashed: 1.5px dashed var(--border);
+
+  /* shadows */
+  --shadow-dropdown: 0 16px 32px rgba(0,0,0,0.4);
+  --shadow-phone: 0 12px 30px rgba(0,0,0,0.35);
+  --shadow-btn-hover: 0 8px 22px rgba(254,201,2,0.35);
+  --shadow-btn-press: 0 2px 8px rgba(254,201,2,0.25);
+
+  /* motion — one language: ease-out, under 200ms, real press feedback */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);  /* @kind other */
+  --dur-fast: 120ms;   /* @kind other */
+  --dur-base: 160ms;   /* @kind other */
+  --dur-slow: 200ms;   /* @kind other */
+  --press-scale: 0.97; /* @kind other */
+  --lift: -2px;        /* @kind other */
+}

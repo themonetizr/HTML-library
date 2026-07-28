@@ -1,0 +1,41 @@
+/* Monetizr Blackbelt — typography tokens
+   One family: Lato, from black (900) display weight down to light (300).
+   Loaded from Google Fonts (see the @import in styles.css / fonts.css). */
+
+:root {
+  --font-sans: 'Lato', -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace; /* mock-tool placeholders only */
+
+  /* weights */
+  --fw-light: 300;    /* @kind font */
+  --fw-regular: 400;  /* @kind font */
+  --fw-bold: 700;     /* @kind font */
+  --fw-black: 900;    /* @kind font */
+
+  /* type scale — px values lifted verbatim from the source */
+  --fs-display: 38px;   /* h1 hero — black, -0.02em, line-height 1.12 */
+  --fs-stat-hero: 52px; /* single proof-stat number — black, gold, squint-test focal point */
+  --fs-h2: 20px;        /* section heading — bold */
+  --fs-h3: 19px;        /* card / panel title — bold */
+  --fs-hook: 19px;      /* belief-gap question line — bold */
+  --fs-lede: 16.5px;    /* hero supporting sentence */
+  --fs-stat: 24px;      /* stat number — black, gold */
+  --fs-body: 14.5px;
+  --fs-sm: 13.5px;
+  --fs-xs: 12px;        /* eyebrow / kicker — bold, uppercase, 0.12em */
+  --fs-2xs: 11px;       /* tag */
+
+  /* line heights */
+  --lh-display: 1.12;  /* @kind font */
+  --lh-tight: 1.35;    /* @kind font */
+  --lh-body: 1.6;      /* @kind font */
+
+  /* tracking */
+  --tracking-display: -0.02em;
+  --tracking-tight: -0.01em;
+  --tracking-eyebrow: 0.12em;
+  --tracking-caps: 0.08em;
+
+  /* semantic */
+  --text-body: var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-sans);
+}

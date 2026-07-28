@@ -1,0 +1,7 @@
+/* Monetizr Blackbelt — webfonts (external CDN)
+   Lato is the entire type system (loaded from Google Fonts).
+   ICONS are NOT a webfont: they are self-hosted inline SVGs in assets/icons.js
+   (a curated Lucide subset), so iconography survives even if a CDN is down.
+   Load assets/icons.js once per page; write icons as <i class="licon icon-<name>">. */
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,400&display=swap');

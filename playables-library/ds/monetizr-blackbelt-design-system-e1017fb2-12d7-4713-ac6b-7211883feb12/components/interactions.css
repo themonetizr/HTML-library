@@ -1,0 +1,103 @@
+/* Monetizr Blackbelt — interaction states for components.
+   Components set their base appearance with inline styles + tokens; this file
+   supplies only :hover / :active / :focus, which inline styles can't express.
+   One motion language: ease-out, <200ms, real press feedback, reduced-motion safe. */
+
+/* ---- Button ---- */
+@media (hover:hover) and (pointer:fine) {
+  .mtz-btn--primary:not([disabled]):hover {
+    background: var(--accent-hover) !important;
+    transform: translateY(var(--lift));
+    box-shadow: var(--shadow-btn-hover) !important;
+  }
+  .mtz-btn--secondary:not([disabled]):hover {
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+    transform: translateY(var(--lift));
+  }
+}
+.mtz-btn--primary:not([disabled]):active {
+  transform: scale(var(--press-scale));
+  box-shadow: var(--shadow-btn-press) !important;
+  transition: transform 100ms var(--ease-out);
+}
+.mtz-btn--secondary:not([disabled]):active {
+  transform: scale(var(--press-scale));
+  transition: transform 100ms var(--ease-out);
+}
+
+/* ---- ArrowLink ---- */
+.mtz-arrow-link .mtz-arrow { display: inline-block; transition: transform 180ms var(--ease-out); }
+.mtz-arrow-link:hover { color: var(--accent-hover) !important; }
+.mtz-arrow-link:hover .mtz-arrow { transform: translateX(3px); }
+
+/* ---- Card ---- */
+@media (hover:hover) and (pointer:fine) {
+  .mtz-card:hover { border-color: var(--border-hover) !important; transform: translateY(var(--lift)); }
+}
+.mtz-card .mtz-view-link .mtz-arrow { display: inline-block; transition: transform 180ms var(--ease-out); }
+.mtz-card:hover .mtz-view-link { color: var(--accent) !important; }
+.mtz-card:hover .mtz-view-link .mtz-arrow { transform: translateX(3px); }
+
+/* ---- Dropdown ---- */
+@media (hover:hover) and (pointer:fine) {
+  .mtz-dropdown-trigger:hover { border-color: var(--accent) !important; transform: translateY(-1px); }
+}
+.mtz-dropdown-trigger:active { transform: scale(var(--press-scale)); }
+/* Form-field variant of the dropdown: static press — only the hairline goes gold, no scale/lift. */
+.mtz-dropdown-trigger--field:hover { transform: none !important; }
+.mtz-dropdown-trigger--field:active { transform: none !important; }
+.mtz-dropdown-option:hover { background: var(--surface-hover) !important; color: var(--text) !important; }
+
+/* Menu enter/exit — stays mounted; the .open class on the wrapper drives it.
+   opacity + a 4px rise & 2% scale from the top-left origin; visibility is
+   transitioned too so the closed menu is fully inert (no tab-stops, no clicks). */
+.mtz-dropdown-menu {
+  transform-origin: top left;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-4px) scale(0.98);
+  transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out), visibility 180ms;
+}
+.mtz-dropdown.open .mtz-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+.mtz-dropdown-option.sel { color: var(--accent) !important; }
+
+/* ---- Focus ring (keyboard only) — the gold ring is the one focus signal everywhere ---- */
+.mtz-btn--primary:focus-visible,
+.mtz-btn--secondary:focus-visible,
+.mtz-arrow-link:focus-visible,
+.mtz-dropdown-trigger:focus-visible,
+.mtz-dropdown-option:focus-visible,
+.mtz-card:focus-visible,
+.mtz-secondary-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---- PhoneFrame ---- */
+@media (hover:hover) and (pointer:fine) {
+  .mtz-phone-frame:hover { transform: translateY(-3px); }
+}
+
+/* ---- Panel secondary link ---- */
+.mtz-secondary-link .mtz-arrow { display: inline-block; transition: transform 180ms var(--ease-out); }
+.mtz-secondary-link:hover { color: var(--accent) !important; }
+.mtz-secondary-link:hover .mtz-arrow { transform: translateX(3px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mtz-btn--primary, .mtz-btn--secondary, .mtz-card, .mtz-phone-frame,
+  .mtz-dropdown-trigger, .mtz-arrow, .mtz-arrow-link .mtz-arrow {
+    transition: background 160ms ease, color 160ms ease, border-color 160ms ease !important;
+    transform: none !important;
+  }
+  /* menu still appears/disappears — just without the slide/scale */
+  .mtz-dropdown-menu { transition: opacity 160ms ease, visibility 160ms ease !important; transform: none !important; }
+  .mtz-dropdown.open .mtz-dropdown-menu { transform: none !important; }
+}

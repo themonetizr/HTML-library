@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/tokens/fonts.css">
+  <link rel="stylesheet" href="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/tokens/colors.css">
+  <link rel="stylesheet" href="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/tokens/typography.css">
+  <link rel="stylesheet" href="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/tokens/spacing.css">
+  <link rel="stylesheet" href="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/tokens/effects.css">
+  <link rel="stylesheet" href="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/tokens/base.css">
+  <link rel="stylesheet" href="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/components/interactions.css">
+  <link rel="stylesheet" href="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/styles.css">
+  <script src="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/_ds_bundle.js"></script>
+  <style>
+    html { scroll-behavior: smooth; scroll-snap-type: y proximity; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-sans); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
+    @keyframes mtzHint { 0%,100% { transform: translateY(0); opacity: .5 } 50% { transform: translateY(5px); opacity: 1 } }
+  </style>
+</helmet>
+
+<div style="min-height: 100vh; background: var(--bg)">
+
+  <header style="position: sticky; top: 0; z-index: 20; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 28px; background: var(--bg); border-bottom: 1px solid var(--border-hairline)">
+    <div style="display: flex; align-items: center; gap: 18px">
+      <img src="assets/logo-horizontal-white.png" alt="Monetizr" style="height: 32px; width: auto; display: block">
+      <span style="width: 1px; height: 28px; background: var(--border-strong)"></span>
+      <x-import component-from-global-scope="MonetizrBlackbeltDesignSystem_e1017f.Eyebrow" from="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/_ds_bundle.js" hint-size="auto,16px">Playables library</x-import>
+    </div>
+    <a href="#request" style="display: flex; align-items: center; gap: 12px; padding: 7px 7px 7px 16px; border: 1px solid var(--border); border-radius: 100px; font-size: 13px; font-weight: 700; color: var(--text)" style-hover="border-color: var(--border-hover)">
+      <span>{{ countLabel }}</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 13px; background: var(--accent-soft); border: 1px solid var(--line-gold); border-radius: 100px; color: var(--accent); font-weight: 900">Review request →</span>
+    </a>
+  </header>
+
+  <a href="#request" data-jump="1" aria-label="Jump to your request" title="Jump to your request" style="position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 30; display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; background: var(--accent); border-radius: 100px; box-shadow: 0 10px 24px rgba(0,0,0,.45); color: var(--on-accent); opacity: {{ jumpOpacity }}; pointer-events: {{ jumpEvents }}; transition: opacity 200ms var(--ease-out), transform 160ms var(--ease-out), background 160ms var(--ease-out)" style-hover="background: var(--accent-hover); transform: translateX(-50%) translateY(-2px)" style-active="transform: translateX(-50%) scale(0.94)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"></path></svg>
+  </a>
+
+  <sc-for list="{{ items }}" as="item" hint-placeholder-count="3">
+    <section style="min-height: calc(100vh - 64px); scroll-snap-align: start; display: grid; grid-template-columns: 1.05fr 0.95fr; align-items: center; gap: 72px; max-width: 1060px; margin: 0 auto; padding: 72px 28px 88px; box-sizing: border-box; border-bottom: 1px solid var(--border-hairline)">
+
+      <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 20px; max-width: 460px">
+        <div style="display: flex; align-items: center; gap: 12px">
+          <x-import component-from-global-scope="MonetizrBlackbeltDesignSystem_e1017f.Eyebrow" from="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/_ds_bundle.js" hint-size="auto,16px">{{ item.index }}</x-import>
+          <x-import component-from-global-scope="MonetizrBlackbeltDesignSystem_e1017f.Tag" from="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/_ds_bundle.js" hint-size="auto,26px">{{ item.category }}</x-import>
+        </div>
+
+        <h2 style="margin: 0; font-size: 46px; line-height: 1.05; font-weight: 900; letter-spacing: -0.02em; color: var(--text); text-wrap: pretty">{{ item.name }}</h2>
+
+        <p style="margin: 0; font-size: 16.5px; line-height: 1.55; color: var(--muted); text-wrap: pretty">{{ item.mechanic }}</p>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 8px">
+          <button type="button" onClick="{{ item.toggle }}" aria-pressed="{{ item.checked }}" style="display: flex; align-items: center; gap: 14px; padding: 14px 22px 14px 16px; min-height: 48px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-family: var(--font-sans); font-size: 14.5px; font-weight: 700; color: var(--text); transition: transform 160ms var(--ease-out), border-color 160ms var(--ease-out), background 160ms var(--ease-out)" style-hover="border-color: var(--border-hover); transform: translateY(-2px)" style-active="transform: scale(0.97)">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 6px; border: 1px solid {{ item.boxBorder }}; background: {{ item.boxBg }}">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--on-accent)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: {{ item.tickOpacity }}"><path d="M20 6 9 17l-5-5"></path></svg>
+            </span>
+            <span>{{ item.actionLabel }}</span>
+          </button>
+          <span style="font-size: 13px; color: var(--faint)">Your picks collect at the end of the page.</span>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: center">
+        <div style="width: 270px; position: relative">
+          <x-import component-from-global-scope="MonetizrBlackbeltDesignSystem_e1017f.PhoneFrame" from="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/_ds_bundle.js" hint-size="270px,580px">
+            <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 24px; text-align: center; background: linear-gradient(160deg, var(--surface), var(--surface-recessed))">
+              <x-import component-from-global-scope="MonetizrBlackbeltDesignSystem_e1017f.Eyebrow" from="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/_ds_bundle.js" hint-size="auto,16px">Preview</x-import>
+              <span style="font-size: 13px; line-height: 1.5; color: var(--faint)">{{ item.videoNote }}</span>
+            </div>
+            <video data-pf="1" data-src="{{ item.video }}" muted="{{ true }}" loop="{{ true }}" playsInline="{{ true }}" preload="none" onError="{{ hideVideo }}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></video>
+          </x-import>
+        </div>
+      </div>
+
+    </section>
+  </sc-for>
+
+  <section id="request" style="scroll-snap-align: start; max-width: 900px; margin: 0 auto; padding: 96px 28px 120px">
+    <x-import component-from-global-scope="MonetizrBlackbeltDesignSystem_e1017f.Eyebrow" from="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/_ds_bundle.js" hint-size="auto,16px">Your request</x-import>
+    <h2 style="margin: 14px 0 0; font-size: 38px; line-height: 1.1; font-weight: 900; letter-spacing: -0.02em; color: var(--text)">Which formats should we build for you?</h2>
+    <p style="margin: 14px 0 0; font-size: 16.5px; line-height: 1.55; color: var(--muted); max-width: 620px">Your picks are listed below. Send them over and we reply with timings and the creative we need from you.</p>
+    <p style="margin: 18px 0 0; font-size: 16.5px; line-height: 1.55; color: var(--faint); max-width: 620px"><span style="font-weight: 900; color: var(--accent)">NOTE: </span>Each preview is one build of the format. Templates differ in how far we can take them: some let you change layout and art direction freely, others hold their structure. Asset requirements and technical limits vary the same way. We confirm both for whatever you pick.</p>
+
+    <div style="margin-top: 40px; padding: 26px; background: var(--surface); border: 1px solid var(--border-hairline); border-radius: 14px">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding-bottom: 6px; border-bottom: 1px solid var(--border-hairline)">
+        <span style="font-size: 19px; font-weight: 700; line-height: 1; color: var(--text)">Picked formats</span>
+        <span style="font-size: 24px; font-weight: 900; line-height: 1; color: var(--accent)">{{ pickedCount }}</span>
+      </div>
+
+      <sc-if value="{{ hasPicked }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; padding: 20px 0 4px">
+          <sc-for list="{{ picked }}" as="pick" hint-placeholder-count="3">
+            <x-import component-from-global-scope="MonetizrBlackbeltDesignSystem_e1017f.Tag" from="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/_ds_bundle.js" tone="gold" on-remove="{{ pick.remove }}" hint-size="auto,28px">{{ pick.name }}</x-import>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+        <p style="margin: 7px 0 0; font-size: 14.5px; color: var(--faint)">Nothing picked yet. Scroll back up and tick the formats you want.</p>
+      </sc-if>
+
+      <div style="display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 16px; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border-hairline)">
+        <x-import component-from-global-scope="MonetizrBlackbeltDesignSystem_e1017f.EmailInput" from="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/_ds_bundle.js" label="Work email" placeholder="you@brand.com" value="{{ email }}" on-change="{{ setEmail }}" hint-size="100%,74px"></x-import>
+        <div>
+          <x-import component-from-global-scope="MonetizrBlackbeltDesignSystem_e1017f.Button" from="ds/monetizr-blackbelt-design-system-e1017fb2-12d7-4713-ac6b-7211883feb12/_ds_bundle.js" disabled="{{ requestDisabled }}" onClick="{{ submit }}" hint-size="auto,50px">{{ requestLabel }}</x-import>
+        </div>
+      </div>
+
+      <sc-if value="{{ submitted }}" hint-placeholder-val="{{ false }}">
+        <p style="margin: 20px 0 0; font-size: 14.5px; color: var(--text)">Your mail app should be open with {{ pickedCount }} formats listed, addressed to martins@monetizr.com and connect@monetizr.com. Hit send and we reply within one working day.</p>
+      </sc-if>
+    </div>
+
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;ctaLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Request these formats&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const CATALOG = [
+  ["Wordle", "Word", "Guess the hidden word letter by letter. You choose the word."],
+  ["Prediction", "Choice", "Two outcomes, one tap: the player calls it before the reveal."],
+  ["Shoot", "Sports", "Swipe to aim, then shoot at the target."],
+  ["Case Opening", "Reveal", "Pick a case, open it, see the offer inside."],
+  ["Sticky Jigsaw", "Puzzle", "Drag pieces onto the board to rebuild the hero image."],
+  ["10 Seconds", "Timed", "Ten seconds on the clock to finish the task."],
+  ["Shape Snap", "Reflex", "Match the falling shape to its slot before it lands."],
+  ["Whack-A-Mole", "Reflex", "Tap targets as they pop up, and they come faster every round."],
+  ["Tile Pop", "Match", "Clear the board by tapping matching tiles."],
+  ["Video Endcard", "Video", "Your existing video runs, then an interactive endcard takes over."],
+  ["Runner", "Arcade", "Endless run: dodge, collect, keep going."],
+  ["Shoot To Win", "Sports", "Aim, shoot, and unlock the reward on a hit."],
+  ["Tap To Win", "Timed", "Tap as many times as you can before the timer ends."],
+  ["3D Spin", "Spin", "Spin a dimensional wheel to land a prize."],
+  ["Multilayer Spin", "Spin", "Two wheels, two spins, one combined result."],
+  ["Pinata", "Tap", "Hit the piñata until the prizes fall out."],
+  ["Simple Slot Machine", "Spin", "One pull; three reels decide the offer."],
+  ["Tic-Tac-Toe", "Board", "Three in a row against the brand."],
+  ["Scratch and Win", "Reveal", "Scratch the surface to uncover what is underneath."],
+  ["Delivery", "Arcade", "Get the parcel down the route without dropping it."],
+  ["Basketball", "Sports", "Swipe to shoot hoops against a shot clock."],
+  ["Endcard AI", "Video", "AI builds an interactive endcard out of your existing creative."],
+  ["Bounce", "Arcade", "Keep the ball alive off the paddle."],
+  ["Chest", "Reveal", "Choose a chest, open it, keep what is inside."],
+  ["Jigsaw", "Puzzle", "Assemble the product shot from scattered pieces."],
+  ["Hotspot", "Explore", "Tap the marked points on the scene to open detail."],
+  ["Choices", "Choice", "Pick at every step and build your own result."],
+  ["Claw", "Arcade", "Time the claw drop to grab the prize."],
+  ["Memory", "Match", "Flip cards and remember where the pairs sit."],
+  ["Slot", "Spin", "One-armed bandit: spin for the reward."],
+  ["Shelf Order", "Sorting", "Drag products onto the shelf in the right order."],
+  ["Connect", "Puzzle", "Draw a line to connect the matching items."],
+  ["Image Slider", "Compare", "Drag the handle to compare before and after."],
+  ["Jump", "Arcade", "Tap to jump from platform to platform."],
+  ["Spin", "Spin", "One wheel, one spin, one prize."],
+  ["Game Night", "Prediction", "Pick the winning side before kickoff."],
+  ["Score", "Sports", "Take the shot and keep the score climbing."],
+  ["Catcher", "Reflex", "Move to catch what falls. Miss and you are out."],
+  ["Break Glass", "Tap", "Tap repeatedly to shatter the glass and reach the product."],
+  ["Crack Glass", "Tap", "One tap cracks the surface to reveal what is behind it."],
+  ["Endcard", "Video", "Your creative closes on a single, unmissable action."],
+  ["Maze", "Puzzle", "Trace a path through the maze to the goal."],
+  ["Survey", "Input", "A few quick questions, answered in taps."],
+  ["Swipe", "Choice", "Swipe right or left to sort what the player likes."],
+  ["Quiz", "Input", "Multiple-choice questions with a scored result."],
+  ["Sliding Puzzle", "Puzzle", "Slide tiles until the picture is whole."],
+  ["Cup Shuffle", "Memory", "Follow the cup hiding the prize."],
+  ["Open Box", "Reveal", "Tap to unbox the product."],
+  ["Clean Screen", "Tap", "Wipe the screen clean to reveal the scene underneath."],
+  ["Mix and Match", "Customise", "Combine parts to build your own version."],
+  ["Blast", "Match", "Tap clusters of matching blocks to clear the board."],
+  ["Match", "Match", "Match three to clear the grid."],
+  ["Cut", "Slice", "Swipe to slice through the objects."],
+  ["Carousel", "Explore", "Swipe through the range, one item at a time."],
+  ["Plinko", "Drop", "Drop the disc and watch where it lands."],
+];
+
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const pad = (n) => (n < 10 ? "0" + n : "" + n);
+
+class Component extends DCLogic {
+  state = { sel: {}, submitted: false, email: "", atRequest: false };
+
+  send = (names) => {
+    const to = "martins@monetizr.com,connect@monetizr.com";
+    const body = [
+      "Formats requested (" + names.length + "):",
+      "",
+      names.map((n, i) => (i + 1) + ". " + n).join("\n"),
+      "",
+      this.state.email ? "Reply to: " + this.state.email : "",
+    ].join("\n");
+    window.location.href = "mailto:" + to + "?subject=" +
+      encodeURIComponent("Monetizr Playable request") +
+      "&body=" + encodeURIComponent(body);
+    this.setState({ submitted: true });
+  };
+
+  toggle = (key) => {
+    this.setState((s) => {
+      const sel = Object.assign({}, s.sel);
+      if (sel[key]) delete sel[key]; else sel[key] = true;
+      return { sel, submitted: false };
+    });
+  };
+
+  componentDidMount() { this.attach(); }
+  componentDidUpdate() { this.attach(); }
+
+  // Loading order is strictly top-to-bottom: a video only gets its src once
+  // every earlier video has started loading, and never more than 2 at a time.
+  pump() {
+    const all = Array.from(document.querySelectorAll("video[data-pf]"));
+    const loading = all.filter((v) => v.dataset.state === "loading").length;
+    let free = 2 - loading;
+    if (free <= 0) return;
+    for (const v of all) {
+      if (free <= 0) break;
+      if (v.dataset.state) continue;
+      if (!v.dataset.want) break;            // stop at the first video not wanted yet
+      v.dataset.state = "loading";
+      v.addEventListener("loadeddata", () => {
+        v.dataset.state = "ready";
+        if (v.dataset.visible) v.play().catch(() => {});
+        this.lookahead(all, 3);               // keep a buffer loading below
+        this.pump();
+      }, { once: true });
+      v.addEventListener("error", () => { v.dataset.state = "ready"; this.pump(); }, { once: true });
+      v.preload = "auto";
+      v.src = v.dataset.src;
+      v.load();
+      free--;
+    }
+  }
+
+  // Marks the next `n` not-yet-loaded videos (in document order) as wanted, so
+  // the queue always runs a few slides ahead of where the viewer is.
+  lookahead(all, n) {
+    const list = all || Array.from(document.querySelectorAll("video[data-pf]"));
+    let added = 0;
+    for (const v of list) {
+      if (added >= n) break;
+      if (v.dataset.state) continue;
+      if (!v.dataset.want) { v.dataset.want = "1"; added++; }
+    }
+  }
+
+  // Hide the jump arrow once the request section is on screen.
+  watchRequest() {
+    if (this.reqIo) return;
+    const el = document.getElementById("request");
+    if (!el) return;
+    this.reqIo = new IntersectionObserver((entries) => {
+      const seen = entries[0].isIntersecting;
+      if (seen !== this.state.atRequest) this.setState({ atRequest: seen });
+    }, { threshold: 0.15 });
+    this.reqIo.observe(el);
+  }
+
+  attach() {
+    this.watchRequest();
+    if (!this.nearIo) {
+      // A wide margin marks everything above and just below the viewport as
+      // wanted, so loading always sweeps downward from the top of the page.
+      this.nearIo = new IntersectionObserver((entries) => {
+        let changed = false;
+        entries.forEach((e) => {
+          if (e.isIntersecting && !e.target.dataset.want) { e.target.dataset.want = "1"; changed = true; }
+        });
+        if (changed) { this.lookahead(null, 3); this.pump(); }
+      }, { rootMargin: "1200px 0px 2000px 0px" });
+
+      this.playIo = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          const v = e.target;
+          if (e.isIntersecting) {
+            v.dataset.visible = "1";
+            if (v.dataset.state === "ready") v.play().catch(() => {});
+          } else {
+            delete v.dataset.visible;
+            v.pause && v.pause();
+          }
+        });
+      }, { threshold: 0.35 });
+    }
+    document.querySelectorAll("video[data-pf]:not([data-obs])").forEach((v) => {
+      v.setAttribute("data-obs", "1");
+      this.nearIo.observe(v);
+      this.playIo.observe(v);
+    });
+    this.lookahead(null, 3);
+    this.pump();
+  }
+
+  componentWillUnmount() {
+    this.nearIo && this.nearIo.disconnect();
+    this.playIo && this.playIo.disconnect();
+    this.reqIo && this.reqIo.disconnect();
+  }
+
+  renderVals() {
+    const total = CATALOG.length;
+    const sel = this.state.sel;
+    const items = CATALOG.map(([name, category, mechanic], i) => {
+      const key = slug(name);
+      const on = !!sel[key];
+      return {
+        name, category, mechanic, key,
+        index: "Format " + pad(i + 1) + " / " + total,
+        video: "media/" + key + ".mp4",
+        videoNote: name + " preview goes here",
+        checked: on,
+        boxBg: on ? "var(--accent)" : "transparent",
+        boxBorder: on ? "var(--accent)" : "var(--border)",
+        tickOpacity: on ? 1 : 0,
+        actionLabel: on ? "Added to request" : "Add to request",
+        toggle: () => this.toggle(key),
+      };
+    });
+    const picked = items.filter((it) => it.checked).map((it) => ({
+      name: it.name,
+      remove: () => this.toggle(it.key),
+    }));
+    return {
+      items, picked,
+      pickedCount: picked.length,
+      hasPicked: picked.length > 0,
+      isEmpty: picked.length === 0,
+      countLabel: picked.length === 1 ? "1 format picked" : picked.length + " formats picked",
+      requestDisabled: picked.length === 0,
+      requestLabel: this.props.ctaLabel || "Request these formats",
+      jumpOpacity: this.state.atRequest ? 0 : 1,
+      jumpEvents: this.state.atRequest ? "none" : "auto",
+      submitted: this.state.submitted,
+      email: this.state.email,
+      setEmail: (v) => this.setState({ email: v, submitted: false }),
+      submit: () => this.send(picked.map((x) => x.name)),
+      hideVideo: (e) => { e.currentTarget.style.display = "none"; },
+    };
+  }
+}
+
+</script>
+</body>
+</html>

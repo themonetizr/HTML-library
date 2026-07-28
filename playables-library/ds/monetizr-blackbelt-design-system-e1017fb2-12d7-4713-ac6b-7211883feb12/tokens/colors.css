@@ -1,0 +1,111 @@
+/* Monetizr Blackbelt — color tokens
+   ════════════════════════════════════════════════════════════
+   THREE-LAYER ARCHITECTURE
+     1. BASE PALETTE     literal hex, named hue+stop. Never reference each other.
+     2. SEMANTIC ROLES   what a colour MEANS, mapped onto a base stop.
+                         Components read ROLES, never base stops.
+     3. DERIVED TINTS    rgba() of a base — soft fills + hairlines that move
+                         together with their solid.
+
+   🔒 GOLD IS THE LOCKED ANCHOR — never recolour, never gradient:
+       --gold-500  #FEC902   the only "act now" colour
+   --navy-900 (#0b0e25) is the page-canvas base stop — adjustable, but keep the
+   229° navy hue and let the rest of the navy scale move with it.
+
+   RULE: no raw hex inside a component. If a colour is missing, add it here
+   first — named, in the right layer — then use the token. */
+
+:root {
+
+  /* ═══ LAYER 1 · BASE PALETTE ══════════════════════════════════
+     Numeric stop order = darkness order: higher number = darker.
+     Navy hue is fixed at ~229°; only lightness moves across the scale. */
+
+  /* — navy scale (fixed 229° hue) — */
+  --navy-700: #232743;   /* solid stroke: borders/dividers on elevated surfaces */
+  --navy-800: #111635;   /* lightest: elevated surfaces (cards/panels/menus)  */
+  --navy-900: #0b0e25;   /* page canvas (base stop — adjustable, hold 229° hue) */
+  --navy-950: #04091f;   /* darkest: recessed wells / nav rail / code blocks
+                            — a true navy, NOT near-black (keeps hue continuity) */
+
+  /* — gold scale (fixed ~47° hue; only lightness moves) — */
+  --gold-500: #FEC902;   /* 🔒 accent — Monetizr brand gold */
+  --gold-400: #F5D147;   /* hover — same gold, softer/lighter */
+
+  /* — neutral / slate scale (cool, receding) — */
+  --white:     #f5f6fa;
+  --slate-300: #9aa1b9;
+  --slate-400: #7e85a3;
+
+  /* — state hues (solid stops) — */
+  --error-500:   #ff5d5d;   /* red  ~0°  — destructive / failure       */
+  --success-500: #2096F3;   /* blue ~207° — confirmation / live         */
+  --warning-500: #ff5d5d;   /* red  ~0°  — caution (shares the error red) */
+
+
+  /* ═══ LAYER 3 · DERIVED TINTS ═════════════════════════════════
+     rgba() of a base colour. A soft fill + its hairline are the SAME
+     base at .14 / .35 so they always move together. */
+
+  /* neutral hairlines — low-alpha WHITE, never a gray hex */
+  --line:          rgba(255,255,255,0.08);  /* default hairline on navy      */
+  --line-strong:   rgba(255,255,255,0.16);  /* higher-alpha edge for mobile  */
+  --row-hover:     rgba(255,255,255,0.06);  /* neutral list/option hover lift */
+
+  /* gold */
+  --gold-soft:  rgba(254,201,2,0.22);   /* chip / tag / active fill */
+  --line-gold:  rgba(254,201,2,0.55);   /* gold hairline (hover)    */
+
+  /* error */
+  --error-soft: rgba(255,93,93,0.14);
+  --line-error: rgba(255,93,93,0.35);
+
+  /* success */
+  --success-soft: rgba(32,150,243,0.14);
+  --line-success: rgba(32,150,243,0.35);
+
+  /* warning (shares the error red) */
+  --warning-soft: rgba(255,93,93,0.14);
+  --line-warning: rgba(255,93,93,0.35);
+
+
+  /* ═══ LAYER 2 · SEMANTIC ROLES ════════════════════════════════
+     Reference THESE in components — never the raw hex or a base stop.
+     Meaning can be retargeted here without touching a single component. */
+
+  /* surfaces (elevation via navy lightness steps, never shadow) */
+  --bg:               var(--navy-900);   /* page canvas             */
+  --surface:          var(--navy-800);   /* first elevation         */
+  --surface-recessed: var(--navy-950);   /* wells / rails / insets  */
+
+  /* text (already-mixed solids — never white + opacity) */
+  --text:     var(--white);
+  --muted:    var(--slate-300);
+  --faint:    var(--slate-400);
+  --on-accent: var(--navy-900);          /* text on a gold fill     */
+
+  /* borders */
+  --border:        var(--navy-700);      /* solid stroke on elevated surfaces */
+  --border-hairline: var(--line);        /* translucent hairline (adapts across navies) */
+  --border-strong: var(--line-strong);   /* mobile card edges       */
+  --border-hover:  var(--line-gold);
+
+  /* accent */
+  --accent:       var(--gold-500);
+  --accent-hover: var(--gold-400);
+  --accent-soft:  var(--gold-soft);
+  --surface-hover: var(--row-hover);
+
+  /* state roles — solid / soft-fill / border, one pattern for all */
+  --error:   var(--error-500);
+  --success: var(--success-500);
+  --warning: var(--warning-500);
+
+  /* ─── back-compat aliases (legacy component reads) ───
+     Older components read these names; keep them mapped so nothing breaks. */
+  --bg-elevated:  var(--surface);
+  --surface-card: var(--surface);
+  --surface-deep: var(--surface-recessed);   /* was --navy-700 #080915 → now true navy-950 */
+  --text-muted:   var(--muted);
+  --text-faint:   var(--faint);
+}
