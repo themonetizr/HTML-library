@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monetizr Blackbelt — Resources (reference build)</title>
+
+<!-- Lato is the entire type system. Icons are self-hosted (icons.js) — no CDN. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,400&display=swap">
+
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<script src="icons.js"></script>
+<script src="gold-burst.js"></script>
+</head>
+<body>
+
+<!-- ============================================================= HEADER -->
+<header style="position:sticky; top:0; z-index:50; background:rgba(11,14,37,0.92); border-bottom:1px solid var(--border); backdrop-filter:saturate(140%);">
+  <div style="max-width:var(--wrap-max); margin:0 auto; padding:14px var(--wrap-pad) 0; display:flex; align-items:center; justify-content:space-between; gap:16px;">
+    <img src="assets/logo-horizontal-white.png" alt="Monetizr" style="height:22px; display:block;">
+    <span style="color:var(--muted); font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;">Resources</span>
+  </div>
+  <nav id="tabnav" style="max-width:var(--wrap-max); margin:0 auto; padding:12px var(--wrap-pad) 14px; display:flex; gap:7px; flex-wrap:wrap;">
+    <button class="bb-tab" data-tab="hub"         aria-selected="true"  onclick="show('hub')">Hub</button>
+    <button class="bb-tab" data-tab="goldmine"    aria-selected="false" onclick="show('goldmine')">Goldmine</button>
+    <button class="bb-tab" data-tab="casestudies" aria-selected="false" onclick="show('casestudies')">Case Studies</button>
+    <button class="bb-tab" data-tab="launcher"    aria-selected="false" onclick="show('launcher')">Launcher</button>
+    <button class="bb-tab" data-tab="attention"   aria-selected="false" onclick="show('attention')">Attention Calc</button>
+    <button class="bb-tab" data-tab="kpi"         aria-selected="false" onclick="show('kpi')">KPI Booster</button>
+    <button class="bb-tab" data-tab="audiences"   aria-selected="false" onclick="show('audiences')">Custom Audiences</button>
+    <button class="bb-tab" data-tab="videos"      aria-selected="false" onclick="show('videos')">Video Library</button>
+  </nav>
+</header>
+
+<main style="max-width:var(--wrap-max); margin:0 auto; padding:72px var(--wrap-pad) 96px;">
+
+  <!-- ═══════════════════════════════════════════════════════════ HUB -->
+  <section id="hub" data-screen>
+    <div style="display:inline-flex; align-items:center; gap:6px; color:var(--accent); font-size:var(--fs-xs); font-weight:700; text-transform:uppercase; letter-spacing:var(--tracking-eyebrow);"><i class="licon icon-layout-grid" style="font-size:13px;"></i>Resources Hub</div>
+    <h1 style="font-size:var(--fs-display); font-weight:900; letter-spacing:var(--tracking-display); line-height:var(--lh-display); color:var(--text); margin:14px 0 12px; max-width:720px;">Which question do you need answered <span style="color:var(--accent);">before you test gaming?</span></h1>
+    <p style="color:var(--muted); text-wrap:balance; font-size:var(--fs-lede); max-width:760px; margin:0 0 30px;">Pick the one that matches where you're stuck. Six tools, six questions — nothing below is filler.</p>
+
+    <div style="font-size:var(--fs-h2); font-weight:700; color:var(--text); padding-bottom:16px; border-bottom:1px solid var(--border); margin-bottom:22px;">Choose your question</div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--gap-card); margin-bottom:26px;">
+      <!-- hub card template repeats 6× — see README §Components > Card -->
+      <button class="mtz-card" onclick="show('goldmine')" style="text-align:left; display:flex; flex-direction:column; cursor:pointer; background:var(--surface-card);">
+        <div style="display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 10px; margin-bottom:14px;"><i class="licon icon-search" style="font-size:12px;"></i>Resource</div>
+        <h3 style="font-size:var(--fs-h3); font-weight:900; color:var(--text); margin-bottom:8px;">Campaign Goldmine</h3>
+        <div style="font-size:var(--fs-hook); font-weight:700; color:var(--text); line-height:var(--lh-tight); margin-bottom:10px;">Has a brand like mine already tested gaming?</div>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;">Search 500+ campaigns in your category before you commit budget — walk in with precedent, not theory.</p>
+        <div class="mtz-view-link" style="margin-top:auto; display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:700;">See campaigns in my category <span class="mtz-arrow">→</span></div>
+      </button>
+
+      <button class="mtz-card" onclick="show('launcher')" style="text-align:left; display:flex; flex-direction:column; cursor:pointer; background:var(--surface-card);">
+        <div style="display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 10px; margin-bottom:14px;"><i class="licon icon-gamepad-2" style="font-size:12px;"></i>Interactive Tool</div>
+        <h3 style="font-size:var(--fs-h3); font-weight:900; color:var(--text); margin-bottom:8px;">Campaign Launcher</h3>
+        <div style="font-size:var(--fs-hook); font-weight:700; color:var(--text); line-height:var(--lh-tight); margin-bottom:10px;">Do we need new creative to enter gaming?</div>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;">Use the video or logo you already have. Preview your brand inside a rewarded gameplay moment in three clicks.</p>
+        <div class="mtz-view-link" style="margin-top:auto; display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:700;">Preview my creative in-game <span class="mtz-arrow">→</span></div>
+      </button>
+
+      <button class="mtz-card" onclick="show('attention')" style="text-align:left; display:flex; flex-direction:column; cursor:pointer; background:var(--surface-card);">
+        <div style="display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 10px; margin-bottom:14px;"><i class="licon icon-chart-column" style="font-size:12px;"></i>Interactive Tool</div>
+        <h3 style="font-size:var(--fs-h3); font-weight:900; color:var(--text); margin-bottom:8px;">Attention Calculator</h3>
+        <div style="font-size:var(--fs-hook); font-weight:700; color:var(--text); line-height:var(--lh-tight); margin-bottom:10px;">What happens to attention when gaming enters the plan?</div>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;">Compare your current mix against a plan that adds gaming. The question shifts from CPM to CPvM.</p>
+        <div class="mtz-view-link" style="margin-top:auto; display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:700;">Calculate my attention model <span class="mtz-arrow">→</span></div>
+      </button>
+
+      <button class="mtz-card" onclick="show('kpi')" style="text-align:left; display:flex; flex-direction:column; cursor:pointer; background:var(--surface-card);">
+        <div style="display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 10px; margin-bottom:14px;"><i class="licon icon-target" style="font-size:12px;"></i>Audience Planner</div>
+        <h3 style="font-size:var(--fs-h3); font-weight:900; color:var(--text); margin-bottom:8px;">KPI Booster</h3>
+        <div style="font-size:var(--fs-hook); font-weight:700; color:var(--text); line-height:var(--lh-tight); margin-bottom:10px;">Can I reach the right audience, not just more impressions?</div>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;">Enter your industry, market, audience, and budget. Estimate reach against verified quality benchmarks.</p>
+        <div class="mtz-view-link" style="margin-top:auto; display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:700;">Estimate my reach <span class="mtz-arrow">→</span></div>
+      </button>
+
+      <button class="mtz-card" onclick="show('casestudies')" style="text-align:left; display:flex; flex-direction:column; cursor:pointer; background:var(--surface-card);">
+        <div style="display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 10px; margin-bottom:14px;"><i class="licon icon-shield-check" style="font-size:12px;"></i>Verified Results</div>
+        <h3 style="font-size:var(--fs-h3); font-weight:900; color:var(--text); margin-bottom:8px;">Case Studies</h3>
+        <div style="font-size:var(--fs-hook); font-weight:700; color:var(--text); line-height:var(--lh-tight); margin-bottom:10px;">What does this look like in practice?</div>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;">Named campaign results with the metric tier clearly labeled — a specific result, not a platform average.</p>
+        <div class="mtz-view-link" style="margin-top:auto; display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:700;">See proof by category <span class="mtz-arrow">→</span></div>
+      </button>
+
+      <button class="mtz-card" onclick="show('audiences')" style="text-align:left; display:flex; flex-direction:column; cursor:pointer; background:var(--surface-card);">
+        <div style="display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 10px; margin-bottom:14px;"><i class="licon icon-layers" style="font-size:12px;"></i>Deal Vault</div>
+        <h3 style="font-size:var(--fs-h3); font-weight:900; color:var(--text); margin-bottom:8px;">Custom Audiences</h3>
+        <div style="font-size:var(--fs-hook); font-weight:700; color:var(--text); line-height:var(--lh-tight); margin-bottom:10px;">Can I activate this without a long RFP?</div>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;">Ready-built, brand-safe segments you activate straight in your DSP. Live within one business day.</p>
+        <div class="mtz-view-link" style="margin-top:auto; display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:700;">Browse ready-built audiences <span class="mtz-arrow">→</span></div>
+      </button>
+    </div>
+
+    <p style="font-size:13.5px; color:var(--muted);">Prefer to watch? <a href="#" onclick="show('videos');return false;" class="mtz-arrow-link">Browse all 9 explainer videos <span class="mtz-arrow">→</span></a></p>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════ GOLDMINE -->
+  <section id="goldmine" data-screen hidden>
+    <div style="display:inline-flex; align-items:center; gap:6px; color:var(--accent); font-size:var(--fs-xs); font-weight:700; text-transform:uppercase; letter-spacing:var(--tracking-eyebrow);"><i class="licon icon-search" style="font-size:13px;"></i>Campaign Goldmine</div>
+    <h1 style="font-size:var(--fs-display); font-weight:900; letter-spacing:var(--tracking-display); line-height:var(--lh-display); color:var(--text); margin:14px 0 12px; max-width:640px;">Somebody in your category already made this bet. <span style="color:var(--accent);">See what happened.</span></h1>
+    <p style="color:var(--muted); text-wrap:balance; font-size:var(--fs-lede); max-width:760px; margin:0 0 22px;">Search 500+ campaigns from 150+ brands across 40+ countries. Not a portfolio — a precedent search. Filter to the closest match and walk into your pitch with a real campaign behind you, not a hunch.</p>
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; margin-bottom:18px;">
+      <button class="mtz-dropdown-trigger" type="button"><i class="licon icon-grid-2x2" style="font-size:14px;"></i>Industry <i class="licon icon-chevron-down mtz-chevron" style="font-size:14px;"></i></button>
+      <button class="mtz-dropdown-trigger" type="button"><i class="licon icon-layers" style="font-size:14px;"></i>Format <i class="licon icon-chevron-down mtz-chevron" style="font-size:14px;"></i></button>
+      <button class="mtz-dropdown-trigger" type="button"><i class="licon icon-target" style="font-size:14px;"></i>Objective <i class="licon icon-chevron-down mtz-chevron" style="font-size:14px;"></i></button>
+    </div>
+    <div class="bb-mock">[ Filtered results grid — existing live component, unchanged ]</div>
+
+    <h2 style="font-size:var(--fs-h2); font-weight:700; color:var(--text); margin:34px 0 14px; padding-bottom:8px; border-bottom:1px solid var(--border);">Platform performance baseline</h2>
+    <table class="bb-tech-table">
+      <thead><tr><th style="width:46%;">Metric</th><th style="width:27%;">Average</th><th>Best</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--text);">Attention per session</td><td style="color:var(--text); font-weight:700;">37 seconds</td><td style="color:var(--muted);">—</td></tr>
+        <tr><td style="color:var(--text);">Video Completion Rate</td><td style="color:var(--text); font-weight:700;">92.1%</td><td style="color:var(--accent); font-weight:900;">95.4%</td></tr>
+        <tr><td style="color:var(--text);">Click-Through Rate</td><td style="color:var(--text); font-weight:700;">3.6%</td><td style="color:var(--accent); font-weight:900;">40%</td></tr>
+        <tr><td style="color:var(--text);">Viewability</td><td style="color:var(--text); font-weight:700;">93%</td><td style="color:var(--muted);">—</td></tr>
+        <tr><td style="color:var(--text);">Purchase Intent Lift</td><td style="color:var(--text); font-weight:700;">+7%</td><td style="color:var(--accent); font-weight:900;">+49%</td></tr>
+        <tr><td style="color:var(--text);">Brand Favorability Lift</td><td style="color:var(--text); font-weight:700;">+4%</td><td style="color:var(--accent); font-weight:900;">+25%</td></tr>
+      </tbody>
+    </table>
+
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-2xl); padding:26px; margin-top:24px;">
+      <div style="font-size:var(--fs-h3); font-weight:700; color:var(--text); margin-bottom:8px;">Save your shortlist</div>
+      <p style="font-size:var(--fs-sm); color:var(--muted); margin-bottom:18px;">These are the campaigns that match your category — not the general 500. Save your shortlist before you lose the filter.</p>
+      <div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
+        <a class="mtz-btn mtz-btn--primary" href="#"><i class="licon icon-mail"></i>Send me this shortlist →</a>
+        <a class="mtz-secondary-link" href="https://dub.sh/mtz-book" style="display:inline-flex; align-items:center; gap:6px; font-size:13px;"><i class="licon icon-calendar" style="font-size:14px;"></i>Talk it through — 15-min fit-check call <span class="mtz-arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ CASE STUDIES -->
+  <section id="casestudies" data-screen hidden>
+    <div style="display:inline-flex; align-items:center; gap:6px; color:var(--accent); font-size:var(--fs-xs); font-weight:700; text-transform:uppercase; letter-spacing:var(--tracking-eyebrow);"><i class="licon icon-shield-check" style="font-size:13px;"></i>Case Studies</div>
+    <h1 style="font-size:var(--fs-display); font-weight:900; letter-spacing:var(--tracking-display); line-height:var(--lh-display); color:var(--text); margin:14px 0 12px; max-width:740px;">Your category isn't the test case. <span style="color:var(--accent);"><br>It's already the proof.</span></h1>
+    <p style="color:var(--muted); text-wrap:balance; font-size:var(--fs-lede); max-width:760px; margin:0 0 26px;">Seven named campaigns, tier-labeled by result. See exactly what a brand like yours ran, and what happened, before anyone in the room asks whether this has actually worked.</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--gap-card); margin-bottom:30px;">
+      <!-- NAMED result → gold metric · PENDING result → red mono metric. See README. -->
+      <div class="mtz-card" style="display:flex; flex-direction:column;">
+        <div style="font-size:15.5px; color:var(--text); font-weight:700;">Theraflu / Haleon</div>
+        <div style="font-size:18px; font-weight:900; color:var(--accent); margin-top:4px; letter-spacing:var(--tracking-tight);">95.4% Video Completion Rate</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:8px; line-height:1.5;">Named result, not average.</div>
+        <div style="margin-top:auto; padding-top:16px; display:flex; justify-content:flex-end;"><a href="#" class="mtz-btn mtz-btn--secondary">View case <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="mtz-card" style="display:flex; flex-direction:column;">
+        <div style="font-size:15.5px; color:var(--text); font-weight:700;">Tide</div>
+        <div style="font-size:13px; font-weight:700; color:var(--error); font-family:var(--font-mono); margin-top:6px;">Campaign reach — needs verified figure</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:8px; line-height:1.5;">Draft cites "178M+ US players" — that is the general US mobile audience, not a Tide-specific result. Needs a real number or a rewrite.</div>
+        <div style="margin-top:auto; padding-top:16px; display:flex; justify-content:flex-end;"><a href="#" class="mtz-btn mtz-btn--secondary">View case <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="mtz-card" style="display:flex; flex-direction:column;">
+        <div style="font-size:15.5px; color:var(--text); font-weight:700;">Sensodyne Kids</div>
+        <div style="font-size:13px; font-weight:700; color:var(--error); font-family:var(--font-mono); margin-top:6px;">Result — no named metric yet</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:8px; line-height:1.5;">Shown against baseline: 92.1% avg VCR · 3.6% avg CTR.</div>
+        <div style="margin-top:auto; padding-top:16px; display:flex; justify-content:flex-end;"><a href="#" class="mtz-btn mtz-btn--secondary">View case <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="mtz-card" style="display:flex; flex-direction:column;">
+        <div style="font-size:15.5px; color:var(--text); font-weight:700;">Ford / Mercedes</div>
+        <div style="font-size:18px; font-weight:900; color:var(--accent); margin-top:4px; letter-spacing:var(--tracking-tight);">37% Click-Through Rate</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:8px; line-height:1.5;">Named result, not average.</div>
+        <div style="margin-top:auto; padding-top:16px; display:flex; justify-content:flex-end;"><a href="#" class="mtz-btn mtz-btn--secondary">View case <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="mtz-card" style="display:flex; flex-direction:column;">
+        <div style="font-size:15.5px; color:var(--text); font-weight:700;">Doritos / Oreo</div>
+        <div style="font-size:18px; font-weight:900; color:var(--accent); margin-top:4px; letter-spacing:var(--tracking-tight);">40% Click-Through Rate</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:8px; line-height:1.5;">Named result, not average.</div>
+        <div style="margin-top:auto; padding-top:16px; display:flex; justify-content:flex-end;"><a href="#" class="mtz-btn mtz-btn--secondary">View case <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="mtz-card" style="display:flex; flex-direction:column;">
+        <div style="font-size:15.5px; color:var(--text); font-weight:700;">Quaker Chewy</div>
+        <div style="font-size:13px; font-weight:700; color:var(--error); font-family:var(--font-mono); margin-top:6px;">Result — no named metric yet</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:8px; line-height:1.5;">Shown against baseline: 92.1% avg VCR · +7% avg Purchase Intent.</div>
+        <div style="margin-top:auto; padding-top:16px; display:flex; justify-content:flex-end;"><a href="#" class="mtz-btn mtz-btn--secondary">View case <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="mtz-card" style="display:flex; flex-direction:column;">
+        <div style="font-size:15.5px; color:var(--text); font-weight:700;">Disney+ / Universal</div>
+        <div style="font-size:13px; font-weight:700; color:var(--error); font-family:var(--font-mono); margin-top:6px;">Result — no named metric yet</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:8px; line-height:1.5;">Shown against baseline: 93% avg viewability · 37s avg attention.</div>
+        <div style="margin-top:auto; padding-top:16px; display:flex; justify-content:flex-end;"><a href="#" class="mtz-btn mtz-btn--secondary">View case <span aria-hidden="true">→</span></a></div>
+      </div>
+    </div>
+
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-2xl); padding:26px;">
+      <div style="font-size:var(--fs-h3); font-weight:700; color:var(--text); margin-bottom:8px;">Save the matched set</div>
+      <p style="font-size:var(--fs-sm); color:var(--muted); margin-bottom:18px;">This is the set matched to your category — not the full index. Save it before you close the tab.</p>
+      <div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
+        <a class="mtz-btn mtz-btn--primary" href="#"><i class="licon icon-mail"></i>Send me this set →</a>
+        <a class="mtz-secondary-link" href="https://dub.sh/mtz-book" style="display:inline-flex; align-items:center; gap:6px; font-size:13px;"><i class="licon icon-calendar" style="font-size:14px;"></i>Talk it through — 15-min fit-check call <span class="mtz-arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════ LAUNCHER -->
+  <section id="launcher" data-screen hidden>
+    <div style="display:inline-flex; align-items:center; gap:6px; color:var(--accent); font-size:var(--fs-xs); font-weight:700; text-transform:uppercase; letter-spacing:var(--tracking-eyebrow);"><i class="licon icon-gamepad-2" style="font-size:13px;"></i>Campaign Launcher</div>
+    <h1 style="font-size:var(--fs-display); font-weight:900; letter-spacing:var(--tracking-display); line-height:var(--lh-display); color:var(--text); margin:14px 0 12px; max-width:720px;">Your existing creative already works here. <span style="color:var(--accent);">Watch it happen.</span></h1>
+    <p style="color:var(--muted); text-wrap:balance; font-size:var(--fs-lede); max-width:760px; margin:0 0 30px;">Drop in the video or logo you already have — no new shoot, no dev sprint. See your exact brand rendered inside a real mobile game in three clicks.</p>
+
+    <div style="font-size:var(--fs-h2); font-weight:700; color:var(--text); padding-bottom:16px; border-bottom:1px solid var(--border); margin-bottom:20px;">How it works</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:var(--gap-card); margin-bottom:22px;">
+      <div class="mtz-card">
+        <div style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:var(--radius-full); background:var(--surface-recessed); color:var(--muted); font-weight:900; font-size:14px; margin-bottom:12px;">1</div>
+        <div style="font-size:15px; font-weight:700; color:var(--text); margin-bottom:5px;">Upload</div>
+        <div style="font-size:13px; color:var(--muted);">Drop in what you already have.</div>
+      </div>
+      <div class="mtz-card">
+        <div style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:var(--radius-full); background:var(--surface-recessed); color:var(--muted); font-weight:900; font-size:14px; margin-bottom:12px;">2</div>
+        <div style="font-size:15px; font-weight:700; color:var(--text); margin-bottom:5px;">Preview</div>
+        <div style="font-size:13px; color:var(--muted);">See it rendered live in real gameplay.</div>
+      </div>
+      <div class="mtz-card">
+        <div style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:var(--radius-full); background:var(--surface-recessed); color:var(--muted); font-weight:900; font-size:14px; margin-bottom:12px;">3</div>
+        <div style="font-size:15px; font-weight:700; color:var(--text); margin-bottom:5px;">Share</div>
+        <div style="font-size:13px; color:var(--muted);">Get a link your team can view, no login.</div>
+      </div>
+    </div>
+    <div class="bb-mock" style="margin-bottom:20px;">[ Upload tool → live in-game preview. Existing tool, unchanged ]</div>
+    <a class="mtz-btn mtz-btn--secondary" href="#" style="font-size:14px; padding:12px 20px;"><i class="licon icon-gamepad-2"></i>Preview my creative in-game →</a>
+
+    <div style="margin-top:26px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-2xl); padding:26px;">
+      <div style="font-size:var(--fs-h3); font-weight:700; color:var(--text); margin-bottom:8px;">Get your preview link</div>
+      <p style="font-size:var(--fs-sm); color:var(--muted); margin-bottom:18px;">This is your brand, rendered — not a template. Get the link before you lose the tab.</p>
+      <div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
+        <a class="mtz-btn mtz-btn--primary" href="#"><i class="licon icon-mouse-pointer-click"></i>Get my preview link →</a>
+        <a class="mtz-secondary-link" href="https://dub.sh/mtz-book" style="display:inline-flex; align-items:center; gap:6px; font-size:13px;"><i class="licon icon-calendar" style="font-size:14px;"></i>Talk it through — 15-min fit-check call <span class="mtz-arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════ ATTENTION CALC -->
+  <section id="attention" data-screen hidden>
+    <div style="display:inline-flex; align-items:center; gap:6px; color:var(--accent); font-size:var(--fs-xs); font-weight:700; text-transform:uppercase; letter-spacing:var(--tracking-eyebrow);"><i class="licon icon-chart-column" style="font-size:13px;"></i>Attention Calculator</div>
+    <h1 style="font-size:var(--fs-display); font-weight:900; letter-spacing:var(--tracking-display); line-height:var(--lh-display); color:var(--text); margin:14px 0 12px; max-width:740px;">Your media plan already assumes gaming gets zero attention. <span style="color:var(--accent);">Test that assumption.</span></h1>
+    <p style="color:var(--muted); text-wrap:balance; font-size:var(--fs-lede); max-width:760px; margin:0 0 26px;">Compare your current mix against a plan that adds gaming — using your own budget numbers, not a benchmark. Average attention runs 37 seconds per session <span class="bb-id">[PERF_A001]</span>, against under 2 seconds on social <span class="bb-id">[INDX001]</span>. The question moves from CPM to CPvM.</p>
+
+    <div class="bb-mock" style="margin-bottom:26px;">[ Interactive slider: current plan vs. plan + gaming — existing tool ]</div>
+
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-2xl); padding:26px;">
+      <div style="font-size:var(--fs-h3); font-weight:700; color:var(--text); margin-bottom:8px;">Email this model to yourself</div>
+      <p style="font-size:var(--fs-sm); color:var(--muted); margin-bottom:18px;">This comparison uses your numbers, not a benchmark. Email it to yourself before you close the tab.</p>
+      <div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
+        <a class="mtz-btn mtz-btn--primary" href="#"><i class="licon icon-mail"></i>Email this model to myself →</a>
+        <a class="mtz-secondary-link" href="https://dub.sh/mtz-book" style="display:inline-flex; align-items:center; gap:6px; font-size:13px;"><i class="licon icon-calendar" style="font-size:14px;"></i>Talk it through — 15-min fit-check call <span class="mtz-arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════ KPI BOOSTER -->
+  <section id="kpi" data-screen hidden>
+    <div style="display:inline-flex; align-items:center; gap:6px; color:var(--accent); font-size:var(--fs-xs); font-weight:700; text-transform:uppercase; letter-spacing:var(--tracking-eyebrow);"><i class="licon icon-target" style="font-size:13px;"></i>KPI Booster</div>
+    <h1 style="font-size:var(--fs-display); font-weight:900; letter-spacing:var(--tracking-display); line-height:var(--lh-display); color:var(--text); margin:14px 0 12px; text-wrap:balance; max-width:600px;">Can I reach the right audience <span style="color:var(--accent);">— not just more impressions?</span></h1>
+    <p style="color:var(--muted); text-wrap:pretty; font-size:var(--fs-lede); max-width:760px; margin:0 0 30px;">Enter your industry, market, audience, and budget. Estimate campaign reach against verified quality benchmarks — 93% average viewability versus roughly 70% on standard display.</p>
+
+    <div class="bb-mock" style="margin-bottom:20px;">[ Input form: industry / market / audience / budget → reach, CPM range, impression estimate ]</div>
+    <a class="mtz-btn mtz-btn--secondary" href="#" style="font-size:14px; padding:12px 20px;"><i class="licon icon-chart-column"></i>Estimate my reach →</a>
+
+    <div style="margin-top:26px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-2xl); padding:26px;">
+      <div style="font-size:var(--fs-h3); font-weight:700; color:var(--text); margin-bottom:8px;">Your results are ready</div>
+      <p style="font-size:var(--fs-sm); color:var(--muted); margin-bottom:18px;">Send the reach report to your inbox — estimated reach, CPM range, and campaign examples for your industry, ready to forward when you need them.</p>
+      <div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
+        <a class="mtz-btn mtz-btn--primary" href="#"><i class="licon icon-mail"></i>Send me the reach report →</a>
+        <a class="mtz-secondary-link" href="https://dub.sh/mtz-book" style="display:inline-flex; align-items:center; gap:6px; font-size:13px;"><i class="licon icon-calendar" style="font-size:14px;"></i>Talk it through — 15-min fit-check call <span class="mtz-arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════ CUSTOM AUDIENCES -->
+  <section id="audiences" data-screen hidden>
+    <div style="display:inline-flex; align-items:center; gap:6px; color:var(--accent); font-size:var(--fs-xs); font-weight:700; text-transform:uppercase; letter-spacing:var(--tracking-eyebrow);"><i class="licon icon-layers" style="font-size:13px;"></i>Custom Audiences</div>
+    <h1 style="font-size:var(--fs-display); font-weight:900; letter-spacing:var(--tracking-display); line-height:var(--lh-display); color:var(--text); margin:14px 0 12px; max-width:600px;">Purpose-built audience deals in <span style="color:var(--accent);">mobile gaming.</span></h1>
+    <p style="color:var(--muted); text-wrap:balance; font-size:var(--fs-lede); max-width:760px; margin:0 0 8px;">Skip the brief, skip the vendor search — activate a ready-built, brand-safe segment directly in your DSP. Live within one business day, no new creative required.</p>
+
+    <!-- StatRow -->
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:var(--gap-stat); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:18px 0; margin:22px 0 0;">
+      <div><div style="font-size:var(--fs-stat); font-weight:900; color:var(--accent);">2.8B</div><div style="font-size:12px; color:var(--muted); margin-top:2px;">mobile gamers worldwide</div></div>
+      <div><div style="font-size:var(--fs-stat); font-weight:900; color:var(--accent);">40+</div><div style="font-size:12px; color:var(--muted); margin-top:2px;">countries activated</div></div>
+      <div><div style="font-size:var(--fs-stat); font-weight:900; color:var(--accent);">500+</div><div style="font-size:12px; color:var(--muted); margin-top:2px;">campaigns launched, cumulative</div></div>
+    </div>
+
+    <h2 style="font-size:var(--fs-h2); font-weight:700; color:var(--text); margin:38px 0 6px; padding-bottom:8px; border-bottom:1px solid var(--border);">Available deals — packaged by segment, not by brand</h2>
+    <p style="font-size:13px; color:var(--muted); margin:0 0 18px;">Each card is its own door — view the full spec, then activate straight from there. No separate email-first step in between.</p>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--gap-card); margin-bottom:18px;">
+      <div class="mtz-card" style="display:flex; flex-direction:column;">
+        <div style="font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:8px;">Interest · Outdoor</div>
+        <div style="font-size:17px; font-weight:700; color:var(--text); margin-bottom:8px;">Sports & Outdoor Fans</div>
+        <p style="font-size:12.5px; color:var(--muted); line-height:1.55; margin-bottom:12px;">Blue-collar men 18–44 with interests in hunting, fishing, trucks, motorsports, and major sports leagues. Working-to-middle-class households with strong affinity for meat snacks and protein products.</p>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;">
+          <span style="font-size:10.5px; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-pill); padding:4px 11px;">hunting & fishing</span>
+          <span style="font-size:10.5px; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-pill); padding:4px 11px;">trucks</span>
+          <span style="font-size:10.5px; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-pill); padding:4px 11px;">NFL / NASCAR / UFC</span>
+          <span style="font-size:10.5px; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-pill); padding:4px 11px;">meat snacks</span>
+          <span style="font-size:10.5px; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-pill); padding:4px 11px;">outdoor lifestyle</span>
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+          <span style="font-size:10px; font-family:var(--font-mono); color:var(--accent); background:var(--accent-soft); border:1px solid var(--line-gold); border-radius:var(--radius-md); padding:3px 9px;">TTD</span>
+          <span style="font-size:10px; font-family:var(--font-mono); color:var(--accent); background:var(--accent-soft); border:1px solid var(--line-gold); border-radius:var(--radius-md); padding:3px 9px;">DV360</span>
+          <span style="font-size:10px; font-family:var(--font-mono); color:var(--accent); background:var(--accent-soft); border:1px solid var(--line-gold); border-radius:var(--radius-md); padding:3px 9px;">Amazon DSP</span>
+        </div>
+        <div style="margin-top:auto; display:flex; justify-content:flex-end;"><a href="#" class="mtz-btn mtz-btn--secondary">View deal <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="mtz-card" style="display:flex; flex-direction:column;">
+        <div style="font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:8px;">Wellness · CPG</div>
+        <div style="font-size:17px; font-weight:700; color:var(--text); margin-bottom:8px;">Dental Health Shoppers</div>
+        <p style="font-size:12.5px; color:var(--muted); line-height:1.55; margin-bottom:12px;">US adults 25–55 who frequently purchase premium oral care — specialized toothpaste, whitening treatments, electric toothbrushes. Middle-to-upper-income consumers with strong ingredient awareness.</p>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;">
+          <span style="font-size:10.5px; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-pill); padding:4px 11px;">whitening</span>
+          <span style="font-size:10.5px; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-pill); padding:4px 11px;">sensitive teeth</span>
+          <span style="font-size:10.5px; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-pill); padding:4px 11px;">electric toothbrush</span>
+          <span style="font-size:10.5px; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-pill); padding:4px 11px;">dentist recommended</span>
+          <span style="font-size:10.5px; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-pill); padding:4px 11px;">oral wellness</span>
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+          <span style="font-size:10px; font-family:var(--font-mono); color:var(--accent); background:var(--accent-soft); border:1px solid var(--line-gold); border-radius:var(--radius-md); padding:3px 9px;">TTD</span>
+          <span style="font-size:10px; font-family:var(--font-mono); color:var(--accent); background:var(--accent-soft); border:1px solid var(--line-gold); border-radius:var(--radius-md); padding:3px 9px;">DV360</span>
+          <span style="font-size:10px; font-family:var(--font-mono); color:var(--accent); background:var(--accent-soft); border:1px solid var(--line-gold); border-radius:var(--radius-md); padding:3px 9px;">Amazon DSP</span>
+        </div>
+        <div style="margin-top:auto; display:flex; justify-content:flex-end;"><a href="#" class="mtz-btn mtz-btn--secondary">View deal <span aria-hidden="true">→</span></a></div>
+      </div>
+    </div>
+    <div class="bb-mock" style="text-align:left; line-height:1.6;">[ Full deal grid — existing live component. "View deal →" opens the deal as a modal at ?deal=slug (shareable, no full reload). The modal carries the "Email me this deal sheet" capture and the single "Activate This Deal →" action. ]</div>
+    <p style="font-size:13px; color:var(--muted); margin:14px 0 26px;">Activate adds your Buyer Seat ID inside that modal — Monetizr adds your seat, a notification lands in your DSP profile, no new paperwork.</p>
+
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-2xl); padding:26px;">
+      <div style="font-size:var(--fs-h3); font-weight:700; color:var(--text); margin-bottom:8px;">Not ready to activate yet?</div>
+      <p style="font-size:var(--fs-sm); color:var(--muted); margin-bottom:18px;">15-min fit-check call. That's it.</p>
+      <a class="mtz-btn mtz-btn--primary" href="https://dub.sh/mtz-book"><i class="licon icon-calendar"></i>Talk it through →</a>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ VIDEO LIBRARY -->
+  <section id="videos" data-screen hidden>
+    <div style="display:inline-flex; align-items:center; gap:6px; color:var(--accent); font-size:var(--fs-xs); font-weight:700; text-transform:uppercase; letter-spacing:var(--tracking-eyebrow);"><i class="licon icon-play" style="font-size:13px;"></i>Video Library</div>
+    <h1 style="font-size:var(--fs-display); font-weight:900; letter-spacing:var(--tracking-display); line-height:var(--lh-display); color:var(--text); margin:14px 0 12px; max-width:700px;">See it in action <span style="color:var(--accent);">— not just described.</span></h1>
+    <p style="color:var(--muted); text-wrap:balance; font-size:var(--fs-lede); max-width:760px; margin:0 0 30px;">Nine short videos, each one answering a single question. Pick the one that matches what you're curious about.</p>
+
+    <div style="font-size:var(--fs-h2); font-weight:700; color:var(--text); padding-bottom:16px; border-bottom:1px solid var(--border); margin-bottom:22px;">Brand examples</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:var(--gap-card); margin-bottom:34px;">
+      <a class="mtz-card" href="{{BASE_DOMAIN}}/resources/facebook-ads-candy-crush" target="_blank" style="display:flex; flex-direction:column; text-decoration:none;">
+        <div style="display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 10px; margin-bottom:14px;"><i class="licon icon-play" style="font-size:12px;"></i>Candy Crush</div>
+        <h3 style="font-size:var(--fs-h3); font-weight:900; color:var(--text); margin-bottom:8px;">Facebook Ads in Candy Crush</h3>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;">Your existing social creative can run in gaming without a redesign.</p>
+        <div class="mtz-view-link" style="margin-top:auto; display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:700;">Watch <span class="mtz-arrow">→</span></div>
+      </a>
+      <a class="mtz-card" href="{{BASE_DOMAIN}}/resources/visa-olympic-gold" target="_blank" style="display:flex; flex-direction:column; text-decoration:none;">
+        <div style="display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 10px; margin-bottom:14px;"><i class="licon icon-play" style="font-size:12px;"></i>Visa</div>
+        <h3 style="font-size:var(--fs-h3); font-weight:900; color:var(--text); margin-bottom:8px;">The Visa Olympic Gold Formula</h3>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;">Interruption vs chosen attention — and why it changes everything.</p>
+        <div class="mtz-view-link" style="margin-top:auto; display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:700;">Watch <span class="mtz-arrow">→</span></div>
+      </a>
+      <a class="mtz-card" href="{{BASE_DOMAIN}}/resources/netflix-3-tap" target="_blank" style="display:flex; flex-direction:column; text-decoration:none;">
+        <div style="display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 10px; margin-bottom:14px;"><i class="licon icon-play" style="font-size:12px;"></i>Netflix</div>
+        <h3 style="font-size:var(--fs-h3); font-weight:900; color:var(--text); margin-bottom:8px;">Netflix 3-Tap Engagement Flow</h3>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;">A 3-tap flow that turns 30 seconds into opted-in brand attention.</p>
+        <div class="mtz-view-link" style="margin-top:auto; display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:700;">Watch <span class="mtz-arrow">→</span></div>
+      </a>
+      <a class="mtz-card" href="{{BASE_DOMAIN}}/resources/the-4-piece-takeover-box-kfc" target="_blank" style="display:flex; flex-direction:column; text-decoration:none;">
+        <div style="display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 10px; margin-bottom:14px;"><i class="licon icon-play" style="font-size:12px;"></i>KFC</div>
+        <h3 style="font-size:var(--fs-h3); font-weight:900; color:var(--text); margin-bottom:8px;">The 4-Piece Takeover Box — KFC</h3>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;">How KFC ran a full branded takeover inside mobile games.</p>
+        <div class="mtz-view-link" style="margin-top:auto; display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:700;">Watch <span class="mtz-arrow">→</span></div>
+      </a>
+    </div>
+
+    <div style="font-size:var(--fs-h2); font-weight:700; color:var(--text); padding-bottom:16px; border-bottom:1px solid var(--border); margin-bottom:22px;">Strategy &amp; format explainers</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:var(--gap-card); margin-bottom:30px;">
+      <a class="mtz-card" href="{{BASE_DOMAIN}}/resources/the-4-piece-takeover-box" target="_blank" style="display:flex; flex-direction:column; text-decoration:none;">
+        <div style="display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 10px; margin-bottom:14px;"><i class="licon icon-play" style="font-size:12px;"></i>Format</div>
+        <h3 style="font-size:var(--fs-h3); font-weight:900; color:var(--text); margin-bottom:8px;">The 4-Piece Takeover Box</h3>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;">Social gets 1–2 seconds. This format gets 45–60.</p>
+        <div class="mtz-view-link" style="margin-top:auto; display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:700;">Watch <span class="mtz-arrow">→</span></div>
+      </a>
+      <a class="mtz-card" href="{{BASE_DOMAIN}}/resources/defendable-kpi-test" target="_blank" style="display:flex; flex-direction:column; text-decoration:none;">
+        <div style="display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 10px; margin-bottom:14px;"><i class="licon icon-play" style="font-size:12px;"></i>Strategy</div>
+        <h3 style="font-size:var(--fs-h3); font-weight:900; color:var(--text); margin-bottom:8px;">The Defendable KPI Test</h3>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;">Why brands activate inside existing games instead of building their own.</p>
+        <div class="mtz-view-link" style="margin-top:auto; display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:700;">Watch <span class="mtz-arrow">→</span></div>
+      </a>
+      <a class="mtz-card" href="{{BASE_DOMAIN}}/resources/reach-engagement-framework" target="_blank" style="display:flex; flex-direction:column; text-decoration:none;">
+        <div style="display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 10px; margin-bottom:14px;"><i class="licon icon-play" style="font-size:12px;"></i>Framework</div>
+        <h3 style="font-size:var(--fs-h3); font-weight:900; color:var(--text); margin-bottom:8px;">The Reach × Engagement Framework</h3>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;">Why gaming campaigns fail — and how to fix the media plan.</p>
+        <div class="mtz-view-link" style="margin-top:auto; display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:700;">Watch <span class="mtz-arrow">→</span></div>
+      </a>
+      <a class="mtz-card" href="{{BASE_DOMAIN}}/resources/smart-budget-play" target="_blank" style="display:flex; flex-direction:column; text-decoration:none;">
+        <div style="display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 10px; margin-bottom:14px;"><i class="licon icon-play" style="font-size:12px;"></i>Strategy</div>
+        <h3 style="font-size:var(--fs-h3); font-weight:900; color:var(--text); margin-bottom:8px;">The Smart Budget Play</h3>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;">Gaming doesn't need a big budget. It needs the right placements.</p>
+        <div class="mtz-view-link" style="margin-top:auto; display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:700;">Watch <span class="mtz-arrow">→</span></div>
+      </a>
+      <a class="mtz-card" href="{{BASE_DOMAIN}}/resources/enter-gaming-without-extra-assets" target="_blank" style="display:flex; flex-direction:column; text-decoration:none;">
+        <div style="display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); background:var(--surface-recessed); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 10px; margin-bottom:14px;"><i class="licon icon-play" style="font-size:12px;"></i>Format</div>
+        <h3 style="font-size:var(--fs-h3); font-weight:900; color:var(--text); margin-bottom:8px;">Enter Gaming Without Extra Assets</h3>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;">The three formats brands use to activate in gaming today.</p>
+        <div class="mtz-view-link" style="margin-top:auto; display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:700;">Watch <span class="mtz-arrow">→</span></div>
+      </a>
+    </div>
+
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-2xl); padding:26px;">
+      <div style="font-size:var(--fs-h3); font-weight:700; color:var(--text); margin-bottom:8px;">Seen enough to be curious?</div>
+      <p style="font-size:var(--fs-sm); color:var(--muted); margin-bottom:18px;">Nine videos in, the question stops being whether gaming works and starts being where your brand fits.</p>
+      <a class="mtz-btn mtz-btn--primary" href="https://dub.sh/mtz-book"><i class="licon icon-calendar"></i>Talk it through →</a>
+    </div>
+  </section>
+
+</main>
+
+<footer style="border-top:1px solid var(--border); padding:26px 0;">
+  <div style="max-width:var(--wrap-max); margin:0 auto; padding:0 var(--wrap-pad); display:flex; justify-content:center; color:var(--muted); font-size:13px;">
+    <span>© 2026 Monetizr · <a href="mailto:connect@monetizr.com" style="color:var(--muted);"><i class="licon icon-mail" style="vertical-align:-2px; margin-right:4px;"></i>connect@monetizr.com</a></span>
+  </div>
+</footer>
+
+<script>
+  // Tab router — show one screen at a time, sync the pill states, scroll to top.
+  // The real site may drive this from the URL path (/resources, /resources/goldmine, …)
+  // instead of in-page state — this reference uses in-page state for a single file.
+  function show(id) {
+    document.querySelectorAll('[data-screen]').forEach(function (s) { s.hidden = (s.id !== id); });
+    document.querySelectorAll('.bb-tab').forEach(function (t) {
+      t.setAttribute('aria-selected', String(t.dataset.tab === id));
+    });
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+</script>
+</body>
+</html>

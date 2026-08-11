@@ -5,6 +5,11 @@ const DEFAULT_BRAND_POSITION = { x: 0.05, y: 0.16 };
 
 const PRESET_GAMES = [
   {
+    id: "candy-crush",
+    name: "Candy Crush Saga",
+    video: "https://cdn.monetizr.com/adviewer/game_background.mp4",
+  },
+  {
     id: "landslice",
     name: "Landslice",
     image: "https://cdn.monetizr.com/adviewer/600x1300bb.webp",
@@ -14,27 +19,25 @@ const PRESET_GAMES = [
     name: "Subway Surfers",
     image: "https://cdn.monetizr.com/adviewer/600x1300bb_subway_surfers.webp",
   },
-  {
-    id: "candy-crush",
-    name: "Candy Crush Saga",
-    image: "https://cdn.monetizr.com/adviewer/600x1300bb_candry_crash.webp",
-  },
 ];
 
 const state = {
   backgroundMode: "games",
   backgroundValue: "",
-  gameId: "landslice",
+  gameId: "candy-crush",
   logoValue: "",
-  videoMode: "url",
+  brandName: "Your brand",
+  videoMode: "upload",
   videoUrl: "",
   videoReady: false,
-  rotated: false,
+  theme: "dark",
   brandPosition: { ...DEFAULT_BRAND_POSITION },
   brandDrag: null,
   suppressBrandClick: false,
   objectUrls: new Set(),
   statusTimer: null,
+  countdownFrame: null,
+  modalCloseTimer: null,
 };
 
 const elements = {
@@ -50,6 +53,7 @@ const elements = {
   backgroundDropZone: document.querySelector("#background-drop-zone"),
   browseBackground: document.querySelector("#browse-background"),
   backgroundPreview: document.querySelector("#background-preview"),
+  backgroundVideoPreview: document.querySelector("#background-video-preview"),
   emptyPreview: document.querySelector("#empty-preview"),
   logoFile: document.querySelector("#logo-file"),
   logoFileName: document.querySelector("#logo-file-name"),
@@ -58,6 +62,7 @@ const elements = {
   browseLogo: document.querySelector("#browse-logo"),
   brandButton: document.querySelector("#brand-button"),
   brandLogo: document.querySelector("#brand-logo"),
+  brandName: document.querySelector("#brand-name"),
   videoUrlForm: document.querySelector("[data-video-panel='url']"),
   videoUrl: document.querySelector("#video-url"),
   videoUrlError: document.querySelector("#video-url-error"),
@@ -66,12 +71,22 @@ const elements = {
   videoFileError: document.querySelector("#video-file-error"),
   videoRequiredMessage: document.querySelector("#video-required-message"),
   videoPreview: document.querySelector("#video-preview"),
+  videoPlayer: document.querySelector("#video-player"),
+  playerClose: document.querySelector("#player-close"),
+  videoCountdown: document.querySelector("#video-countdown"),
+  wonModal: document.querySelector("#won-modal"),
+  wonModalCard: document.querySelector("#won-modal-card"),
+  wonModalClose: document.querySelector("#won-modal-close"),
+  wonModalLogo: document.querySelector("#won-modal-logo"),
+  wonModalBrand: document.querySelector("#won-modal-brand"),
+  claimReward: document.querySelector("#claim-reward"),
   deviceSelect: document.querySelector("#device-select"),
   device: document.querySelector("#device"),
   deviceFrame: document.querySelector("#device-frame"),
   deviceScaler: document.querySelector("#device-scaler"),
   previewStage: document.querySelector("#preview-stage"),
-  rotateDevice: document.querySelector("#rotate-device"),
+  themeSwitch: document.querySelector("#theme-switch"),
+  themeSwitchLabel: document.querySelector(".theme-switch__label"),
   resetPreview: document.querySelector("#reset-preview"),
   status: document.querySelector("#status"),
 };
@@ -98,12 +113,90 @@ function selectBackgroundMode(mode) {
 }
 
 function clearVideo() {
+  window.cancelAnimationFrame(state.countdownFrame);
   elements.videoPreview.pause();
   elements.videoPreview.removeAttribute("src");
   elements.videoPreview.load();
   elements.videoPreview.hidden = true;
+  elements.videoPlayer.hidden = true;
+  elements.videoPlayer.style.setProperty("--video-progress", "0%");
+  elements.videoCountdown.textContent = "0";
+  elements.videoCountdown.hidden = false;
+  elements.playerClose.hidden = true;
+  hideWonModal();
   state.videoUrl = "";
   state.videoReady = false;
+  updateBrandButton();
+}
+
+function updateVideoProgress() {
+  const duration = elements.videoPreview.duration;
+  const currentTime = elements.videoPreview.currentTime;
+  const closeAvailable = Number.isFinite(duration) && duration > 15 && currentTime >= 15;
+  const countdownLimit = Number.isFinite(duration) ? Math.min(duration, 15) : 0;
+  const remaining = Math.max(0, Math.ceil(countdownLimit - currentTime));
+  const progress = Number.isFinite(duration) && duration > 0
+    ? Math.min(100, Math.max(0, (currentTime / duration) * 100))
+    : 0;
+  elements.videoCountdown.textContent = String(remaining);
+  elements.videoCountdown.hidden = closeAvailable;
+  elements.playerClose.hidden = !closeAvailable;
+  elements.videoPlayer.style.setProperty("--video-progress", `${progress}%`);
+}
+
+function runVideoProgress() {
+  window.cancelAnimationFrame(state.countdownFrame);
+  updateVideoProgress();
+  if (!elements.videoPreview.paused && !elements.videoPreview.ended) {
+    state.countdownFrame = window.requestAnimationFrame(runVideoProgress);
+  }
+}
+
+function hideWonModal() {
+  window.clearTimeout(state.modalCloseTimer);
+  elements.wonModal.classList.remove("show", "exiting", "exit-go");
+  elements.wonModal.setAttribute("aria-hidden", "true");
+}
+
+function openWonModal() {
+  elements.wonModal.classList.add("show");
+  elements.wonModal.setAttribute("aria-hidden", "false");
+  elements.wonModalClose.focus({ preventScroll: true });
+}
+
+function closeWonModal() {
+  if (!elements.wonModal.classList.contains("show") || elements.wonModal.classList.contains("exiting")) return;
+  elements.wonModal.classList.add("exiting");
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => elements.wonModal.classList.add("exit-go"));
+  });
+  let finished = false;
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    hideWonModal();
+    updateBrandButton();
+    elements.brandButton.focus({ preventScroll: true });
+  };
+  const onTransitionEnd = (event) => {
+    if (event.target !== elements.wonModalCard || event.propertyName !== "transform") return;
+    elements.wonModalCard.removeEventListener("transitionend", onTransitionEnd);
+    finish();
+  };
+  elements.wonModalCard.addEventListener("transitionend", onTransitionEnd);
+  state.modalCloseTimer = window.setTimeout(finish, 1500);
+}
+
+function closePlayer() {
+  window.cancelAnimationFrame(state.countdownFrame);
+  elements.videoPreview.pause();
+  elements.videoPreview.currentTime = 0;
+  elements.videoPreview.hidden = true;
+  elements.videoPlayer.hidden = true;
+  elements.videoPlayer.style.setProperty("--video-progress", "0%");
+  elements.videoCountdown.textContent = "0";
+  elements.videoCountdown.hidden = false;
+  elements.playerClose.hidden = true;
   updateBrandButton();
 }
 
@@ -132,10 +225,27 @@ function isPublicUrl(value) {
   }
 }
 
-function showBackground(imageUrl) {
-  state.backgroundValue = imageUrl;
-  elements.backgroundPreview.src = imageUrl;
-  elements.backgroundPreview.hidden = false;
+function showBackground(sourceUrl, type = "image") {
+  state.backgroundValue = sourceUrl;
+  const isVideo = type === "video";
+
+  if (isVideo) {
+    elements.backgroundPreview.hidden = true;
+    elements.backgroundPreview.removeAttribute("src");
+    elements.backgroundVideoPreview.src = sourceUrl;
+    elements.backgroundVideoPreview.hidden = false;
+    elements.backgroundVideoPreview.load();
+    elements.backgroundVideoPreview.play().catch(() => {
+      showStatus("The selected background video could not be played.");
+    });
+  } else {
+    elements.backgroundVideoPreview.pause();
+    elements.backgroundVideoPreview.hidden = true;
+    elements.backgroundVideoPreview.removeAttribute("src");
+    elements.backgroundVideoPreview.load();
+    elements.backgroundPreview.src = sourceUrl;
+    elements.backgroundPreview.hidden = false;
+  }
   elements.emptyPreview.hidden = true;
 }
 
@@ -148,8 +258,9 @@ function selectGame(gameId) {
   state.backgroundMode = "games";
   state.gameId = game.id;
   elements.gameBackground.value = game.id;
-  elements.gameBackgroundName.textContent = `${game.name} background`;
-  showBackground(game.image);
+  const type = game.video ? "video" : "image";
+  elements.gameBackgroundName.textContent = `${game.name}${type === "video" ? " video" : ""} background`;
+  showBackground(game.video || game.image, type);
 }
 
 function readImage(file) {
@@ -166,25 +277,27 @@ async function acceptBackgroundFile(file) {
   if (!file) return;
 
   const extension = file.name.toLowerCase().split(".").pop();
-  const allowedType = ["image/jpeg", "image/png", "image/gif"].includes(file.type);
-  const allowedExtension = ["jpg", "jpeg", "png", "gif"].includes(extension);
+  const allowedType = ["image/jpeg", "image/png", "image/gif", "video/mp4"].includes(file.type);
+  const allowedExtension = ["jpg", "jpeg", "png", "gif", "mp4"].includes(extension);
   if (!allowedType && !allowedExtension) {
-    elements.backgroundFileError.textContent = "Choose a JPEG, PNG, or GIF image.";
+    elements.backgroundFileError.textContent = "Choose a JPEG, PNG, GIF, or MP4 file.";
     return;
   }
   if (file.size > MAX_FILE_SIZE) {
-    elements.backgroundFileError.textContent = "The image exceeds the 10 MB limit.";
+    elements.backgroundFileError.textContent = "The background file exceeds the 10 MB limit.";
     return;
   }
 
   try {
-    const imageUrl = await readImage(file);
+    const isVideo = file.type === "video/mp4" || extension === "mp4";
+    const backgroundUrl = isVideo ? URL.createObjectURL(file) : await readImage(file);
+    if (isVideo) state.objectUrls.add(backgroundUrl);
     state.backgroundMode = "upload";
     state.gameId = "";
     elements.backgroundFileName.textContent = file.name;
-    showBackground(imageUrl);
+    showBackground(backgroundUrl, isVideo ? "video" : "image");
   } catch (_error) {
-    elements.backgroundFileError.textContent = "The image could not be read.";
+    elements.backgroundFileError.textContent = "The background file could not be read.";
   }
 }
 
@@ -193,6 +306,11 @@ function updateBrandButton() {
   elements.brandButton.hidden = !state.logoValue;
   elements.brandButton.setAttribute("aria-disabled", String(!ready));
   if (state.logoValue) window.requestAnimationFrame(applyBrandButtonPosition);
+}
+
+function updateBrandName(value) {
+  state.brandName = value.trim() || "Your brand";
+  elements.wonModalBrand.textContent = state.brandName;
 }
 
 function brandButtonBounds() {
@@ -269,6 +387,7 @@ async function acceptLogoFile(file) {
     state.logoValue = await readImage(file);
     elements.logoFileName.textContent = file.name;
     elements.brandLogo.src = state.logoValue;
+    elements.wonModalLogo.src = state.logoValue;
     updateBrandButton();
   } catch (_error) {
     elements.logoFileError.textContent = "The logo could not be read.";
@@ -296,13 +415,41 @@ function selectedDevice() {
   return elements.deviceSelect.selectedOptions[0];
 }
 
+function setTheme(theme, persist = true) {
+  const resolvedTheme = theme === "light" ? "light" : "dark";
+  state.theme = resolvedTheme;
+  document.documentElement.dataset.theme = resolvedTheme;
+  const isLight = resolvedTheme === "light";
+  elements.themeSwitch.setAttribute("aria-checked", String(isLight));
+  elements.themeSwitch.setAttribute("aria-label", `Switch to ${isLight ? "dark" : "light"} theme`);
+  elements.themeSwitchLabel.textContent = isLight ? "Light" : "Dark";
+  if (persist) {
+    try {
+      window.localStorage.setItem("ad-viewer-theme", resolvedTheme);
+    } catch (_error) {
+      // The theme still works when browser storage is unavailable.
+    }
+  }
+}
+
+function initialTheme() {
+  try {
+    const savedTheme = window.localStorage.getItem("ad-viewer-theme");
+    if (savedTheme === "light" || savedTheme === "dark") return savedTheme;
+  } catch (_error) {
+    // Fall through to the design-system dark default.
+  }
+  return "dark";
+}
+
 function updateDevice() {
   const option = selectedDevice();
   const portraitWidth = Number(option.dataset.width);
   const portraitHeight = Number(option.dataset.height);
-  const width = state.rotated ? portraitHeight : portraitWidth;
-  const height = state.rotated ? portraitWidth : portraitHeight;
+  const width = portraitWidth;
+  const height = portraitHeight;
   const inset = Number(option.dataset.inset);
+  const screenRadius = Number(option.dataset.radius);
   const availableWidth = Math.max(220, elements.previewStage.clientWidth - 70);
   const availableHeight = Math.max(300, elements.previewStage.clientHeight - 70);
   const scale = Math.min(1, availableWidth / width, availableHeight / height);
@@ -310,11 +457,12 @@ function updateDevice() {
   elements.device.style.setProperty("--device-width", `${width}px`);
   elements.device.style.setProperty("--device-height", `${height}px`);
   elements.device.style.setProperty("--device-inset", `${inset}px`);
+  elements.device.style.setProperty("--device-screen-radius", `${screenRadius}px`);
   elements.device.style.setProperty("--device-scale", String(scale));
   elements.deviceScaler.style.width = `${width * scale}px`;
   elements.deviceScaler.style.height = `${height * scale}px`;
   elements.deviceFrame.src = option.dataset.frame;
-  elements.deviceFrame.style.transform = state.rotated ? "rotate(90deg)" : "none";
+  elements.deviceFrame.style.transform = "none";
   applyBrandButtonPosition();
 }
 
@@ -322,10 +470,10 @@ function resetPreview() {
   revokeObjectUrls();
   clearVideo();
   state.backgroundMode = "games";
-  state.gameId = "landslice";
+  state.gameId = "candy-crush";
   state.logoValue = "";
-  state.videoMode = "url";
-  state.rotated = false;
+  state.brandName = "Your brand";
+  state.videoMode = "upload";
   state.brandPosition = { ...DEFAULT_BRAND_POSITION };
   state.brandDrag = null;
   state.suppressBrandClick = false;
@@ -337,6 +485,9 @@ function resetPreview() {
   elements.logoFileName.textContent = "";
   elements.logoFileError.textContent = "";
   elements.brandLogo.removeAttribute("src");
+  elements.wonModalLogo.removeAttribute("src");
+  elements.brandName.value = "Your brand";
+  elements.wonModalBrand.textContent = "Your brand";
   elements.brandButton.hidden = true;
   elements.brandButton.setAttribute("aria-disabled", "true");
   elements.videoUrl.value = "";
@@ -345,11 +496,11 @@ function resetPreview() {
   elements.videoUrlError.textContent = "";
   elements.videoFileError.textContent = "";
   selectBackgroundMode("games");
-  selectGame("landslice");
+  selectGame("candy-crush");
   elements.videoRequiredMessage.textContent = "A video URL or uploaded video is required.";
-  selectVideoMode("url");
+  selectVideoMode("upload");
   updateDevice();
-  showStatus("Preview reset to Landslice.");
+  showStatus("Preview reset to Candy Crush Saga.");
 }
 
 elements.backgroundTabs.forEach((tab) => {
@@ -389,6 +540,12 @@ elements.backgroundPreview.addEventListener("error", () => {
   showStatus("The selected background could not be loaded.");
 });
 
+elements.backgroundVideoPreview.addEventListener("error", () => {
+  elements.backgroundVideoPreview.hidden = true;
+  elements.emptyPreview.hidden = false;
+  showStatus("The selected background video could not be loaded.");
+});
+
 elements.browseLogo.addEventListener("click", () => elements.logoFile.click());
 elements.logoFile.addEventListener("change", () => {
   acceptLogoFile(elements.logoFile.files[0]);
@@ -411,6 +568,8 @@ elements.logoFile.addEventListener("change", () => {
 elements.logoDropZone.addEventListener("drop", (event) => {
   acceptLogoFile(event.dataTransfer.files[0]);
 });
+
+elements.brandName.addEventListener("input", () => updateBrandName(elements.brandName.value));
 
 elements.videoTabs.forEach((tab) => {
   tab.addEventListener("click", () => selectVideoMode(tab.dataset.videoTab));
@@ -461,11 +620,28 @@ elements.brandButton.addEventListener("click", () => {
     return;
   }
   elements.videoPreview.hidden = false;
+  elements.videoPlayer.hidden = false;
+  elements.brandButton.hidden = true;
   elements.videoPreview.muted = false;
+  elements.videoPreview.currentTime = 0;
+  elements.videoCountdown.hidden = false;
+  elements.playerClose.hidden = true;
+  updateVideoProgress();
   elements.videoPreview.play().catch(() => {
+    closePlayer();
     showStatus("The selected video could not be played.");
   });
 });
+
+elements.playerClose.addEventListener("click", closePlayer);
+elements.videoPreview.addEventListener("loadedmetadata", updateVideoProgress);
+elements.videoPreview.addEventListener("play", runVideoProgress);
+elements.videoPreview.addEventListener("pause", () => {
+  window.cancelAnimationFrame(state.countdownFrame);
+  updateVideoProgress();
+});
+elements.wonModalClose.addEventListener("click", closeWonModal);
+elements.claimReward.addEventListener("click", closeWonModal);
 
 elements.brandButton.addEventListener("pointerdown", (event) => {
   if (event.button !== 0) return;
@@ -491,19 +667,24 @@ document.addEventListener("pointerup", finishBrandDrag);
 document.addEventListener("pointercancel", finishBrandDrag);
 
 elements.videoPreview.addEventListener("ended", () => {
-  elements.videoPreview.hidden = true;
-  elements.videoPreview.currentTime = 0;
+  window.cancelAnimationFrame(state.countdownFrame);
+  elements.videoCountdown.textContent = "0";
+  elements.videoPlayer.style.setProperty("--video-progress", "100%");
+  window.requestAnimationFrame(() => {
+    elements.videoPreview.hidden = true;
+    elements.videoPlayer.hidden = true;
+    elements.videoPreview.currentTime = 0;
+    openWonModal();
+  });
 });
 
 elements.deviceSelect.addEventListener("change", updateDevice);
-elements.rotateDevice.addEventListener("click", () => {
-  state.rotated = !state.rotated;
-  updateDevice();
-});
+elements.themeSwitch.addEventListener("click", () => setTheme(state.theme === "dark" ? "light" : "dark"));
 elements.resetPreview.addEventListener("click", resetPreview);
 
 window.addEventListener("resize", updateDevice);
 window.addEventListener("beforeunload", revokeObjectUrls);
 
-selectGame("landslice");
+selectGame("candy-crush");
+setTheme(initialTheme(), false);
 updateDevice();

@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="color-scheme" content="dark">
+  <title>Campaign Launcher — Monetizr</title>
+  <meta name="description" content="Drop in your existing creative and preview it live inside real mobile-game placements — no new shoot, no dev sprint."/>
+
+  <link rel="stylesheet" href="/fonts/fonts.css"/>
+  <link rel="stylesheet" href="design-system/reference/tokens.css"/>
+  <link rel="stylesheet" href="design-system/reference/components.css"/>
+  <script src="design-system/reference/icons.js"></script>
+  <script src="design-system/reference/gold-burst.js"></script>
+  <script src="design-system/reference/phone-frame.js"></script>
+  <!-- League Spartan — used ONLY inside the in-game ad preview (#reviewPreview),
+       never on the Blackbelt site chrome (that stays Lato per the design
+       system). Spartan MB (Black/SemiBold) isn't freely embeddable, so this
+       is the requested open fallback. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;500;800&display=swap" rel="stylesheet">
+  <!-- Preload the preview's looping background video from the very first
+       paint — while the person is still on step 1 filling in their own
+       assets, not when they land on step 2 and expect it to already be
+       playing. 133KB (down from 650KB source: stripped audio, downscaled
+       to 480px wide, H.264 main @ crf28), so this is a cheap thing to
+       front-load. -->
+  <link rel="preload" as="video" href="media/bg-loop.mp4" type="video/mp4">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; min-height: 100vh; }
+
+    /* NAV — locked site-standard fixed header, see design-system/specs/header-footer.spec.md */
+    .nav { padding: 20px 28px; display: flex; align-items: center; gap: var(--space-3); border-bottom: 1px solid var(--border-hairline); position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(11,14,37,0.8); backdrop-filter: blur(12px) saturate(140%); -webkit-backdrop-filter: blur(12px) saturate(140%); }
+    .nav-sep { width: 1px; height: 20px; background: var(--line-strong); flex-shrink: 0; }
+    @media print { body { padding-top: 0 !important; } }
+
+    /* "Blackbelt" nav link + hover info popover — identical on every page, see
+       design-system/specs/header-footer.spec.md. Always this link/copy, never
+       a page title. */
+    .nav-link { font-size: 14px; font-weight: 700; color: var(--faint); text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1; }
+    .nav-link:hover { color: var(--accent); }
+    .nav-link-wrap { position: relative; display: inline-flex; align-items: center; }
+    .nav-info {
+      position: absolute; top: calc(100% + 12px); left: 0; width: 575px; max-width: min(575px, calc(100vw - 40px));
+      background: var(--surface-recessed); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm);
+      padding: var(--space-5) var(--space-6); font-size: var(--fs-lede); font-weight: 400; line-height: var(--lh-body); color: var(--muted);
+      display: grid; grid-template-columns: auto 1fr; align-items: start; gap: var(--space-3);
+      opacity: 0; transform: scale(0.96); transform-origin: top left; pointer-events: none; z-index: 20;
+      transition: opacity var(--dur-base) ease, transform var(--dur-base) ease;
+    }
+    .nav-info .licon { font-size: 17px; margin-top: 5px; color: var(--muted); }
+    .nav-info span { min-width: 0; overflow-wrap: break-word; text-align: center; text-wrap: balance; }
+    .nav-info::after {
+      content: ''; position: absolute; bottom: 100%; left: 14px; width: 0; height: 0;
+      border: 5px solid transparent; border-bottom-color: var(--surface-recessed);
+    }
+    @media (hover:hover) and (pointer:fine) {
+      .nav-link-wrap:hover .nav-info,
+      .nav-link:focus-visible ~ .nav-info { opacity: 1; transform: scale(1); }
+    }
+
+    /* PAGE */
+    /* Matches kpibooster.html's content column exactly (1120px effective
+       width via padding, not a boxed max-width) — see design-system/specs/
+       header-footer.spec.md note on shared column width. */
+    .page { padding: var(--space-10) max(20px, calc(50% - 560px)) 96px; }
+
+    /* HERO */
+    .hero { padding: 0 0 32px; }
+    .hero .eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-xs); font-weight: var(--fw-bold); letter-spacing: var(--tracking-eyebrow); text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    .hero h1 { font-family: var(--font-sans); font-size: var(--fs-display); font-weight: var(--fw-black); letter-spacing: var(--tracking-display); color: var(--text); line-height: var(--lh-display); margin-bottom: 14px; max-width: 760px; }
+    .hero h1 .accent { color: var(--accent); }
+    .hero p { font-size: var(--fs-lede); color: var(--muted); line-height: var(--lh-body); max-width: 900px; text-wrap: balance; }
+
+    /* HOW IT WORKS — copied verbatim from design-system/reference/index.html's
+       #launcher section: numbered .mtz-card trio, plain heading + rule above. */
+    .section-heading { font-size: var(--fs-h2); font-weight: 700; color: var(--text); margin-bottom: 20px; }
+    .steps-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--gap-card); margin-bottom: var(--space-7); }
+    /* These cards are informational, not links — components.css's .mtz-card
+       ships a hover lift + pointer cursor meant for clickable cards, which is
+       exactly what made a user think step 1 was a dropzone. Neutralize both. */
+    .steps-grid .mtz-card { cursor: default; position: relative; }
+    .steps-grid .mtz-card:hover { transform: none; border-color: var(--border-hairline); }
+    .steps-grid .step-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .steps-grid .step-icon { position: absolute; top: 18px; right: 18px; width: 18px; height: 18px; color: var(--muted); flex-shrink: 0; }
+    .steps-grid .step-icon svg { display: block; width: 100%; height: 100%; }
+    .steps-grid .num { font-weight: 900; font-size: var(--fs-h2); color: var(--accent); flex-shrink: 0; }
+    .steps-grid .step-title { font-family: var(--font-sans); font-size: var(--fs-h2); font-weight: var(--fw-bold); color: var(--text); letter-spacing: 0; line-height: 1.2; }
+    .steps-grid .step-desc { font-size: 13px; color: var(--muted); }
+    @media (max-width: 640px) { .steps-grid .step-title { font-size: 15px; } }
+
+    /* components.css's .mtz-alert pins to the viewport top edge (top:18px);
+       we want it centered on the fixed nav bar (77px tall) instead. */
+    #toolAlert { top: 38px; transform: translate(-50%, calc(-50% - 12px)); }
+    #toolAlert.visible { transform: translate(-50%, -50%); }
+    @media (prefers-reduced-motion: reduce) {
+      #toolAlert { transform: translate(-50%, -50%) !important; }
+    }
+
+    /* TOOL — Upload → in-game preview. Real component (ported from
+       makeswift-mockup-builder.html) restyled onto Blackbelt tokens.
+       Panel = surface + hairline, matches the site's capture-panel look;
+       never a drop shadow (golden rule #4). */
+    .tool-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); background: var(--surface-recessed); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 4px 10px; margin-bottom: 14px; }
+    .tool-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-2xl); padding: var(--space-8); }
+    .tool-step-label { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-xs); font-weight: var(--fw-bold); letter-spacing: var(--tracking-eyebrow); text-transform: uppercase; color: var(--muted); margin-bottom: var(--space-6); }
+    .tool-progress { display: flex; gap: 6px; width: 10%; margin: 0 auto var(--space-6) auto; }
+    .tool-progress span { height: 3px; flex: 1; border-radius: var(--radius-pill); background: var(--line-strong); transition: background var(--dur-slow) var(--ease-out); }
+    .tool-progress span.active { background: var(--accent); }
+
+    .tool-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+    .tool-field { display: flex; flex-direction: column; gap: 7px; }
+    .tool-field label { font-size: var(--fs-sm); font-weight: 700; color: var(--text); }
+    .tool-input {
+      width: 100%; background: var(--surface-recessed); border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 17px 14px; font-size: var(--fs-body); color: var(--text); font-family: var(--font-sans);
+      transition: border-color var(--dur-base) var(--ease-out);
+    }
+    .tool-input::placeholder { color: var(--faint); }
+    .tool-input:focus-visible { outline: none; border-color: var(--accent); }
+
+    /* Dropzone — reuses the site's dashed "mock" visual language for the
+       empty/pending state (design-system/specs/phone-frame.spec.md's own
+       distinction between a pending dashed well and a real filled one),
+       then switches to a solid hairline once a real file lands. */
+    .tool-dropzone {
+      position: relative; border: var(--border-dashed); border-radius: var(--radius-lg);
+      background: var(--surface-recessed); padding: var(--space-6); text-align: center;
+      cursor: pointer; transition: border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
+      min-height: 87px; box-sizing: border-box;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tool-dropzone .dz-empty, .tool-dropzone .dz-filled { width: 100%; }
+    .tool-dropzone:hover, .tool-dropzone.dragover { border-color: var(--accent); }
+    .tool-dropzone.has-file { border: 2px solid var(--border-hover); background: var(--surface); }
+    .tool-dropzone .dz-check { display: none; position: absolute; top: 8px; right: 8px; width: 20px; height: 20px; color: var(--accent); background: var(--surface); border-radius: 50%; }
+    .tool-dropzone .dz-check svg { display: block; width: 100%; height: 100%; }
+    .tool-dropzone.has-file .dz-check { display: block; }
+    .tool-dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .tool-dropzone .dz-label { font-size: 13px; font-weight: 700; color: var(--text); }
+    .tool-dropzone .dz-hint { font-size: 12px; color: var(--faint); margin-top: 3px; line-height: 1.4; }
+    .tool-dropzone .dz-filename { font-size: 12px; color: var(--muted); word-break: break-all; }
+
+    .tool-color-field { display: flex; align-items: center; gap: 10px; background: var(--surface-recessed); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px 12px; cursor: pointer; }
+    .cta-btn-fixed {
+      width: 200px;
+      height: 40px;
+      padding-top: 0;
+      padding-bottom: 0;
+      justify-content: center;
+      font-weight: var(--fw-black);
+      line-height: 1;
+    }
+    /* Muted circular back button — same height as the CTA button, left arrow only */
+    .back-circle-btn {
+      display: inline-flex; align-items: center; justify-content: center; justify-self: end;
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      background: var(--surface-recessed); border: 1px solid var(--border);
+      color: var(--muted); text-decoration: none;
+      padding: 0; cursor: pointer;
+      transition: background var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+    }
+    .back-circle-btn svg { width: 18px; height: 18px; }
+    .back-circle-btn:hover { background: var(--surface); border-color: var(--border-hover); color: var(--text); }
+    .tool-color-input { -webkit-appearance: none; appearance: none; width: 34px; height: 34px; padding: 0; border: 1px solid var(--border-hover); border-radius: var(--radius-sm); background: none; cursor: pointer; flex-shrink: 0; }
+    .tool-color-input::-webkit-color-swatch-wrapper { padding: 2px; }
+    .tool-color-input::-webkit-color-swatch { border: none; border-radius: 4px; }
+    .tool-color-hex { font-family: var(--font-mono); font-size: 13px; color: var(--muted); letter-spacing: 0.02em; }
+    .share-result { margin-top: var(--space-7); padding: var(--space-6); background: var(--surface-recessed); border: var(--border-btn); border-color: var(--border-hairline); border-radius: var(--radius-xl); }
+    .share-result-title { color: var(--text); font-size: var(--fs-h3); font-weight: var(--fw-bold); line-height: var(--lh-tight); }
+    .share-result-copy { margin-top: var(--space-2); color: var(--muted); font-size: var(--fs-body); line-height: var(--lh-body); }
+    .share-link-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-3); margin-top: var(--space-5); }
+    .share-link-row .tool-input { min-width: 0; }
+    .share-result-links { display: flex; align-items: center; gap: var(--space-5); margin-top: var(--space-4); }
+    .share-link-action {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 200px; max-width: calc(100% - 60px); height: 40px;
+      padding: 0 var(--space-4); border: 1px solid var(--border-hairline); border-radius: var(--radius-md);
+      background: transparent; color: var(--muted);
+      font-family: var(--font-sans); font-size: var(--fs-sm); cursor: pointer;
+      transition: color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+    }
+    .share-link-action:hover,
+    .share-link-action:focus-visible { border-color: var(--accent); color: var(--accent); }
+    .step-next-action { display: flex; justify-content: flex-end; margin-top: var(--space-7); }
+    .shared-preview-intro { margin-bottom: var(--space-6); text-align: center; }
+    .shared-preview-intro h2 { color: var(--text); font-size: var(--fs-h2); font-weight: var(--fw-bold); line-height: var(--lh-tight); }
+    .shared-preview-intro p { margin-top: var(--space-1); color: var(--muted); font-size: var(--fs-body); }
+    .shared-preview-brand { color: var(--accent); }
+    .shared-preview-error { color: var(--error); }
+    body.shared-preview-mode .hero,
+    body.shared-preview-mode .section-heading,
+    body.shared-preview-mode .steps-grid,
+    body.shared-preview-mode .tool-badge,
+    body.shared-preview-mode .tool-progress,
+    body.shared-preview-mode #toolStep1,
+    body.shared-preview-mode #toolStep2 > .tool-step-label,
+    body.shared-preview-mode .tool-actions,
+    body.shared-preview-mode #shareResult { display: none !important; }
+    @media (max-width: 520px) {
+      .share-link-row { grid-template-columns: 1fr; }
+      .share-link-row .mtz-btn { justify-content: center; }
+    }
+
+    /* ── In-game ad preview — this simulates the ADVERTISER's own creative
+       inside the game, not Blackbelt UI. It intentionally uses its own fixed
+       pixel system (ported near-verbatim from makeswift-mockup-builder.html)
+       and raw values instead of design tokens — brand color/text color are
+       the advertiser's own inputs, not the Blackbelt palette. The bezel
+       around it (.mtz-phone-frame) is the one part that IS a site component.
+       A `zoom` fit-to-width (see script) keeps every fixed px position
+       correct at any container size instead of converting each value. ── */
+    .tool-preview-wrap { display: flex; justify-content: center; }
+    .tool-preview-wrap .mtz-phone-frame,
+    .tool-preview-wrap .mtz-phone-frame:hover { transform: none; }
+    #reviewPreview {
+      /* Kept as a plain fallback behind the video (below) — belt-and-
+         suspenders for the rare case autoplay/video is blocked outright. */
+      background-image: url('https://cdn.monetizr.com/default_assets/mockup_builder_background_2.png');
+      background-size: cover; background-position: center;
+    }
+    /* Looping gameplay video background, replacing the static screenshot.
+       position:static + first-in-DOM (not absolute/z-index) so it just
+       paints as the base layer under .overlay and everything else, same
+       stacking as the plain background-image it replaces. poster shows
+       instantly while the file is still buffering instead of a blank/black
+       frame. */
+    #bgLoopVideo { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .overlay { position: absolute; bottom: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.1); padding: 1rem; border-top-left-radius: 12px; border-top-right-radius: 12px; }
+    .previewLogoContainer { position: absolute; top: 130px; left: 20px; width: 105px; height: 160px; text-align: center; }
+    @keyframes teaserReturnFade { from { opacity: 0; } to { opacity: 1; } }
+    .previewLogoContainer.returning { animation: teaserReturnFade 1s ease-out both; }
+    /* Rotating light-burst — one big star behind BOTH the logo circle and
+       the button beneath it, same as the Figma source (a single Star layer
+       sized to the whole "Teaser" frame, badge + button together, not one
+       star per element). Centered on the badge, sized/positioned to spill
+       out past the badge edge on all sides and reach down past the button —
+       proportions carried over from the Figma frame (star ~1.9x the badge
+       diameter). Comes first in DOM with no z-index, so it paints behind
+       .logoContainer (2nd in DOM) and the button/exclamation (explicit
+       z-index below) with no extra stacking rules needed. */
+    .teaserStar { position: absolute; top: -47.5px; left: -47.5px; width: 200px; height: 200px; background: url('https://cdn.monetizr.com/not/Rotating-star_2.png') no-repeat center center; background-size: contain; animation: badgeSpin 7s linear infinite; }
+    @keyframes badgeSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    /* The circle mask now holds ONLY the brand logo. Critically, the pulse
+       scales THIS element (mask + content together) rather than something
+       *inside* it — scaling content inside a fixed-size mask would grow it
+       right past the mask's edge and get clipped; scaling the mask itself
+       means the circle and the logo grow and shrink as one rigid unit, so
+       nothing is ever cropped. */
+    .logoContainer {
+      position: relative; max-width: 105px; width: 105px; height: 105px; border-radius: 50%; overflow: hidden; background-color: rgba(255,255,255,0.5);
+      animation: badgeLogoPulse 3.1s ease-in-out infinite, badgeLogoFade 3.1s ease-in-out infinite;
+    }
+    /* Logo ↔ reward — matches the real in-game teaser: hold each ~1.1s,
+       dissolve ~0.4s, ~3.1s full cycle, with a scale-up-then-back-down pulse
+       at each swap (both measured off your Figma screen recording). The
+       reward is NOT put inside the circle mask — it's not brand-owned
+       artwork being badge-clipped, it's a reward icon that should show in
+       full — so it's a plain sibling image, sized to its own aspect ratio
+       (object-fit: contain, no crop) and animated on its own opposite-phase
+       keyframes rather than sharing the mask's overflow:hidden. */
+    @keyframes badgeLogoFade { 0%, 32% { opacity: 1; } 45%, 82% { opacity: 0; } 95%, 100% { opacity: 1; } }
+    @keyframes badgeLogoPulse { 0%, 28% { transform: scale(1); } 38% { transform: scale(1.15); } 48%, 78% { transform: scale(1); } 88% { transform: scale(1.15); } 100% { transform: scale(1); } }
+    .reward-badge {
+      /* top:52.5px (not 50%) is deliberate — .previewLogoContainer is
+         160px tall (room for the button below) but the logo circle only
+         occupies its top 105px, so the circle's own center sits at 52.5px
+         from the top, not 50% of the full 160px box. left:50% happens to
+         already be correct since the container's width (105px) matches
+         the circle's own width exactly. */
+      position: absolute; top: 52.5px; left: 50%; z-index: 1;
+      animation: badgeRewardPulse 3.1s ease-in-out infinite, badgeRewardFade 3.1s ease-in-out infinite;
+    }
+    @keyframes badgeRewardFade { 0%, 32% { opacity: 0; } 45%, 82% { opacity: 1; } 95%, 100% { opacity: 0; } }
+    /* translate(-50%,-50%) baked into every step, not set separately — an
+       animation's `transform` fully replaces the static one while it runs
+       (see .spin elsewhere in this file for the same fix), so without it
+       here the badge would snap off-center the instant the pulse starts. */
+    @keyframes badgeRewardPulse {
+      0%, 28% { transform: translate(-50%, -50%) scale(1); }
+      38% { transform: translate(-50%, -50%) scale(1.15); }
+      48%, 78% { transform: translate(-50%, -50%) scale(1); }
+      88% { transform: translate(-50%, -50%) scale(1.15); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .teaserStar { animation: none; }
+      .logoContainer { animation: none; opacity: 1; }
+      .reward-badge { animation: none; opacity: 0; }
+    }
+    /* Sits above the star (which has no z-index / paints first) and needs
+       to hang half off the badge's edge like a notification pip — kept as a
+       sibling of .logoContainer rather than a child of it, since the mask's
+       overflow:hidden would clip the half that overhangs. Nudged up/left a
+       touch off the corner per feedback (was flush with top:0/right:0). */
+    .exclamationSign { position: absolute; top: -6px; right: -1px; width: 35px; height: 35px; background: url('https://cdn.monetizr.com/default_assets/exclamation_icon.png') no-repeat center center; background-size: contain; z-index: 2; }
+    /* Press feedback — close is real tappable game UI with no competing
+       animation, so a plain scale-down on :active confirms the tap landed
+       (design-system "buttons must feel responsive" rule). */
+    #reviewPreview .modal-close { transition: transform 120ms cubic-bezier(0.23, 1, 0.32, 1); }
+    #reviewPreview .modal-close:active { transform: scale(0.93); }
+    /* The buttons sit inside dedicated .button-glow wrappers that carry the
+       continuous pulse. A brightness dip on the artwork confirms presses
+       without fighting the wrapper's transform animation. */
+    #reviewPreview #getRewardsVideo, #reviewPreview .claimRewardBtn { transition: filter 120ms cubic-bezier(0.23, 1, 0.32, 1); }
+    #reviewPreview #getRewardsVideo:active, #reviewPreview .claimRewardBtn:active { filter: brightness(0.82); }
+    /* ── Override components.css's ".mtz-phone-screen img{ position:absolute;
+       inset:0; width:100%; height:100%; object-fit:cover }" rule. That rule
+       is written for the common case of ONE full-bleed screenshot filling a
+       phone frame — it matches every <img> inside .mtz-phone-screen by tag,
+       so it was silently grabbing every image in this composited preview
+       (logo badge, teaser button, modal logo, reward icons, claim button)
+       and stretching each one to fill its nearest *positioned* ancestor
+       instead of its own small box — that's what made the logo and the
+       "Congrats" modal render oversized/distorted. #reviewPreview-qualified
+       selectors here outrank that rule (ID beats class+type) so each image
+       gets its own real size back. ── */
+    #reviewPreview .logo { position: static; max-width: 100%; width: 100%; height: 100%; object-fit: cover; }
+    /* Reward badge is NOT inside the mask, but it's still an <img> inside
+       .mtz-phone-screen, so it's just as exposed to that components.css
+       rule as everything else here — needs the same #reviewPreview-ID
+       override. object-fit:contain (not cover) is the whole point: the
+       mask-free reward shows its full artwork, never cropped. */
+    /* width/height:105px (not 92px) matches .logoContainer's own base size
+       exactly — both share the identical 1 → 1.15 → 1 pulse keyframe shape,
+       so matching base sizes means their *peak* ("max size condition")
+       sizes match too, without needing a separate max-size rule. */
+    #reviewPreview .reward-badge { position: absolute; top: 52.5px; left: 50%; right: auto; bottom: auto; width: 105px; height: 105px; object-fit: contain; }
+    /* Sized from a pixel measurement of the real button in your screenshots
+       (~3.5:1 aspect) — object-fit:contain so the whole pill (rounded ends
+       included) always shows uncropped and undistorted even if this
+       estimated box isn't an exact match for the real asset's canvas. */
+    /* position:relative (not the old position:static) so z-index actually
+       applies — needed now that .teaserStar is oversized and would
+       otherwise paint over this button: a `position:static` box always
+       paints *below* any positioned sibling regardless of DOM order or
+       z-index, and z-index itself is a no-op on non-positioned elements. */
+    .button-glow { position: relative; display: block; border-radius: 6px; }
+    .button-glow--teaser { z-index: 3; width: 105px; height: 24px; margin-top: -17px; }
+    #reviewPreview #getRewardsVideo { position: absolute; top: -3px; right: auto; bottom: auto; left: 0; z-index: 3; width: 105px; height: 30px; object-fit: contain; margin: 0; border-radius: 0; cursor: pointer; }
+    #reviewPreview .modal-close img { position: static; width: 36px; height: 36px; object-fit: contain; display: block; }
+    /* Logo badge centered ON the card's top border (half above / half below) —
+       matches the real in-game reward popup, not an almost-fully-external badge. */
+    #reviewPreview .modal-logo { position: absolute; top: -40px; right: auto; bottom: auto; left: 20px; width: 80px; height: 80px; object-fit: cover; border-radius: 50%; display: block; }
+    #reviewPreview .reward-image-container img { position: absolute; top: 50%; right: auto; bottom: auto; left: 50%; transform: translate(-50%, -50%); width: auto; height: auto; max-width: 100%; object-fit: initial; z-index: 2; }
+    /* Concentric with the foreground reward icon — same top/left/50%/translate
+       as the base rule above, just a different z-index/max-height, so the
+       rotating light-burst is centered *behind* the reward instead of
+       anchored to the container's top-left corner. */
+    #reviewPreview .reward-image-container .background-image { z-index: 1; max-height: 100%; top: 50%; right: auto; bottom: auto; left: 50%; transform: translate(-50%, -50%); transform-origin: center center; }
+    #reviewPreview .reward-image-container .foreground-image { max-width: 135px; }
+    /* Claim button — sized from a pixel measurement of the real "Claim"
+       button in your reference screenshot, then reduced another 15% per
+       feedback. object-fit:contain guarantees the rounded pill shape never
+       gets cropped or stretched even if this estimate is off — swap in the
+       real asset's own dimensions once you send it. */
+    .button-glow--claim { width: 154px; height: 37px; margin-top: 12px; margin-bottom: 4px; }
+    #reviewPreview .claimRewardBtn { position: absolute; top: -4px; right: auto; bottom: auto; left: 0; width: 154px; height: 45px; object-fit: contain; border-radius: 0; cursor: pointer; display: block; margin: 0; }
+
+    /* Reward-video stage. The uploaded creative is always shown in full;
+       any unused space (portrait, landscape, or square) stays solid black. */
+    .video { position: absolute; inset: 0; width: 100%; height: 100%; background: #000; overflow: hidden; }
+    .preview-video { display: block; width: 100%; height: 100%; object-fit: contain; background: #000; }
+    /* Keep browser/player chrome out of the simulated in-game placement,
+       including WebKit's native controls on mobile. */
+    .preview-video::-webkit-media-controls { display: none !important; }
+    .video-countdown {
+      position: absolute;
+      top: 60px;
+      left: 12px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 29px;
+      height: 29px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      color: #111;
+      font-family: 'League Spartan', var(--font-sans), sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      pointer-events: none;
+      transform: translateY(-50%);
+    }
+    .video-countdown span { display: block; transform: translateY(1px); }
+    .video-watch-message {
+      position: absolute;
+      right: 0;
+      bottom: 10px;
+      left: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 50px;
+      padding: 0 10px;
+      border-top: 4px solid #168bc5;
+      background: #000;
+      color: #f5f7fb;
+      font-family: 'League Spartan', var(--font-sans), sans-serif;
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.2;
+      text-align: center;
+      pointer-events: none;
+    }
+    .video-watch-message::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: 0;
+      width: var(--video-progress, 0%);
+      height: 4px;
+      background: #efc953;
+    }
+    @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(23,235,73,0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(40,167,69,0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40,167,69,0); } }
+    .btn-animated { animation: pulse 1.5s infinite; }
+    /* Keyframes include the translate(-50%,-50%) centering, not just rotate —
+       an animation's `transform` fully replaces the static one while it
+       runs, so without this the star would snap off its centered position
+       (back to its top-left anchor point) the instant it starts spinning. */
+    @keyframes spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+    .spin { transform-origin: center center; animation: spin 7s linear infinite; }
+    @keyframes pulseexclamation { 0% { transform: scale(1.0); box-shadow: 0 0 0 0 rgba(23,235,73,0); } 70% { transform: scale(1.3); box-shadow: 0 0 0 10px rgba(40,167,69,0); } 100% { transform: scale(1.0); box-shadow: 0 0 0 0 rgba(40,167,69,0); } }
+    .exclamation-animated { animation: pulseexclamation 3.0s infinite; }
+
+    /* "You won" overlay — plain CSS show/hide, no Bootstrap/jQuery. */
+    .won-modal-overlay { position: absolute; inset: 0; z-index: 10; background: rgba(0,0,0,0.65); display: none; align-items: center; justify-content: center; padding: 16px; }
+    .won-modal-overlay.show { display: flex; }
+    /* Scrim fades out in step with the card flying away on exit, instead of
+       staying opaque until it snaps off with display:none — so the game
+       screen underneath visibly un-covers as the card leaves, not after. */
+    .won-modal-overlay.exiting { background: rgba(0,0,0,0); transition: background 1250ms cubic-bezier(0.45, 0, 0.55, 1); }
+    .won-modal {
+      position: relative; width: 272px; max-width: 100%; border: 5px solid #FFF; border-radius: 25px;
+      transform-origin: center center; /* modal, not trigger-anchored — stays centered per design-system motion rules */
+      transform: translateY(-170%) rotate(-10deg);
+      opacity: 0;
+    }
+    /* Entrance: falls from above with a slight tilt, settles with a small
+       overshoot past its resting rotation/position — matches the Figma
+       prototype's own Smart Animate spec (1400ms, ease-in-out); the
+       overshoot is baked into the keyframe stops (steps past 0 at ~78%)
+       rather than relying on a bouncy easing curve, since "ease in and out"
+       itself doesn't overshoot.
+       Using an *animation*, not a transition, is what lets this play at all
+       straight off a display:none→flex flip — transitions need a
+       previously-painted "from" state to interpolate from and would
+       otherwise just snap to the end value; a keyframe animation defines
+       its own 0% state and runs regardless. */
+    .won-modal-overlay.show .won-modal {
+      animation: wonFallIn 1400ms cubic-bezier(0.45, 0, 0.55, 1) both;
+    }
+    @keyframes wonFallIn {
+      0%   { transform: translateY(-170%) rotate(-10deg); opacity: 0; }
+      55%  { opacity: 1; }
+      78%  { transform: translateY(4%) rotate(2deg); }
+      100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    }
+    /* Exit (Claim or Close tapped): flies out the bottom with rotation —
+       same motion as the entrance, reversed, and now close to the SAME
+       timing/easing (1250ms, ease-in-out) instead of the snappy 240ms this
+       started at — per feedback the quick exit read as too abrupt against
+       the slow, deliberate entrance. Split into two classes/two frames
+       rather than one: cancelling the entrance *animation* and setting a
+       new transition target in the very same style pass has no committed
+       "from" value to transition out of (identical root cause to the
+       display:none→flex issue on the entrance — see openWon) and would
+       just snap straight to the end pose. '.exiting' alone only cancels the
+       animation and holds the settled pose (a real repaint of a plain,
+       non-animated value); '.exit-go', added a frame later, is what
+       actually changes the target — that change has a genuine "from" to
+       interpolate. Runs alongside the scrim fade above so the game screen
+       underneath is visible again right as the card clears the frame, not
+       a beat later. */
+    .won-modal-overlay.exiting .won-modal {
+      animation: none;
+      transform: translateY(0) rotate(0deg);
+      opacity: 1;
+    }
+    .won-modal-overlay.exiting.exit-go .won-modal {
+      transform: translateY(160%) rotate(14deg);
+      opacity: 0;
+      transition: transform 1250ms cubic-bezier(0.45, 0, 0.55, 1), opacity 900ms ease-out;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .won-modal { transform: none !important; }
+      .won-modal-overlay.show .won-modal { animation: none !important; opacity: 1 !important; }
+      .won-modal-overlay.exiting .won-modal, .won-modal-overlay.exiting.exit-go .won-modal { transition: opacity 200ms ease !important; transform: none !important; }
+    }
+    .modal-close { position: absolute; top: -18px; right: -10px; width: 36px; height: 36px; padding: 0; background: none; border: none; box-shadow: none; cursor: pointer; }
+    /* modal-close/modal-logo/reward-image-container img/claimRewardBtn sizing
+       lives in the #reviewPreview-qualified block above (it has to outrank
+       components.css's ".mtz-phone-screen img" rule) — not duplicated here. */
+    .modal-body { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 53px 16px 22px; }
+    /* Spartan ExtraBold for the headline and brand name, with Spartan Medium
+       for the body copy — scoped to this ad-preview only
+       (League Spartan is the
+       free Google Fonts stand-in for the commercial Spartan MB, since that
+       one can't be embedded here). */
+    .bold-header { font-family: 'League Spartan', var(--font-sans), sans-serif; font-weight: 800; font-size: 2.5rem; text-align: center; }
+    .reward-body { font-family: 'League Spartan', var(--font-sans), sans-serif; font-weight: 500; font-size: 1.2rem; text-align: center; margin: 6px 0 0; }
+    /* Brand name gets a deliberate emphasis bump over the Medium body copy. */
+    .reward-body b { font-weight: 800; }
+    .reward-image-container { width: 100%; margin: 0 auto; height: 250px; position: relative; }
+
+    /* FOOTER — locked site-standard, see design-system/specs/header-footer.spec.md */
+    .site-footer { text-align: center; font-size: var(--fs-lede); color: var(--faint); }
+    #site-footer-launcher { margin-top: 40px; margin-bottom: -76px; }
+
+    @media (max-width: 700px) {
+      .nav { padding: 14px 16px; }
+      .nav svg { height: 28px !important; }
+      .page { padding-left: 16px; padding-right: 16px; }
+      .hero h1 { font-size: 26px; }
+      .steps-grid { grid-template-columns: 1fr; gap: var(--space-4); }
+      .tool-card { padding: var(--space-6); }
+      .tool-grid-2 { grid-template-columns: 1fr; }
+      .step-next-action { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" style="display:block;"><svg style="height:36px;width:auto;display:block;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1587 430"><defs><style>.cls-1{fill:#fff;}</style></defs><g id="Layer_2"><g id="Layer_1-2"><path class="cls-1" d="M769.68,165.45V130.4H675.46l-21.38,66.65-22.2-66.65H534v35.05h10.68v96.13H534v35h70.1v-35H593.86V187.86l37.39,108.75h31.6L699.18,186.8v74.78H688.9v35h80.78v-35H759V165.45Z"/><path class="cls-1" d="M889.1,190.93q-16.9-16.14-47.63-16.13-30.36,0-47.44,15.93t-17.1,46.44q0,30.57,17.1,46.47t47.44,15.92q30.29993,0,47.41-15.92T906,237.21Q906,207.11,889.1,190.93Zm-35.28,57q0,7-3.08,10.36c-2,2.2-5.16,3.31-9.27,3.31s-7.25-1.11-9.31-3.31-3.11-5.68-3.11-10.36v-21.4c0-4.71,1.06-8.13,3.11-10.36s5.17-3.31,9.31-3.31,7.22,1.11,9.27,3.31,3.08,5.65,3.08,10.36Z"/><path class="cls-1" d="M1045.26,261.58V216.49q0-19.44-8.85-30.54t-26.6-11.11q-23.07011,0-38.47,19.64V177.84H912.82v35h9.39v48.72h-9.39v35h67.51v-35h-9v-35q0-13.65,12.84-13.67,6.00009,0,9,3.31c2,2.23,3,5.65,3,10.36v35h-9v35h67.5v-35Z"/><path class="cls-1" d="M1182,244.93v-15.4q0-23.29-13.36-39t-43.47-15.7q-30.32005,0-47.41,15.93-17.09014,15.93-17.09,46.44,0,30.57,17.09,46.47t47.41,15.92a140.28106,140.28106,0,0,0,31.31006-3.31c9.62-2.2,16.9-4.65,21.9-7.36V254.73a127.52012,127.52012,0,0,1-20.5,4.91,152.87979,152.87979,0,0,1-24.80005,1.94q-10.87006,0-15.59-3.74-4.72009-3.74-4.69995-11.64v-1.27Zm-69.21-26.06c0-4.71,1-8.17,3.11-10.37s5.13-3.31,9.27-3.31,7.25,1.06,9.31006,3.2,3.08,5.62,3.08,10.48v2.56h-24.77Z"/><path class="cls-1" d="M1260.18994,261.58q-6.21,0-9.31006-3.31t-3.07983-10.34v-35h28.83v-35h-28.83V152.61H1202.5v9.62c0,4.85-1.37,8.65-4,11.44s-6.76,4.17-12.18994,4.17v35h9.39v38.68q0,26.07,11.44995,37.05t34.08,11a105.998,105.998,0,0,0,20.61-2,97.66373,97.66373,0,0,0,16.12-4.4V259.64A89.998,89.998,0,0,1,1260.18994,261.58Z"/><path class="cls-1" d="M1343.28,261.58V177.84h-58.52v35h9.39v48.72h-9.39v35H1352.7v-35ZM1295,130.4v35.68h43.59V130.4Z"/><path class="cls-1" d="M1440.92,249.62v12H1420.4l50.86-53.2V177.84H1359.09v42.73h31.81994v-7.71h19l-52.12,51.92v31.83h115.38v-47Z"/><path class="cls-1" d="M1579.35,175.7a37.32,37.32,0,0,0-8.1-.86c-7.28,0-13.47,1.6-18.61,4.8A46.15987,46.15987,0,0,0,1539,193.42V177.84h-58.52v35h9.39v48.72h-9.39v35h77.75v-35H1539V243q0-13.9,7.27-20.95T1567,215a48.60019,48.60019,0,0,1,18.81006,3.63V177.84A28.08954,28.08954,0,0,0,1579.35,175.7Z"/><path class="cls-1" d="M214.07.93C95.81.93,0,96.72,0,215S95.81,429.07,214.07,429.07,428.14,333.28,428.14,215,332.35.93,214.07.93ZM335,320.78H272V189.54l-58.32,89.48h-1.31l-57.83-88.76V320.78H92.22V133.6l66.87-41.27,54.52,88.39L268.1,92.33H335Z"/></g></g></svg></a>
+  <span class="nav-sep" aria-hidden="true"></span>
+  <span class="nav-link-wrap">
+    <a class="nav-link" href="{{BASE_DOMAIN}}" aria-describedby="nav-blackbelt-info">Blackbelt</a>
+    <div class="nav-info" id="nav-blackbelt-info" role="tooltip"><i class="licon icon-info" aria-hidden="true"></i><span>Master gaming media buying. Get the frameworks, benchmarks, and strategies top brands use to plan smarter campaigns.</span></div>
+  </span>
+</nav>
+
+<div class="page">
+
+  <!-- HERO — matches design-system/reference/index.html's #launcher section verbatim -->
+  <div class="hero">
+    <div class="eyebrow"><i class="licon icon-rocket" style="font-size:13px;"></i>Campaign Launcher</div>
+    <h1>Your existing creative already works here.<br><span class="accent">Watch it happen.</span></h1>
+    <p>Drop in the video and logo you already have. No new shoot, no dev sprint. See your exact brand rendered inside a real mobile game in three clicks.</p>
+  </div>
+
+  <!-- HOW IT WORKS — copied verbatim (structure + copy) from the reference's #launcher section -->
+  <div class="section-heading">How it works</div>
+  <div class="steps-grid">
+    <div class="mtz-card">
+      <div class="step-header">
+        <span class="step-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg></span>
+        <div class="num">1.</div>
+        <div class="step-title">Upload</div>
+      </div>
+      <div class="step-desc">Add the logo and video you already have below.</div>
+    </div>
+    <div class="mtz-card">
+      <div class="step-header">
+        <span class="step-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg></span>
+        <div class="num">2.</div>
+        <div class="step-title">Preview</div>
+      </div>
+      <div class="step-desc">See it rendered live in real gameplay.</div>
+    </div>
+    <div class="mtz-card">
+      <div class="step-header">
+        <span class="step-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6"/><path d="m21 3-9 9"/><path d="M15 3h6v6"/></svg></span>
+        <div class="num">3.</div>
+        <div class="step-title">Share</div>
+      </div>
+      <div class="step-desc">Share with your colleagues or boss.</div>
+    </div>
+  </div>
+
+  <!-- THE TOOL — live component, replaces the .bb-mock placeholder -->
+
+  <div class="tool-card" id="toolCard">
+    <div class="tool-progress" aria-hidden="true">
+      <span class="active" id="prog1"></span>
+      <span id="prog2"></span>
+    </div>
+
+    <!-- STEP 1 — upload -->
+    <div id="toolStep1">
+      <div class="tool-step-label">Step 1 of 2 — Upload your creative</div>
+      <form id="uploadForm">
+        <div class="tool-grid-2">
+          <div class="tool-field">
+            <label for="imageFile">Logo</label>
+            <div class="tool-dropzone" id="logoDropzone">
+              <input type="file" id="imageFile" name="imageFile" accept=".jpg,.jpeg,.png" required>
+              <div class="dz-empty">
+                <div class="dz-label">Drop a logo or click to browse</div>
+                <div class="dz-hint">JPG or PNG up to 5 MB. Square, plain background.</div>
+              </div>
+              <div class="dz-filled" hidden>
+                <div class="dz-filename" id="logoFilename"></div>
+              </div>
+              <span class="dz-check" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span>
+            </div>
+          </div>
+          <div class="tool-field">
+            <label for="videoFile">Video</label>
+            <div class="tool-dropzone" id="videoDropzone">
+              <input type="file" id="videoFile" name="videoFile" accept="video/mp4" required>
+              <div class="dz-empty">
+                <div class="dz-label">Drop an MP4 or click to browse</div>
+                <div class="dz-hint">MP4 up to 50 MB. Plays inside the reward moment.</div>
+              </div>
+              <div class="dz-filled" hidden>
+                <div class="dz-filename" id="videoFilename"></div>
+              </div>
+              <span class="dz-check" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-grid-2" style="margin-top:var(--space-6);">
+          <div class="tool-field">
+            <label for="brandColor">Brand color</label>
+            <label class="tool-color-field" for="brandColor">
+              <input type="color" id="brandColor" name="brandColor" class="tool-color-input" value="#0033A1" required>
+              <span class="tool-color-hex" id="brandColorHex">#0033A1</span>
+            </label>
+          </div>
+          <div class="tool-field">
+            <label for="textColor">Text color</label>
+            <label class="tool-color-field" for="textColor">
+              <input type="color" id="textColor" name="textColor" class="tool-color-input" value="#FFFFFF" required>
+              <span class="tool-color-hex" id="textColorHex">#FFFFFF</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="tool-grid-2" style="margin-top:var(--space-6);">
+          <div class="tool-field">
+            <label for="brandName">Brand name</label>
+            <input class="tool-input" type="text" id="brandName" name="brandName" placeholder="e.g. Acme" value="Your Brand" required>
+          </div>
+          <div class="tool-field" id="contactField">
+            <label for="contactEmail">Your email</label>
+            <input class="tool-input" type="email" id="contactEmail" name="contactEmail" placeholder="you@brand.com" required>
+          </div>
+        </div>
+
+        <div class="step-next-action">
+          <button type="button" id="nextBtn" class="mtz-btn mtz-btn--primary cta-btn-fixed">Preview →</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- STEP 2 — preview + submit -->
+    <div id="toolStep2" hidden>
+      <div class="tool-step-label">Step 2 of 2 — Preview &amp; share</div>
+      <div class="shared-preview-intro" id="sharedPreviewIntro" hidden>
+        <h2 id="sharedPreviewTitle">Interactive campaign preview</h2>
+        <p id="sharedPreviewCopy">Tap the reward teaser to experience the placement.</p>
+      </div>
+
+      <div class="tool-preview-wrap">
+        <div class="mtz-phone-frame" style="width:342px;">
+          <div class="mtz-phone-screen" id="reviewPreview">
+            <video id="bgLoopVideo" src="media/bg-loop.mp4" poster="media/bg-loop-poster.jpg" autoplay muted loop playsinline preload="auto"></video>
+            <div class="overlay">
+              <div class="previewLogoContainer" id="teaserFront">
+                <div class="teaserStar"></div>
+                <div class="logoContainer">
+                  <img id="previewLogo" class="logo" src="" alt="Logo">
+                </div>
+                <img class="reward-badge" src="media/mockup-reward.png" alt="Reward">
+                <div class="exclamationSign exclamation-animated"></div>
+                <span class="button-glow button-glow--teaser btn-animated">
+                  <img id="getRewardsVideo" src="https://cdn.monetizr.com/not/Teaser-button.png" alt="Play">
+                </span>
+              </div>
+              <div id="previewVideo" class="video" hidden>
+                <video class="preview-video" id="videoElement" playsinline preload="metadata"></video>
+                <div class="video-countdown" aria-live="off"><span id="videoCountdown">0</span></div>
+                <div class="video-watch-message">Watch a full video to get a reward!</div>
+              </div>
+            </div>
+
+            <div class="won-modal-overlay" id="wonModal">
+              <div class="won-modal" id="brandColorOutput">
+                <button type="button" id="closeModal" class="modal-close" aria-label="Close">
+                  <img src="https://cdn.monetizr.com/not/close.png" alt="">
+                </button>
+                <img id="modalHeaderLogo" src="" alt="" class="modal-logo">
+                <div class="modal-body">
+                  <h1 class="bold-header">Congrats!</h1>
+                  <p class="reward-body">You get a reward from<br><b id="brandNameOutput"></b></p>
+                  <div class="reward-image-container">
+                    <img src="https://cdn.monetizr.com/not/Rotating-star_2.png" class="background-image spin" alt="">
+                    <img src="media/mockup-reward.png" class="foreground-image" alt="">
+                  </div>
+                  <div class="reward-button">
+                    <span class="button-glow button-glow--claim btn-animated">
+                      <img src="https://storage.googleapis.com/middleware-media-files/not/Reward-button.png" class="claimRewardBtn" id="claimReward" alt="Claim reward">
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-actions" style="display:grid; grid-template-columns:1fr auto 1fr; align-items:center; margin-top:var(--space-7); gap:var(--space-5);">
+        <a href="#" id="backBtn" class="back-circle-btn" aria-label="Back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </a>
+        <button type="button" id="submitButton" class="mtz-btn mtz-btn--primary cta-btn-fixed"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><path d="M8 12h8"/></svg><span id="submitButtonLabel">Get the link</span></button>
+        <div></div>
+      </div>
+
+      <div class="share-result" id="shareResult" hidden>
+        <div class="share-result-title" id="shareResultTitle">Preview sent</div>
+        <p class="share-result-copy" id="shareResultCopy"></p>
+        <div class="share-link-row">
+          <input class="tool-input" id="shareLink" type="url" readonly aria-label="Shareable preview link">
+          <button type="button" id="copyShareLink" class="mtz-btn mtz-btn--primary cta-btn-fixed"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><path d="M8 12h8"/></svg><span id="copyShareLinkLabel">Copy link</span></button>
+        </div>
+        <div class="share-result-links">
+          <button type="button" id="editPreview" class="back-circle-btn" aria-label="Edit preview" title="Edit preview">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          </button>
+          <button type="button" id="nativeShare" class="mtz-arrow-link share-link-action">Share another way <span class="mtz-arrow">→</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="site-footer" id="site-footer-launcher">© Monetizr. All rights reserved.</div>
+
+</div>
+
+<div class="mtz-alert" id="toolAlert" role="status" aria-live="polite">
+  <i class="licon icon-circle-alert" id="toolAlertIcon" aria-hidden="true" hidden></i>
+  <span id="toolAlertMessage"></span>
+</div>
+
+<script>
+  // Nav "Blackbelt" info popover — clamp its width to the real available space
+  // to the right of the trigger so it can never overflow past the viewport
+  // edge, however narrow the window gets. The CSS max-width is just a static
+  // fallback; this sets the precise, measured value inline.
+  (function () {
+    var trigger = document.querySelector('.nav-link-wrap');
+    var info = document.getElementById('nav-blackbelt-info');
+    if (!trigger || !info) return;
+    function clampWidth() {
+      var rect = trigger.getBoundingClientRect();
+      var margin = 20; // breathing room from the viewport's right edge
+      var available = window.innerWidth - rect.left - margin;
+      info.style.width = Math.max(240, Math.min(575, available)) + 'px';
+    }
+    trigger.addEventListener('mouseenter', clampWidth);
+    trigger.addEventListener('focusin', clampWidth);
+    window.addEventListener('resize', clampWidth);
+    clampWidth();
+  })();
+
+  // Nav is position:fixed (stays pinned, never drifts at the bottom of the
+  // page like position:sticky can inside some containing blocks). Since fixed
+  // removes it from the flow, push the page content down by its real
+  // measured height — recomputed on resize since the mobile breakpoint
+  // shrinks the nav's padding/logo size. See design-system/specs/header-footer.spec.md.
+  (function () {
+    var nav = document.querySelector('.nav');
+    if (!nav) return;
+    function padForNav() {
+      var h = nav.getBoundingClientRect().height;
+      document.body.style.paddingTop = h + 'px';
+    }
+    window.addEventListener('resize', padForNav);
+    padForNav();
+  })();
+
+  // Ad-preview fit-to-width — the phone bezel + everything inside it is a
+  // fixed 342px design (ported from makeswift-mockup-builder.html's 314x681
+  // reference box). Rather than re-deriving every absolute-positioned child
+  // as a percentage, `zoom` scales the whole thing — including layout — down
+  // to fit narrow containers, so every original pixel position stays exactly
+  // right at any size instead of drifting.
+  (function () {
+    var wrap = document.querySelector('.tool-preview-wrap');
+    var frame = document.querySelector('.mtz-phone-frame');
+    if (!wrap || !frame) return;
+    var natural = 342;
+    function fit() {
+      var avail = wrap.getBoundingClientRect().width;
+      var scale = Math.min(1, avail / natural);
+      frame.style.zoom = scale;
+    }
+    window.addEventListener('resize', fit);
+    fit();
+  })();
+
+  // ── Campaign tool — upload → in-game preview → submit ──────────────────
+  (function () {
+    var form = document.getElementById('uploadForm');
+    var step1 = document.getElementById('toolStep1');
+    var step2 = document.getElementById('toolStep2');
+    var prog1 = document.getElementById('prog1');
+    var prog2 = document.getElementById('prog2');
+    var alertEl = document.getElementById('toolAlert');
+    var previewLogo = document.getElementById('previewLogo');
+    var previewVideo = document.getElementById('previewVideo');
+    var teaserFront = document.getElementById('teaserFront');
+    var modalHeaderLogo = document.getElementById('modalHeaderLogo');
+    var closeModalBtn = document.getElementById('closeModal');
+    var claimRewardBtn = document.getElementById('claimReward');
+    var wonModal = document.getElementById('wonModal');
+    var previewVideoEl = document.getElementById('videoElement');
+    var videoCountdown = document.getElementById('videoCountdown');
+    var videoObjectURL;
+    var countdownFrame;
+    var currentShareUrl = '';
+
+    var imageInput = document.getElementById('imageFile');
+    var videoInput = document.getElementById('videoFile');
+    var brandColorInput = document.getElementById('brandColor');
+    var textColorInput = document.getElementById('textColor');
+    var brandNameInput = document.getElementById('brandName');
+    var contactEmailInput = document.getElementById('contactEmail');
+    var contactField = document.getElementById('contactField');
+    var submitButton = document.getElementById('submitButton');
+    var nextBtn = document.getElementById('nextBtn');
+    var backBtn = document.getElementById('backBtn');
+    var brandColorHex = document.getElementById('brandColorHex');
+    var textColorHex = document.getElementById('textColorHex');
+    var brandNameOutput = document.getElementById('brandNameOutput');
+    var brandColorOutput = document.getElementById('brandColorOutput');
+    var toolActions = document.querySelector('.tool-actions');
+    var shareResult = document.getElementById('shareResult');
+    var shareResultTitle = document.getElementById('shareResultTitle');
+    var shareResultCopy = document.getElementById('shareResultCopy');
+    var shareLink = document.getElementById('shareLink');
+    var copyShareLink = document.getElementById('copyShareLink');
+    var copyShareLinkLabel = document.getElementById('copyShareLinkLabel');
+    var nativeShare = document.getElementById('nativeShare');
+    var editPreview = document.getElementById('editPreview');
+    var sharedPreviewIntro = document.getElementById('sharedPreviewIntro');
+    var sharedPreviewTitle = document.getElementById('sharedPreviewTitle');
+    var sharedPreviewCopy = document.getElementById('sharedPreviewCopy');
+    var brandColor = brandColorInput.value;
+    var textColor = textColorInput.value;
+    var alertTimer;
+    var alertIcon = document.getElementById('toolAlertIcon');
+    var alertMessage = document.getElementById('toolAlertMessage');
+
+    function showAlert(kind, message) {
+      alertEl.className = 'mtz-alert mtz-alert--' + kind + ' visible';
+      alertEl.setAttribute('role', kind === 'error' ? 'alert' : 'status');
+      alertEl.setAttribute('aria-live', kind === 'error' ? 'assertive' : 'polite');
+      alertIcon.hidden = kind !== 'error';
+      alertMessage.textContent = message;
+      clearTimeout(alertTimer);
+      alertTimer = setTimeout(function () { alertEl.classList.remove('visible'); }, 4500);
+    }
+
+    function setSharedPreviewTitle(brandName) {
+      var brand = document.createElement('span');
+      brand.className = 'shared-preview-brand';
+      brand.textContent = brandName;
+      sharedPreviewTitle.textContent = '';
+      sharedPreviewTitle.appendChild(brand);
+      sharedPreviewTitle.appendChild(document.createTextNode(' interactive preview'));
+    }
+
+    // Hide the contact field when a ?contact= param is present, same as the
+    // original tool.
+    var params = new URLSearchParams(window.location.search);
+    var contactParam = params.get('contact');
+    var previewParam = params.get('preview');
+    if (contactParam && !previewParam) {
+      contactEmailInput.value = contactParam;
+      contactField.hidden = true;
+      contactEmailInput.required = false;
+    }
+
+    brandColorInput.addEventListener('input', function () { brandColorHex.textContent = brandColorInput.value.toUpperCase(); });
+    textColorInput.addEventListener('input', function () { textColorHex.textContent = textColorInput.value.toUpperCase(); });
+
+    function wireDropzone(dropzoneId, inputEl, onFile) {
+      var dz = document.getElementById(dropzoneId);
+      dz.addEventListener('dragover', function (e) { e.preventDefault(); dz.classList.add('dragover'); });
+      dz.addEventListener('dragleave', function () { dz.classList.remove('dragover'); });
+      dz.addEventListener('drop', function (e) {
+        e.preventDefault();
+        dz.classList.remove('dragover');
+        if (e.dataTransfer.files.length) { inputEl.files = e.dataTransfer.files; onFile(inputEl.files[0]); }
+      });
+      inputEl.addEventListener('change', function () { if (inputEl.files.length) onFile(inputEl.files[0]); });
+    }
+
+    wireDropzone('logoDropzone', imageInput, function (file) {
+      var dz = document.getElementById('logoDropzone');
+      dz.classList.add('has-file');
+      dz.querySelector('.dz-empty').hidden = true;
+      dz.querySelector('.dz-filled').hidden = false;
+      document.getElementById('logoFilename').textContent = file.name;
+    });
+
+    wireDropzone('videoDropzone', videoInput, function (file) {
+      var dz = document.getElementById('videoDropzone');
+      dz.classList.add('has-file');
+      dz.querySelector('.dz-empty').hidden = true;
+      dz.querySelector('.dz-filled').hidden = false;
+      document.getElementById('videoFilename').textContent = file.name;
+    });
+
+    function roundedVideoDuration() {
+      if (!previewVideoEl || !Number.isFinite(previewVideoEl.duration)) return 0;
+      return Math.max(0, Math.round(previewVideoEl.duration));
+    }
+
+    function updateVideoCountdown() {
+      if (!previewVideoEl || !videoCountdown) return;
+      var duration = roundedVideoDuration();
+      var remaining = Math.max(0, Math.ceil(duration - previewVideoEl.currentTime));
+      videoCountdown.textContent = String(remaining);
+      var exactDuration = previewVideoEl.duration;
+      var progress = Number.isFinite(exactDuration) && exactDuration > 0
+        ? Math.min(100, Math.max(0, (previewVideoEl.currentTime / exactDuration) * 100))
+        : 0;
+      previewVideo.style.setProperty('--video-progress', progress + '%');
+    }
+
+    function runVideoCountdown() {
+      cancelAnimationFrame(countdownFrame);
+      updateVideoCountdown();
+      if (!previewVideoEl.paused && !previewVideoEl.ended) {
+        countdownFrame = requestAnimationFrame(runVideoCountdown);
+      }
+    }
+
+    previewVideoEl.addEventListener('loadedmetadata', function () {
+      updateVideoCountdown();
+    });
+    previewVideoEl.addEventListener('play', runVideoCountdown);
+    previewVideoEl.addEventListener('pause', function () {
+      cancelAnimationFrame(countdownFrame);
+      updateVideoCountdown();
+    });
+    previewVideoEl.addEventListener('ended', function () {
+      cancelAnimationFrame(countdownFrame);
+      videoCountdown.textContent = '0';
+      previewVideo.style.setProperty('--video-progress', '100%');
+      // Leave zero visible for one painted frame before the reward appears.
+      requestAnimationFrame(function () {
+        previewVideo.hidden = true;
+        previewVideoEl.currentTime = 0;
+        openWon();
+      });
+    });
+
+    nextBtn.addEventListener('click', function () {
+      if (!imageInput.files.length) { showAlert('error', 'Please select a logo file.'); return; }
+      if (!videoInput.files.length) { showAlert('error', 'Please select a video file.'); return; }
+      if (imageInput.files[0].size > 5 * 1024 * 1024) { showAlert('error', 'Logo must be smaller than 5 MB.'); return; }
+      if (videoInput.files[0].size > 50 * 1024 * 1024) { showAlert('error', 'Video must be smaller than 50 MB.'); return; }
+      if (!brandColorInput.value || !textColorInput.value || !brandNameInput.value || !contactEmailInput.value) {
+        showAlert('error', 'Please fill in all fields.');
+        return;
+      }
+
+      var logoReader = new FileReader();
+      logoReader.onload = function (e) {
+        previewLogo.src = e.target.result;
+        modalHeaderLogo.src = e.target.result;
+      };
+      logoReader.readAsDataURL(imageInput.files[0]);
+
+      var videoFile = videoInput.files[0];
+      if (videoObjectURL) URL.revokeObjectURL(videoObjectURL);
+      videoObjectURL = URL.createObjectURL(videoFile);
+      previewVideoEl.src = videoObjectURL;
+      previewVideoEl.controls = false;
+      previewVideoEl.muted = true;
+      previewVideoEl.load();
+      previewVideo.hidden = true;
+      videoCountdown.textContent = '0';
+
+      brandNameOutput.textContent = brandNameInput.value;
+      brandColor = brandColorInput.value;
+      textColor = textColorInput.value;
+      brandColorOutput.style.backgroundColor = brandColor;
+      brandColorOutput.style.color = textColor;
+
+      step1.hidden = true;
+      step2.hidden = false;
+      prog2.classList.add('active');
+      document.getElementById('toolCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Safety net, not the main mechanism — a muted/autoplay/loop video
+      // generally starts on its own once it's actually laid out and
+      // visible, but it was sitting under [hidden] a moment ago, and not
+      // every browser resumes autoplay on its own once that flips. It was
+      // already preloading via <link rel="preload"> since page load, so
+      // this is just "start it," not "wait for it to download."
+      var bgVideo = document.getElementById('bgLoopVideo');
+      if (bgVideo && bgVideo.paused) { bgVideo.play().catch(function () {}); }
+    });
+
+    function returnToEditor() {
+      step2.hidden = true;
+      step1.hidden = false;
+      prog2.classList.remove('active');
+      shareResult.hidden = true;
+      toolActions.style.display = 'grid';
+      submitButton.disabled = false;
+      document.getElementById('submitButtonLabel').textContent = 'Get the link';
+      previewVideo.hidden = true;
+      teaserFront.hidden = false; // reset for the next preview attempt
+      teaserFront.classList.remove('returning');
+      wonModal.classList.remove('show', 'exiting', 'exit-go');
+      cancelAnimationFrame(countdownFrame);
+      if (previewVideoEl) { previewVideoEl.pause(); previewVideoEl.currentTime = 0; updateVideoCountdown(); }
+    }
+
+    backBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      returnToEditor();
+    });
+
+    function openWon() {
+      // Just the class — the entrance is a CSS *animation* now (see
+      // @keyframes wonFallIn), which plays correctly straight off a
+      // display:none→flex flip, unlike a transition.
+      wonModal.classList.add('show');
+    }
+
+    function closeWon(onFinished) {
+      if (typeof onFinished !== 'function') onFinished = null;
+      if (!wonModal.classList.contains('show') || wonModal.classList.contains('exiting')) return;
+      // Play the drop-out-with-rotation exit, then actually hide once it's
+      // done — removing 'show' immediately would cut the animation off
+      // before it's visible. transitionend is the real signal; the timeout
+      // is just a safety net (reduced-motion, dropped events, etc).
+      // 'exiting' cancels the entrance animation and freezes the settled
+      // pose (a real, painted, non-animated value); 'exit-go' — added two
+      // frames later, same reasoning as openWon's display:none fix — is
+      // what actually kicks off the flight, so the transition has a real
+      // "from" to interpolate out of instead of snapping straight to the end.
+      wonModal.classList.add('exiting');
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { wonModal.classList.add('exit-go'); });
+      });
+      var finished = false;
+      function finish() {
+        if (finished) return;
+        finished = true;
+        wonModal.classList.remove('show', 'exiting', 'exit-go');
+        previewVideo.hidden = true;
+        cancelAnimationFrame(countdownFrame);
+        if (previewVideoEl) { previewVideoEl.pause(); previewVideoEl.currentTime = 0; }
+        if (onFinished) onFinished();
+      }
+      // the transform transition lives on the card (.won-modal /
+      // #brandColorOutput), not the overlay — listen there.
+      brandColorOutput.addEventListener('transitionend', function onEnd(e) {
+        if (e.target !== brandColorOutput || e.propertyName !== 'transform') return;
+        brandColorOutput.removeEventListener('transitionend', onEnd);
+        finish();
+      });
+      setTimeout(finish, 1500); // safety net if transitionend never fires (exit transition itself is ~1250ms)
+    }
+    function restoreTeaser() {
+      teaserFront.classList.remove('returning');
+      teaserFront.hidden = false;
+      // Restart reliably if the reward flow is completed more than once.
+      void teaserFront.offsetWidth;
+      teaserFront.classList.add('returning');
+    }
+    closeModalBtn.addEventListener('click', function () { closeWon(restoreTeaser); });
+    claimRewardBtn.addEventListener('click', function () { closeWon(restoreTeaser); });
+
+    document.getElementById('getRewardsVideo').addEventListener('click', function () {
+      previewVideo.hidden = false;
+      // Hide the teaser front for good the moment it's tapped — not just
+      // covered by the video. It used to just sit underneath, still
+      // pulsing/spinning the whole time, so the instant the video hid again
+      // it (and the button) would show through the scrim as the Congrats
+      // card animated in on top — visible as a flash/fade of the teaser
+      // that had no business reappearing once already claimed. teaserFront
+      // It comes back after either reward-modal action completes (with a
+      // one-second fade), or via Back for a fresh preview attempt.
+      teaserFront.classList.remove('returning');
+      teaserFront.hidden = true;
+      if (previewVideoEl) {
+        previewVideoEl.muted = false;
+        previewVideoEl.currentTime = 0;
+        updateVideoCountdown();
+        previewVideoEl.play().catch(function () {
+          previewVideo.hidden = true;
+          teaserFront.hidden = false;
+          showAlert('error', 'The video could not start. Please try again.');
+        });
+      }
+    });
+
+    submitButton.addEventListener('click', function () {
+      submitButton.disabled = true;
+      var submitButtonLabel = document.getElementById('submitButtonLabel');
+      var originalLabel = submitButtonLabel.textContent;
+      var shared = false;
+      submitButtonLabel.textContent = 'Saving…';
+
+      var formData = new FormData(form);
+      fetch('/api/previews', { method: 'POST', body: formData })
+        .then(function (response) {
+          return response.json().then(function (result) { return { ok: response.ok, result: result }; });
+        })
+        .then(function (res) {
+          if (res.ok) {
+            shared = true;
+            currentShareUrl = new URL(res.result.sharePath, window.location.origin).href;
+            shareLink.value = currentShareUrl;
+            shareResultTitle.textContent = 'Preview link created';
+            var expiry = new Date(res.result.expiresAt).toLocaleDateString(undefined, {
+              year: 'numeric', month: 'short', day: 'numeric'
+            });
+            shareResultCopy.textContent = 'The preview has been saved. Please copy the link below. Anyone with this link can view the preview until ' + expiry + '.';
+            toolActions.style.display = 'none';
+            shareResult.hidden = false;
+            submitButtonLabel.textContent = 'Link ready';
+            showAlert('success', 'Preview link created.');
+            shareResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } else {
+            showAlert('error', (res.result && res.result.error) || 'The preview could not be sent.');
+          }
+        })
+        .catch(function (err) {
+          showAlert('error', 'A network error occurred: ' + err.message);
+        })
+        .finally(function () {
+          if (shared) return;
+          submitButton.disabled = false;
+          submitButtonLabel.textContent = originalLabel;
+        });
+    });
+
+    function copyCurrentShareLink() {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(currentShareUrl);
+      }
+      shareLink.focus();
+      shareLink.select();
+      return Promise.resolve(document.execCommand('copy'));
+    }
+
+    copyShareLink.addEventListener('click', function () {
+      copyCurrentShareLink().then(function () {
+        var original = copyShareLinkLabel.textContent;
+        copyShareLinkLabel.textContent = 'Copied';
+        setTimeout(function () { copyShareLinkLabel.textContent = original; }, 1600);
+      }).catch(function () {
+        showAlert('error', 'Could not copy automatically. Select the link and copy it manually.');
+      });
+    });
+
+    nativeShare.hidden = typeof navigator.share !== 'function';
+    nativeShare.addEventListener('click', function () {
+      if (!navigator.share || !currentShareUrl) return;
+      navigator.share({
+        title: brandNameInput.value + ' campaign preview',
+        text: 'Here is the interactive mobile-game campaign preview for ' + brandNameInput.value + ', created with Monetizr.',
+        url: currentShareUrl
+      }).catch(function (err) {
+        if (err.name !== 'AbortError') showAlert('error', 'The share menu could not be opened.');
+      });
+    });
+
+    editPreview.addEventListener('click', returnToEditor);
+
+    function loadSharedPreview(previewId) {
+      document.body.classList.add('shared-preview-mode');
+      step1.hidden = true;
+      step2.hidden = false;
+      sharedPreviewIntro.hidden = false;
+      sharedPreviewTitle.textContent = 'Loading preview…';
+      sharedPreviewCopy.textContent = 'Preparing the interactive placement.';
+      document.querySelector('.tool-preview-wrap').style.visibility = 'hidden';
+
+      fetch('/api/previews/' + encodeURIComponent(previewId), { headers: { 'Accept': 'application/json' } })
+        .then(function (response) {
+          return response.json().then(function (result) { return { ok: response.ok, result: result }; });
+        })
+        .then(function (res) {
+          if (!res.ok) throw new Error((res.result && res.result.error) || 'Preview unavailable.');
+          var data = res.result;
+          previewLogo.src = data.logoUrl;
+          modalHeaderLogo.src = data.logoUrl;
+          previewVideoEl.src = data.videoUrl;
+          previewVideoEl.controls = false;
+          previewVideoEl.muted = true;
+          previewVideoEl.load();
+          previewVideo.hidden = true;
+          teaserFront.hidden = false;
+          brandNameOutput.textContent = data.brandName;
+          brandColorOutput.style.backgroundColor = data.brandColor;
+          brandColorOutput.style.color = data.textColor;
+          setSharedPreviewTitle(data.brandName);
+          sharedPreviewCopy.textContent = 'Tap the reward teaser to experience the placement.';
+          document.title = data.brandName + ' — Interactive preview';
+          document.querySelector('.tool-preview-wrap').style.visibility = 'visible';
+          var bgVideo = document.getElementById('bgLoopVideo');
+          if (bgVideo && bgVideo.paused) bgVideo.play().catch(function () {});
+        })
+        .catch(function (err) {
+          sharedPreviewTitle.textContent = 'Preview unavailable';
+          sharedPreviewCopy.textContent = err.message;
+          sharedPreviewCopy.classList.add('shared-preview-error');
+        });
+    }
+
+    if (previewParam) loadSharedPreview(previewParam);
+  })();
+</script>
+</body>
+</html>

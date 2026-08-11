@@ -1,0 +1,155 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Monetizr Blackbelt — DESIGN TOKENS  (plain CSS, fully resolved)
+   ───────────────────────────────────────────────────────────────────────
+   These are the single source of truth for every colour, type size, radius,
+   spacing and motion value on the Resources site. NEVER hard-code a raw hex,
+   px size, or duration in markup — always reference a var(--token) from here.
+   If a value is missing, add it HERE first (named, in the right group), then use it.
+
+   Real hex values are shown in comments so a developer never has to resolve
+   the chain by hand.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+
+  /* ── NAVY SCALE (fixed 229° hue; higher number = darker) ─────────────── */
+  --navy-700: #232743;   /* solid stroke: borders / dividers on elevated surfaces */
+  --navy-800: #111635;   /* elevated surfaces: cards / panels / menus */
+  --navy-900: #0b0e25;   /* page canvas */
+  --navy-950: #04091f;   /* recessed wells / rails / mock-tool placeholders */
+
+  /* ── GOLD (the ONE accent — never recolour, never gradient) ──────────── */
+  --gold-500: #FEC902;   /* accent — Monetizr brand gold */
+  --gold-400: #F5D147;   /* hover — same gold, lighter */
+
+  /* ── NEUTRAL / SLATE (cool, receding) ────────────────────────────────── */
+  --white:     #f5f6fa;
+  --slate-300: #9aa1b9;
+  --slate-400: #7e85a3;
+
+  /* ── STATE HUES ──────────────────────────────────────────────────────── */
+  --error-500:   #ff5d5d;
+  --success-500: #2096F3;
+  --warning-500: #ff5d5d;   /* shares the error red — no separate amber in the palette */
+
+  /* ── DERIVED TINTS (rgba of a base — soft fill + its hairline move together) */
+  --line:        rgba(255,255,255,0.08);   /* default hairline on navy */
+  --line-strong: rgba(255,255,255,0.16);
+  --row-hover:   rgba(255,255,255,0.06);
+  --gold-soft:   rgba(254,201,2,0.22);      /* chip / tag / active fill */
+  --line-gold:   rgba(254,201,2,0.55);      /* gold hairline (hover) */
+  --error-soft:  rgba(255,93,93,0.14);
+  --line-error:  rgba(255,93,93,0.35);
+  --success-soft: rgba(32,150,243,0.14);
+  --line-success: rgba(32,150,243,0.35);
+  --warning-soft: rgba(255,93,93,0.14);
+  --line-warning: rgba(255,93,93,0.35);
+  --overlay-scrim: rgba(0,0,0,0.65);        /* full-screen dim behind a modal */
+
+  /* ── SEMANTIC ROLES (reference THESE in markup, not the raw stops) ────── */
+  --bg:               var(--navy-900);
+  --surface:          var(--navy-800);
+  --surface-recessed: var(--navy-950);
+  --surface-card:     var(--navy-800);
+  --surface-hover:    var(--row-hover);
+
+  --text:   var(--white);      /* primary text */
+  --muted:  var(--slate-300);  /* supporting / lede / labels */
+  --faint:  var(--slate-400);  /* placeholders / IDs / captions */
+  --on-accent: var(--navy-900);/* text on a gold fill */
+  --error:  var(--error-500);
+  --success: var(--success-500);
+  --warning: var(--warning-500);
+
+  --border:          var(--navy-700);   /* solid stroke on elevated surfaces */
+  --border-hairline: var(--line);       /* translucent hairline */
+  --border-hover:    var(--line-gold);  /* card border on hover */
+
+  --accent:       var(--gold-500);
+  --accent-hover: var(--gold-400);
+  --accent-soft:  var(--gold-soft);
+
+  /* ── TYPOGRAPHY ──────────────────────────────────────────────────────── */
+  --font-sans: 'Lato', -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace; /* mock-tool placeholders ONLY */
+
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 600;  /* Lato Semibold — the only true mid-weight face actually loaded */
+  --fw-bold: 700;
+  --fw-black: 900;
+
+  --fs-display: 38px;   /* h1 hero — 900, -0.02em, line-height 1.12 */
+  --fs-h2: 20px;        /* section heading — 700 */
+  --fs-h3: 19px;        /* card / panel title — 700 (site uses 900 on hub/video card titles) */
+  --fs-card-title: 22px; /* hub/video card NAME — 900, gold, the dominant line on the card */
+  --fs-hook: 19px;      /* belief-gap question line — 700 */
+  --fs-lede: 16.5px;    /* hero supporting sentence — muted */
+  --fs-plan-label: 16px; /* calculator comparison-card heading — 900 */
+  --fs-stat: 24px;      /* stat number — 900, gold */
+  --fs-stat-hero: 52px; /* single proof-stat number — 900, gold */
+  --fs-body: 14.5px;
+  --fs-sm: 13.5px;
+  --fs-xs: 12px;        /* eyebrow / kicker — 700 uppercase 0.12em */
+  --fs-2xs: 11px;       /* tag */
+
+  --lh-display: 1.12;
+  --lh-tight: 1.35;
+  --lh-body: 1.6;
+
+  --tracking-display: -0.02em;
+  --tracking-tight: -0.01em;
+  --tracking-eyebrow: 0.12em;
+  --tracking-caps: 0.08em;
+
+  /* ── SPACING & LAYOUT ────────────────────────────────────────────────── */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 14px;
+  --space-5: 18px; --space-6: 22px; --space-7: 28px; --space-8: 36px;
+  --space-9: 44px; --space-10: 64px;
+
+  --wrap-max: 900px;   /* the single centered column width */
+  --wrap-pad: 28px;    /* horizontal gutter */
+  --header-h: 64px;
+  --gap-card: 18px;    /* card-grid gap */
+  --gap-stat: 28px;    /* stat-column gap */
+  --width-cta-standard: 160px;  /* min-width for a lone primary CTA whose own
+                                    copy is short (e.g. 404's "Go Back →") so
+                                    it still reads as full-size next to
+                                    longer-copy CTAs elsewhere (matches
+                                    kpibooster.html's "Calculate reach →") */
+
+  /* ── RADII ───────────────────────────────────────────────────────────── */
+  --radius-sm: 6px;    /* tag */
+  --radius-md: 8px;    /* buttons */
+  --radius-lg: 10px;   /* badge / table / mock-tool */
+  --radius-xl: 12px;   /* card / dropdown menu */
+  --radius-2xl: 14px;  /* panel */
+  --radius-phone: 34px;/* phone frame */
+  --radius-pill: 100px;/* filter pill / tab pill */
+  --radius-full: 50%;
+
+  /* ── BORDERS ─────────────────────────────────────────────────────────── */
+  --border-btn: 1.5px solid var(--border);
+  --border-dashed: 1.5px dashed var(--border);
+
+  /* ── SHADOWS (reserved for truly floating things — never on cards) ────── */
+  --shadow-dropdown: 0 16px 32px rgba(0,0,0,0.4);
+  --shadow-phone:    0 12px 30px rgba(0,0,0,0.35);
+  --shadow-btn-hover:0 8px 22px rgba(254,201,2,0.35);
+  --shadow-btn-press:0 2px 8px rgba(254,201,2,0.25);
+
+  /* ── MOTION (one language: ease-out, <200ms, real press feedback) ─────── */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);  /* on-screen morphing only (e.g. loading pulse) — never for hover/press feedback */
+  --dur-fast: 120ms;
+  --dur-base: 160ms;
+  --dur-slow: 200ms;
+  --press-scale: 0.97;  /* immediate scale on :active */
+  --lift: -2px;         /* translateY on hover */
+
+  /* Loading-state exception: a real async-fetch indicator (icon lookup),
+     not decorative motion, so it sits outside the <200ms interaction cap.
+     Opacity-only breathing pulse on the existing diagonal gradient — never
+     gold, never on anything but a skeleton, never a transform/position move. */
+  --dur-breathe: 1800ms;
+}

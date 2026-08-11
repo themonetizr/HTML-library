@@ -1,0 +1,288 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Monetizr Blackbelt — COMPONENT + INTERACTION styles (plain CSS)
+   ───────────────────────────────────────────────────────────────────────
+   Base appearance is set with inline styles + tokens in the markup (see
+   index.html). This file supplies ONLY the things inline styles can't express:
+   :hover / :active / :focus states, and the shared reset.
+   One motion language: ease-out, <200ms, real press feedback, reduced-motion safe.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── reset & document defaults ───────────────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { background: var(--bg); }
+
+body {
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); }
+
+input, textarea, select { font-family: var(--font-sans); caret-color: var(--accent); }
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
+
+/* inline icons — always beside text, never a stacked tile over a heading */
+.licon { line-height: 1; vertical-align: -2px; }
+
+/* ── Card ─────────────────────────────────────────────────────────────
+   Elevation is surface + hairline border, NOT shadow. Hover: border → gold
+   at 35%, card lifts -2px; the footer view-link turns gold + arrow slides 3px. */
+.mtz-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-xl);
+  padding: 22px;
+  transition: border-color var(--dur-slow) var(--ease-out),
+              transform   var(--dur-slow) var(--ease-out);
+}
+@media (hover:hover) and (pointer:fine) {
+  .mtz-card:hover { border-color: var(--border-hover); transform: translateY(var(--lift)); }
+}
+.mtz-card .mtz-view-link .mtz-arrow { display: inline-block; transition: transform 180ms var(--ease-out); }
+.mtz-card:hover .mtz-view-link { color: var(--accent); }
+.mtz-card:hover .mtz-view-link .mtz-arrow { transform: translateX(3px); }
+
+/* ── Button ───────────────────────────────────────────────────────────
+   primary = solid gold, navy text · secondary = gold outline, gold text. */
+.mtz-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  white-space: nowrap; cursor: pointer;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans); font-weight: 700;
+  transition: background var(--dur-base) var(--ease-out),
+              color var(--dur-base) var(--ease-out),
+              border-color var(--dur-base) var(--ease-out),
+              transform var(--dur-base) var(--ease-out),
+              box-shadow var(--dur-base) var(--ease-out);
+}
+.mtz-btn--primary {
+  background: var(--accent); color: var(--on-accent); border: 1.5px solid var(--accent);
+  padding: 11px 20px; font-size: 14px;
+}
+.mtz-btn--secondary {
+  background: transparent; color: var(--accent); border: 1.5px solid var(--accent);
+  padding: 9px 16px; font-size: 13px;
+}
+@media (hover:hover) and (pointer:fine) {
+  .mtz-btn--primary:not([disabled]):hover {
+    /* color MUST be re-asserted: these buttons are <a>, and the generic
+       a:hover{color:accent-hover} would otherwise turn the navy label light-gold
+       on the light-gold hover fill → invisible text. Keep it navy. */
+    background: var(--accent-hover); color: var(--on-accent);
+    transform: translateY(var(--lift)); box-shadow: var(--shadow-btn-hover);
+  }
+  .mtz-btn--secondary:not([disabled]):hover {
+    border-color: var(--accent); color: var(--accent); transform: translateY(var(--lift));
+  }
+}
+.mtz-btn--primary:not([disabled]):active {
+  transform: scale(var(--press-scale)); box-shadow: var(--shadow-btn-press);
+  transition: transform 100ms var(--ease-out);
+}
+.mtz-btn--secondary:not([disabled]):active {
+  transform: scale(var(--press-scale)); transition: transform 100ms var(--ease-out);
+}
+
+/* ── ArrowLink ────────────────────────────────────────────────────────
+   Gold, bold, trailing → that slides right on hover. No underline. */
+.mtz-arrow-link { color: var(--accent); font-weight: 700; }
+.mtz-arrow-link .mtz-arrow { display: inline-block; transition: transform 180ms var(--ease-out); }
+.mtz-arrow-link:hover { color: var(--accent-hover); }
+.mtz-arrow-link:hover .mtz-arrow { transform: translateX(3px); }
+
+/* ── Tab pill (nav) ───────────────────────────────────────────────────
+   Active = gold fill + navy text. Inactive = transparent + hairline + muted. */
+.bb-tab {
+  padding: 7px 15px; font-size: 12.5px; font-weight: 700;
+  border-radius: var(--radius-pill); cursor: pointer; white-space: nowrap;
+  font-family: var(--font-sans);
+  background: transparent; color: var(--muted); border: 1px solid var(--border);
+  transition: background var(--dur-base) var(--ease-out),
+              color var(--dur-base) var(--ease-out),
+              border-color var(--dur-base) var(--ease-out);
+}
+.bb-tab:hover { color: var(--text); border-color: var(--border-hover); }
+.bb-tab[aria-selected="true"] {
+  background: var(--accent); color: var(--on-accent); border-color: var(--accent);
+}
+
+/* ── FilterDropdown trigger (pill) ────────────────────────────────────
+   Form-field variant: static press — only the hairline goes gold, no scale/lift. */
+.mtz-dropdown-trigger {
+  display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; cursor: pointer;
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--radius-pill);
+  padding: 10px 16px; font-size: 13px; font-weight: 700; font-family: var(--font-sans);
+  transition: border-color var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+}
+.mtz-dropdown-trigger .mtz-chevron { transition: transform 180ms var(--ease-out); color: var(--muted); }
+@media (hover:hover) and (pointer:fine) {
+  .mtz-dropdown-trigger:hover { border-color: var(--accent); transform: translateY(-1px); }
+}
+.mtz-dropdown-trigger:active { transform: scale(var(--press-scale)); }
+
+/* ── Panel secondary link ─────────────────────────────────────────────── */
+.mtz-secondary-link { color: var(--muted); font-weight: 700; }
+.mtz-secondary-link .mtz-arrow { display: inline-block; transition: transform 180ms var(--ease-out); }
+.mtz-secondary-link:hover { color: var(--accent); }
+.mtz-secondary-link:hover .mtz-arrow { transform: translateX(3px); }
+
+/* ── Removable tag ────────────────────────────────────────────────────
+   A selected value the user can remove — quiet surface+hairline pill with
+   a dedicated close-button hit target (never the whole pill). */
+.mtz-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-sans); font-size: 14px; font-weight: 700; color: var(--text);
+  background: var(--surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-pill);
+  padding: 7px 7px 7px 14px; white-space: nowrap;
+}
+.mtz-tag-remove {
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  width: 18px; height: 18px; border-radius: var(--radius-full);
+  background: none; border: none; color: var(--faint); cursor: pointer; padding: 0;
+  transition: background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+}
+.mtz-tag-remove .licon-svg { width: 12px; height: 12px; }
+.mtz-tag-remove:hover { background: var(--line); color: var(--text); }
+.mtz-tag-remove:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ── Alert (top-of-viewport banner) ──────────────────────────────────────
+   Three-layer state pattern (see state-colors.prompt.md): solid icon/text,
+   .14 soft fill, .35 hairline border — fill and border always the same hue. */
+.mtz-alert {
+  position: fixed; top: 18px; left: 50%; z-index: 500;
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-sans); font-size: 14px; font-weight: 600; color: var(--text);
+  padding: 13px 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-dropdown);
+  max-width: calc(100vw - 40px);
+  opacity: 0; transform: translate(-50%, -12px); pointer-events: none;
+  transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+}
+.mtz-alert.visible { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.mtz-alert .licon { flex-shrink: 0; font-size: 18px; }
+.mtz-alert--error   { background: var(--error-soft);   border: 1px solid var(--line-error); }
+.mtz-alert--error   .licon { color: var(--error); }
+.mtz-alert--success { background: var(--success-soft); border: 1px solid var(--line-success); }
+.mtz-alert--success .licon { color: var(--success); }
+.mtz-alert--warning { background: var(--warning-soft); border: 1px solid var(--line-warning); }
+.mtz-alert--warning .licon { color: var(--warning); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mtz-alert { transition: opacity var(--dur-fast) ease !important; transform: translate(-50%, 0) !important; }
+}
+
+/* ── Data table ───────────────────────────────────────────────────────── */
+.bb-tech-table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden; font-size: 13px; margin: 14px 0;
+}
+.bb-tech-table th, .bb-tech-table td {
+  text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top;
+}
+.bb-tech-table thead th {
+  background: var(--surface-recessed); color: var(--muted);
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.bb-tech-table tbody tr:last-child td { border-bottom: none; }
+.bb-id { color: var(--faint); font-family: var(--font-mono); font-size: 11px; }
+
+/* mock-tool placeholder — dashed well where a live interactive tool renders */
+.bb-mock {
+  background: var(--surface-recessed); border: var(--border-dashed);
+  border-radius: var(--radius-lg); padding: 26px; text-align: center;
+  font-size: 13px; color: var(--faint); font-family: var(--font-mono);
+}
+
+/* ── Slider ───────────────────────────────────────────────────────────
+   Single-thumb range control on the gold rail. See Slider.prompt.md.
+   Built by design-system/reference/slider.js — this file is visuals only. */
+.mtz-slider { position: relative; padding-top: 34px; padding-bottom: 4px; touch-action: none; user-select: none; }
+.mtz-slider-rail { position: relative; height: 5px; border-radius: var(--radius-pill); background: var(--line-strong); cursor: pointer; }
+.mtz-slider-fill { position: absolute; top: 0; left: 0; height: 5px; border-radius: var(--radius-pill); background: var(--accent); pointer-events: none; }
+.mtz-slider-marks { position: absolute; top: 50%; left: 0; width: 100%; height: 0; pointer-events: none; }
+.mtz-slider-mark { position: absolute; top: 50%; width: 3px; height: 3px; border-radius: var(--radius-full); background: var(--line-strong); transform: translate(-50%, -50%); }
+.mtz-slider-mark.active { background: var(--on-accent); }
+.mtz-slider-thumb {
+  position: absolute; top: 50%; left: 0; width: 18px; height: 18px; border-radius: var(--radius-full);
+  background: var(--accent); box-shadow: 0 0 0 3.2px var(--surface);
+  transform: translate(-50%, -50%) scale(1); cursor: grab;
+  transition: transform 140ms var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+.mtz-slider.dragging .mtz-slider-thumb { transform: translate(-50%, -50%) scale(0.82); cursor: grabbing; }
+.mtz-slider-tooltip {
+  position: absolute; bottom: calc(100% + 26px); left: 50%; transform: translateX(-50%);
+  background: var(--surface-recessed); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm);
+  padding: 4px 9px; font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap;
+  opacity: 0; pointer-events: none; transition: opacity var(--dur-fast) var(--ease-out);
+}
+.mtz-slider-tooltip::after {
+  content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0; border: 5px solid transparent; border-top-color: var(--surface-recessed);
+}
+.mtz-slider-thumb.show-tip .mtz-slider-tooltip { opacity: 1; }
+.mtz-slider-end-labels { display: flex; justify-content: space-between; margin-top: 10px; font-size: 14px; color: var(--faint); }
+
+/* ── PhoneFrame — iPhone 16-style bezel for campaign screenshots ────────
+   Every geometric metric (outer radius, bezel padding, rim, screen radius)
+   is a % of the frame's *measured* width, applied via phone-frame.js
+   (ResizeObserver) — NOT fixed px — so corners stay concentric and the
+   bezel reads correctly at any size. Values below are just the pre-JS /
+   no-JS fallback, computed at the 206px reference width; phone-frame.js
+   overrides them inline as soon as it measures the real rendered width.
+   Width-driven: aspect-ratio derives height, never set height directly.
+   One motion: 3px hover lift, ease-out, reduced-motion-aware (below). */
+.mtz-phone-frame {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px; /* 206px × 0.04 */
+  border-radius: var(--radius-phone); /* 206px × 0.165 ≈ 34px */
+  background: linear-gradient(150deg, #3a3b40, #17181b 55%, #202127);
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: var(--shadow-phone);
+  transition: transform 180ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .mtz-phone-frame:hover { transform: translateY(-3px); }
+}
+.mtz-phone-screen {
+  width: 100%;
+  aspect-ratio: 9 / 19.5;
+  border-radius: 26px; /* fallback = 206px × 0.125; phone-frame.js sets the real value inline */
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  background: linear-gradient(160deg, var(--surface), var(--surface-recessed));
+}
+.mtz-phone-screen img,
+.mtz-phone-screen image-slot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Outer wrapper: centers the frame + caption as a column — matters once the
+   frame is given a fixed width narrower than its parent (see specs/phone-frame.spec.md). */
+.mtz-phone-frame-wrap { display: flex; flex-direction: column; align-items: center; }
+.mtz-phone-caption { margin-top: 12px; font-size: 13px; line-height: 1.4; text-align: center; }
+.mtz-phone-caption .num { font-family: var(--font-sans); font-weight: var(--fw-black); color: var(--accent); margin-right: 6px; }
+.mtz-phone-caption .lbl { font-family: var(--font-sans); font-weight: var(--fw-regular); color: var(--text); }
+
+/* ── Focus ring (keyboard only) — gold ring is the ONE focus signal ────── */
+.mtz-btn:focus-visible, .mtz-arrow-link:focus-visible, .mtz-card:focus-visible,
+.bb-tab:focus-visible, .mtz-dropdown-trigger:focus-visible, .mtz-secondary-link:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--radius-sm);
+}
+
+/* ── Reduced motion — transforms drop, colour transitions remain ───────── */
+@media (prefers-reduced-motion: reduce) {
+  .mtz-btn, .mtz-card, .mtz-dropdown-trigger, .bb-tab, .mtz-arrow, .mtz-arrow-link .mtz-arrow {
+    transition: background 160ms ease, color 160ms ease, border-color 160ms ease !important;
+    transform: none !important;
+  }
+  .mtz-card:hover, .mtz-btn:hover, .mtz-dropdown-trigger:hover { transform: none !important; }
+  .mtz-slider-thumb, .mtz-slider.dragging .mtz-slider-thumb { transition: box-shadow var(--dur-fast) ease !important; transform: translate(-50%, -50%) !important; }
+  .mtz-phone-frame { transition: none !important; }
+  .mtz-phone-frame:hover { transform: none !important; }
+}

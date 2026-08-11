@@ -7,7 +7,8 @@
   <title>Ad Viewer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;family=Source+Code+Pro&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600;700;900&amp;display=swap" rel="stylesheet">
+  <link href="design-system/reference/tokens.css" rel="stylesheet">
   <style>
     :root {
       color: #252637;
@@ -221,8 +222,10 @@
     .preview-viewport {
       background: #fff;
       border: 0;
+      border-radius: var(--device-screen-radius);
       height: calc(100% - (var(--device-inset) * 2));
       left: var(--device-inset);
+      overflow: hidden;
       position: absolute;
       top: var(--device-inset);
       width: calc(100% - (var(--device-inset) * 2));
@@ -233,8 +236,14 @@
       z-index: 1;
     }
 
+    .background-video-preview {
+      object-fit: cover;
+      z-index: 1;
+    }
+
     .video-preview {
       background: #000;
+      border-radius: var(--device-screen-radius);
       height: calc(100% - (var(--device-inset) * 2));
       left: var(--device-inset);
       object-fit: cover;
@@ -274,9 +283,18 @@
       background: rgba(255, 255, 255, .5) url("button-star.png") center / contain no-repeat;
       border-radius: 50%;
       height: 105px;
-      overflow: hidden;
+      overflow: visible;
       position: relative;
       width: 105px;
+    }
+
+    .brand-logo-crop {
+      border-radius: 50%;
+      height: 100%;
+      overflow: hidden;
+      position: absolute;
+      inset: 0;
+      width: 100%;
     }
 
     .brand-logo {
@@ -289,9 +307,10 @@
       background: url("button-alert.png") center / contain no-repeat;
       height: 35px;
       position: absolute;
-      right: 0;
-      top: 0;
+      right: -1px;
+      top: -6px;
       width: 35px;
+      z-index: 2;
     }
 
     .brand-teaser {
@@ -342,6 +361,392 @@
       .device-select { max-width: none; width: 100%; }
     }
   </style>
+  <style>
+    /* Ad Viewer application of the Monetizr Blackbelt design system. */
+    :root {
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: var(--fs-body);
+    }
+
+    html[data-theme="light"] {
+      --bg: #f5f6fa;
+      --surface: #ffffff;
+      --surface-recessed: #eef0f5;
+      --surface-card: #ffffff;
+      --surface-hover: rgba(11, 14, 37, .05);
+      --text: #111635;
+      --muted: #596078;
+      --faint: #767c91;
+      --border: #d8dbe5;
+      --border-hairline: rgba(11, 14, 37, .1);
+      --border-hover: rgba(184, 143, 0, .6);
+      --line: rgba(11, 14, 37, .1);
+      --line-strong: rgba(11, 14, 37, .18);
+      --row-hover: rgba(11, 14, 37, .05);
+      --accent-soft: rgba(254, 201, 2, .25);
+      --shadow-phone: 0 12px 30px rgba(11, 14, 37, .18);
+      --shadow-dropdown: 0 16px 32px rgba(11, 14, 37, .16);
+      color-scheme: light;
+    }
+
+    body { background: var(--bg); }
+
+    .app-header {
+      background: rgba(11, 14, 37, .92);
+      border-bottom: 1px solid var(--border-hairline);
+      color: var(--text);
+      padding: 0 var(--space-7);
+    }
+
+    html[data-theme="light"] .app-header { background: rgba(255, 255, 255, .94); }
+
+    .app-title {
+      align-items: center;
+      display: flex;
+      font-size: var(--fs-h3);
+      font-weight: var(--fw-black);
+      gap: var(--space-3);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    .app-title::before {
+      background: var(--accent);
+      border-radius: var(--radius-full);
+      content: "";
+      height: var(--space-3);
+      width: var(--space-3);
+    }
+
+    .app-title::after {
+      color: var(--accent);
+      content: "CREATIVE PREVIEW";
+      font-size: var(--fs-2xs);
+      font-weight: var(--fw-bold);
+      letter-spacing: var(--tracking-eyebrow);
+      margin-left: var(--space-1);
+    }
+
+    .app-layout { grid-template-columns: 340px minmax(0, 1fr); }
+
+    .sidebar {
+      background: var(--surface);
+      border-color: var(--border);
+      padding: var(--space-6);
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .section-title {
+      color: var(--text);
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-bold);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    .section-title::first-letter { color: var(--accent); }
+    .section-divider { border-color: var(--border-hairline); margin: var(--space-6) 0; }
+
+    .tabs {
+      background: var(--surface-recessed);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      gap: var(--space-1);
+      padding: var(--space-1);
+    }
+
+    .tab {
+      border: 1px solid transparent;
+      border-radius: var(--radius-full);
+      color: var(--muted);
+      transition: background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+    }
+
+    .tab:hover { border-color: var(--border-hover); color: var(--text); }
+    .tab[aria-selected="true"] { background: var(--accent); box-shadow: none; color: var(--on-accent); font-weight: var(--fw-bold); }
+
+    .field-label {
+      color: var(--muted);
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-bold);
+    }
+
+    .control {
+      background: var(--surface-recessed);
+      border-color: var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text);
+      transition: border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
+    }
+
+    .control:hover { border-color: var(--border-hover); }
+    .control:focus { border-color: var(--accent); box-shadow: none; outline: 2px solid var(--accent); outline-offset: 2px; }
+    .control::placeholder { color: var(--faint); }
+    select.control { color-scheme: dark; }
+    html[data-theme="light"] select.control { color-scheme: light; }
+
+    .primary-button, .secondary-button {
+      border-radius: var(--radius-md);
+      font-weight: var(--fw-bold);
+      transition: background var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+    }
+
+    .primary-button { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+    .primary-button:hover { background: var(--accent-hover); color: var(--on-accent); transform: translateY(var(--lift)); box-shadow: var(--shadow-btn-hover); }
+    .secondary-button { background: transparent; border-color: var(--border); color: var(--muted); }
+    .secondary-button:hover { background: var(--accent-soft); border-color: var(--border-hover); color: var(--text); transform: translateY(var(--lift)); }
+    .primary-button:active, .secondary-button:active { transform: scale(var(--press-scale)); }
+
+    .drop-zone {
+      background: var(--surface-recessed);
+      border-color: var(--border);
+      border-radius: var(--radius-lg);
+      color: var(--muted);
+      transition: background var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+    }
+
+    .drop-zone strong { color: var(--text); font-size: var(--fs-sm); }
+    .drop-zone small, .file-name { color: var(--faint); }
+    .drop-zone.is-dragging { background: var(--accent-soft); border-color: var(--accent); }
+    .message { color: var(--error); }
+
+    .workspace { background: var(--bg); }
+    .toolbar { background: var(--surface); border-color: var(--border); padding-inline: var(--space-6); }
+    .toolbar .secondary-button img { filter: brightness(0) saturate(100%) invert(84%) sepia(94%) saturate(1160%) hue-rotate(350deg) brightness(101%); }
+
+    .theme-switch {
+      align-items: center;
+      background: var(--surface-recessed);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      color: var(--muted);
+      display: inline-flex;
+      font-weight: var(--fw-bold);
+      gap: var(--space-2);
+      min-height: 40px;
+      padding: var(--space-1) var(--space-4) var(--space-1) var(--space-1);
+      transition: background var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+    }
+
+    .theme-switch:hover { border-color: var(--border-hover); color: var(--text); }
+    .theme-switch__track {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      display: block;
+      height: 30px;
+      position: relative;
+      width: 52px;
+    }
+
+    .theme-switch__thumb {
+      align-items: center;
+      background: var(--accent);
+      border-radius: var(--radius-full);
+      color: var(--on-accent);
+      display: flex;
+      height: 24px;
+      justify-content: center;
+      left: 3px;
+      position: absolute;
+      top: 2px;
+      transform: translateX(22px);
+      transition: transform var(--dur-slow) var(--ease-out);
+      width: 24px;
+    }
+
+    html[data-theme="light"] .theme-switch__thumb { transform: translateX(0); }
+    .theme-switch__thumb svg { fill: none; height: 14px; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; width: 14px; }
+    .theme-switch__sun { display: none; }
+    html[data-theme="light"] .theme-switch__sun { display: block; }
+    html[data-theme="light"] .theme-switch__moon { display: none; }
+    .theme-switch__label { min-width: 34px; text-align: left; }
+    .preview-stage { background: var(--bg); padding: var(--space-7); }
+    .preview-stage::before {
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-2xl);
+      content: "";
+      inset: var(--space-5);
+      pointer-events: none;
+      position: absolute;
+    }
+
+    .device-screen { background: var(--surface-recessed); border-color: var(--border); box-shadow: var(--shadow-phone); }
+    .empty-state { background: var(--surface-recessed); color: var(--muted); }
+    .empty-state strong { color: var(--text); }
+    .status { background: var(--surface); border: 1px solid var(--border-hover); border-radius: var(--radius-md); color: var(--text); box-shadow: var(--shadow-dropdown); }
+
+    .video-preview { object-fit: contain; z-index: 3; }
+    .video-preview::-webkit-media-controls { display: none !important; }
+    .video-player {
+      border-radius: var(--device-screen-radius);
+      bottom: var(--device-inset);
+      left: var(--device-inset);
+      pointer-events: none;
+      position: absolute;
+      overflow: hidden;
+      right: var(--device-inset);
+      top: var(--device-inset);
+      z-index: 5;
+    }
+
+    .video-player[hidden] { display: none; }
+    .video-close {
+      align-items: center;
+      background: none;
+      border: 0;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      height: 36px;
+      justify-content: center;
+      pointer-events: auto;
+      position: absolute;
+      left: 12px;
+      top: 60px;
+      transform: translateY(-50%);
+      transition: transform var(--dur-fast) var(--ease-out);
+      width: 36px;
+      z-index: 3;
+    }
+
+    .video-close:active { transform: translateY(-50%) scale(.93); }
+    .video-close img { display: block; height: 36px; object-fit: contain; width: 36px; }
+    .video-countdown {
+      align-items: center;
+      background: rgba(255, 255, 255, .4);
+      border-radius: var(--radius-full);
+      color: #111;
+      display: flex;
+      font-size: 15px;
+      font-variant-numeric: tabular-nums;
+      font-weight: var(--fw-medium);
+      height: 29px;
+      justify-content: center;
+      left: 12px;
+      line-height: 1;
+      position: absolute;
+      top: 60px;
+      transform: translateY(-50%);
+      width: 29px;
+      z-index: 2;
+    }
+
+    .video-countdown span { display: block; transform: translateY(1px); }
+    .video-watch-message {
+      align-items: center;
+      background: #000;
+      border-top: 4px solid #168bc5;
+      bottom: 10px;
+      color: #f5f7fb;
+      display: flex;
+      font-size: 16px;
+      font-weight: var(--fw-light);
+      height: 50px;
+      justify-content: center;
+      left: 0;
+      line-height: 1.2;
+      padding: 0 10px;
+      position: absolute;
+      right: 0;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .video-watch-message::before {
+      background: #efc953;
+      content: "";
+      height: 4px;
+      left: 0;
+      position: absolute;
+      top: -4px;
+      width: var(--video-progress, 0%);
+    }
+
+    .won-modal-overlay {
+      align-items: center;
+      background: rgba(0, 0, 0, .65);
+      border-radius: var(--device-screen-radius);
+      bottom: var(--device-inset);
+      display: none;
+      justify-content: center;
+      left: var(--device-inset);
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      right: var(--device-inset);
+      top: var(--device-inset);
+      z-index: 8;
+    }
+
+    .won-modal-overlay.show { display: flex; }
+    .won-modal-overlay.exiting { background: rgba(0, 0, 0, 0); transition: background 1250ms cubic-bezier(.45, 0, .55, 1); }
+    .won-modal {
+      background: #0033A1;
+      border: 5px solid #fff;
+      border-radius: 25px;
+      color: #fff;
+      max-width: calc(100% - 32px);
+      opacity: 0;
+      position: relative;
+      transform: translateY(-170%) rotate(-10deg);
+      transform-origin: center;
+      width: 272px;
+    }
+
+    .won-modal-overlay.show .won-modal { animation: won-fall-in 1400ms cubic-bezier(.45, 0, .55, 1) both; }
+    @keyframes won-fall-in {
+      0% { opacity: 0; transform: translateY(-170%) rotate(-10deg); }
+      55% { opacity: 1; }
+      78% { transform: translateY(4%) rotate(2deg); }
+      100% { opacity: 1; transform: translateY(0) rotate(0); }
+    }
+
+    .won-modal-overlay.exiting .won-modal { animation: none; opacity: 1; transform: translateY(0) rotate(0); }
+    .won-modal-overlay.exiting.exit-go .won-modal { opacity: 0; transform: translateY(160%) rotate(14deg); transition: transform 1250ms cubic-bezier(.45, 0, .55, 1), opacity 900ms ease-out; }
+    .won-modal-close {
+      background: none;
+      border: 0;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      height: 36px;
+      padding: 0;
+      position: absolute;
+      right: -10px;
+      top: -18px;
+      transition: transform var(--dur-fast) var(--ease-out);
+      width: 36px;
+      z-index: 2;
+    }
+
+    .won-modal-close:active { transform: scale(.93); }
+    .won-modal-close img { display: block; height: 36px; object-fit: contain; width: 36px; }
+    .won-modal-logo { background: #fff; border-radius: var(--radius-full); height: 80px; left: 20px; object-fit: cover; position: absolute; top: -40px; width: 80px; }
+    .won-modal-body { align-items: center; display: flex; flex-direction: column; padding: 53px 16px 22px; text-align: center; }
+    .won-modal-title { font-size: 36px; font-weight: var(--fw-black); line-height: 1; margin: 0; }
+    .won-modal-copy { font-size: 17px; font-weight: var(--fw-medium); line-height: 1.25; margin: 10px 0 0; }
+    .won-modal-copy b { font-weight: var(--fw-black); }
+    .reward-image-container { height: 210px; position: relative; width: 100%; }
+    .reward-burst { animation: reward-spin 7s linear infinite; height: 190px; left: 50%; object-fit: contain; position: absolute; top: 50%; transform: translate(-50%, -50%); width: 190px; }
+    .reward-foreground { height: 135px; left: 50%; object-fit: contain; position: absolute; top: 50%; transform: translate(-50%, -50%); width: 135px; z-index: 1; }
+    @keyframes reward-spin { from { transform: translate(-50%, -50%) rotate(0); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+    .claim-reward { background: none; border: 0; height: 45px; padding: 0; transition: filter var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out); width: 154px; }
+    .claim-reward img { display: block; height: 45px; object-fit: contain; width: 154px; }
+    .claim-reward:active { filter: brightness(.82); transform: scale(.97); }
+
+    :where(button, input, select):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    @media (max-width: 800px) {
+      .app-title::after { display: none; }
+      .sidebar { border-color: var(--border); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+      .primary-button:hover, .secondary-button:hover { transform: none; }
+      .won-modal { transform: none !important; }
+      .won-modal-overlay.show .won-modal { animation: none !important; opacity: 1 !important; }
+      .won-modal-overlay.exiting .won-modal, .won-modal-overlay.exiting.exit-go .won-modal { opacity: 0; transition: opacity 200ms ease !important; transform: none !important; }
+    }
+  </style>
 </head>
 <body>
   <header class="app-header">
@@ -354,28 +759,28 @@
         <span class="section-title">1. Choose your background</span>
         <div class="tabs" role="tablist" aria-label="Background source">
           <button class="tab" id="background-games-tab" type="button" role="tab" aria-controls="background-games-panel" aria-selected="true" data-background-tab="games">Games</button>
-          <button class="tab" id="background-upload-tab" type="button" role="tab" aria-controls="background-upload-panel" aria-selected="false" data-background-tab="upload">Upload image</button>
+          <button class="tab" id="background-upload-tab" type="button" role="tab" aria-controls="background-upload-panel" aria-selected="false" data-background-tab="upload">Upload file</button>
         </div>
 
         <div id="background-games-panel" role="tabpanel" aria-labelledby="background-games-tab" data-background-panel="games">
           <label class="field">
             <span class="field-label">Game</span>
             <select class="control" id="game-background">
+              <option value="candy-crush">Candy Crush Saga</option>
               <option value="landslice">Landslice</option>
               <option value="subway-surfers">Subway Surfers</option>
-              <option value="candy-crush">Candy Crush Saga</option>
             </select>
           </label>
-          <p class="file-name" id="game-background-name">Landslice background</p>
+          <p class="file-name" id="game-background-name">Candy Crush Saga video background</p>
         </div>
 
         <div id="background-upload-panel" role="tabpanel" aria-labelledby="background-upload-tab" data-background-panel="upload" hidden>
           <div class="drop-zone" id="background-drop-zone">
             <strong>Drag and drop your background here</strong>
             <span>or</span>
-            <button class="secondary-button" id="browse-background" type="button">Browse images</button>
-            <small>JPEG, PNG, or animated GIF up to 10 MB</small>
-            <input class="file-input" id="background-file" type="file" accept="image/jpeg,image/png,image/gif,.jpg,.jpeg,.png,.gif">
+            <button class="secondary-button" id="browse-background" type="button">Browse files</button>
+            <small>JPEG, PNG, GIF, or MP4 up to 10 MB</small>
+            <input class="file-input" id="background-file" type="file" accept="image/jpeg,image/png,image/gif,video/mp4,.jpg,.jpeg,.png,.gif,.mp4">
           </div>
           <p class="file-name" id="background-file-name"></p>
           <p class="message" id="background-file-error" aria-live="polite"></p>
@@ -402,20 +807,11 @@
       <section>
         <span class="section-title">3. Set video <span aria-hidden="true">*</span></span>
         <div class="tabs" role="tablist" aria-label="Video source">
-          <button class="tab" type="button" role="tab" aria-selected="true" data-video-tab="url">URL</button>
-          <button class="tab" type="button" role="tab" aria-selected="false" data-video-tab="upload">Upload</button>
+          <button class="tab" type="button" role="tab" aria-selected="true" data-video-tab="upload">Upload</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-video-tab="url">URL</button>
         </div>
 
-        <form data-video-panel="url">
-          <label class="field">
-            <span class="field-label">Video URL</span>
-            <input class="control" id="video-url" type="url" placeholder="https://example.com/video.mp4" required>
-          </label>
-          <p class="message" id="video-url-error" aria-live="polite"></p>
-          <button class="primary-button" type="submit">Set video</button>
-        </form>
-
-        <div data-video-panel="upload" hidden>
+        <div data-video-panel="upload">
           <label class="field">
             <span class="field-label">Video file</span>
             <input class="control" id="video-file" type="file" accept="video/mp4,video/webm,video/ogg,video/quicktime" required>
@@ -423,7 +819,26 @@
           <p class="file-name" id="video-file-name"></p>
           <p class="message" id="video-file-error" aria-live="polite"></p>
         </div>
+
+        <form data-video-panel="url" hidden>
+          <label class="field">
+            <span class="field-label">Video URL</span>
+            <input class="control" id="video-url" type="url" placeholder="https://example.com/video.mp4" required>
+          </label>
+          <p class="message" id="video-url-error" aria-live="polite"></p>
+          <button class="primary-button" type="submit">Set video</button>
+        </form>
         <p class="file-name" id="video-required-message">A video URL or uploaded video is required.</p>
+      </section>
+
+      <hr class="section-divider">
+
+      <section>
+        <span class="section-title">4. Set brand name</span>
+        <label class="field">
+          <span class="field-label">Brand name</span>
+          <input class="control" id="brand-name" type="text" value="Your brand" maxlength="80" autocomplete="organization">
+        </label>
       </section>
 
     </aside>
@@ -431,18 +846,23 @@
     <section class="workspace" aria-label="Preview workspace">
       <div class="toolbar">
         <select class="control device-select" id="device-select" aria-label="Preview device">
-          <option value="iphone12" data-width="390" data-height="844" data-inset="13" data-frame="iphone12.c0de8998.png">iPhone 12 / 13 / 14</option>
-          <option value="iphone14pro" data-width="393" data-height="852" data-inset="13" data-frame="iphone14pro.2b2cd41e.png">iPhone 14 Pro</option>
-          <option value="iphone11" data-width="414" data-height="896" data-inset="14" data-frame="iphone11.8c0f0b1e.png">iPhone 11</option>
-          <option value="pixel8" data-width="412" data-height="915" data-inset="13" data-frame="pixel8.71b52312.png">Google Pixel 8</option>
-          <option value="samsung20" data-width="360" data-height="800" data-inset="12" data-frame="samsungS20.8b7f070d.png">Samsung S20</option>
-          <option value="samsungtablet" data-width="800" data-height="1280" data-inset="22" data-frame="samsung_s9Ultra.5352e6a9.png">Samsung S9 Ultra</option>
-          <option value="ipad10" data-width="820" data-height="1180" data-inset="22" data-frame="ipad10.348b056e.png">iPad 10</option>
+          <option value="iphone12" data-width="390" data-height="844" data-inset="13" data-radius="36" data-frame="iphone12.c0de8998.png">iPhone 12 / 13 / 14</option>
+          <option value="iphone14pro" data-width="393" data-height="852" data-inset="13" data-radius="38" data-frame="iphone14pro.2b2cd41e.png">iPhone 14 Pro</option>
+          <option value="iphone11" data-width="414" data-height="896" data-inset="14" data-radius="38" data-frame="iphone11.8c0f0b1e.png">iPhone 11</option>
+          <option value="pixel8" data-width="412" data-height="915" data-inset="13" data-radius="34" data-frame="pixel8.71b52312.png">Google Pixel 8</option>
+          <option value="samsung20" data-width="360" data-height="800" data-inset="12" data-radius="32" data-frame="samsungS20.8b7f070d.png">Samsung S20</option>
+          <option value="samsungtablet" data-width="800" data-height="1280" data-inset="22" data-radius="24" data-frame="samsung_s9Ultra.5352e6a9.png">Samsung S9 Ultra</option>
+          <option value="ipad10" data-width="820" data-height="1180" data-inset="22" data-radius="24" data-frame="ipad10.348b056e.png">iPad 10</option>
         </select>
         <div class="toolbar-spacer"></div>
-        <button class="secondary-button" id="rotate-device" type="button">
-          <img src="rotate.b91a13e0.svg" width="16" height="16" alt="">
-          Rotate device
+        <button class="theme-switch" id="theme-switch" type="button" role="switch" aria-checked="false" aria-label="Switch to light theme">
+          <span class="theme-switch__track" aria-hidden="true">
+            <span class="theme-switch__thumb">
+              <svg class="theme-switch__sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+              <svg class="theme-switch__moon" viewBox="0 0 24 24"><path d="M20.5 14.3A8.5 8.5 0 0 1 9.7 3.5 8.5 8.5 0 1 0 20.5 14.3z"/></svg>
+            </span>
+          </span>
+          <span class="theme-switch__label">Dark</span>
         </button>
         <button class="secondary-button" id="reset-preview" type="button">
           <img src="refresh.45aac048.svg" width="16" height="16" alt="">
@@ -456,13 +876,42 @@
             <div class="device-screen">
               <div class="preview-viewport empty-state" id="empty-preview">
                 <strong>Your background preview will appear here</strong>
-                <span>Choose a game or upload a JPEG, PNG, or GIF.</span>
+                <span>Choose a game or upload a JPEG, PNG, GIF, or MP4.</span>
               </div>
               <img class="preview-viewport background-preview" id="background-preview" alt="Selected preview background" hidden>
-              <video class="video-preview" id="video-preview" controls playsinline hidden></video>
+              <video class="preview-viewport background-video-preview" id="background-video-preview" autoplay muted loop playsinline hidden></video>
+              <video class="video-preview" id="video-preview" playsinline hidden></video>
+              <div class="video-player" id="video-player" hidden>
+                <div class="video-countdown" aria-live="off"><span id="video-countdown">0</span></div>
+                <button class="video-close" id="player-close" type="button" aria-label="Close video preview" hidden>
+                  <img src="https://cdn.monetizr.com/not/close.png" alt="">
+                </button>
+                <div class="video-watch-message">Watch a full video to get a reward!</div>
+              </div>
+              <div class="won-modal-overlay" id="won-modal" aria-hidden="true">
+                <div class="won-modal" id="won-modal-card" role="dialog" aria-modal="true" aria-labelledby="won-modal-title">
+                  <button class="won-modal-close" id="won-modal-close" type="button" aria-label="Close reward">
+                    <img src="https://cdn.monetizr.com/not/close.png" alt="">
+                  </button>
+                  <img class="won-modal-logo" id="won-modal-logo" alt="Brand logo">
+                  <div class="won-modal-body">
+                    <h2 class="won-modal-title" id="won-modal-title">Congrats!</h2>
+                    <p class="won-modal-copy">You get a reward from<br><b id="won-modal-brand">Your brand</b></p>
+                    <div class="reward-image-container" aria-hidden="true">
+                      <img class="reward-burst" src="https://cdn.monetizr.com/not/Rotating-star_2.png" alt="">
+                      <img class="reward-foreground" src="mockup-reward.png" alt="">
+                    </div>
+                    <button class="claim-reward" id="claim-reward" type="button" aria-label="Claim reward">
+                      <img src="https://storage.googleapis.com/middleware-media-files/not/Reward-button.png" alt="">
+                    </button>
+                  </div>
+                </div>
+              </div>
               <button class="brand-button" id="brand-button" type="button" aria-label="Drag to reposition or click to watch reward video" aria-disabled="true" title="Drag to reposition" hidden>
                 <span class="brand-logo-shell">
-                  <img class="brand-logo" id="brand-logo" alt="Selected brand logo" draggable="false">
+                  <span class="brand-logo-crop">
+                    <img class="brand-logo" id="brand-logo" alt="Selected brand logo" draggable="false">
+                  </span>
                   <span class="brand-alert" aria-hidden="true"></span>
                 </span>
                 <img class="brand-teaser" src="button-teaser.png" alt="Get rewards" draggable="false">
